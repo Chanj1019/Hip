@@ -18,11 +18,14 @@ export class User {
     email: string;
 
     @Column()
+    term: string;
+
+    @Column()
     nick_name: string;
 
     @Column({
         type: 'enum',
         enum: Role, // Role enum 사용
     })
-    role_id: Role; // Role 타입으로 변경
+    user_role: Role; // Role 타입으로 변경
 }

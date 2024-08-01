@@ -80,7 +80,7 @@ export class UsersController {
     @Put(':userid')
     async update(
         @Param('userid') userId: number,
-        @Body() body: { email: string; password?: string; nick_name: string; }
+        @Body() body: { email: string; password?: string; nick_name: string; term:string; }
     ): Promise<{ message: string }> {
         const user = await this.usersService.findOne(userId);
 
@@ -88,7 +88,7 @@ export class UsersController {
             throw new HttpException('사용자를 찾을 수 없습니다.', HttpStatus.NOT_FOUND); // 사용자 미존재 시 예외 처리
         }
 
-        const result = await this.usersService.update(userId, body.email, body.password, body.nick_name); // 업데이트 서비스 호출
+        const result = await this.usersService.update(userId, body.email, body.password, body.nick_name,body.term); // 업데이트 서비스 호출
 
         return { message: result }; // 성공 메시지 반환
     }

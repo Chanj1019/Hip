@@ -52,7 +52,7 @@ export class UsersService {
         return token;
     }
 
-    async update(userId: number, email: string, password: string, nick_name: string): Promise<string> {
+    async update(userId: number, email: string, password: string, nick_name: string, term:string): Promise<string> {
         const user = await this.usersRepository.findOneBy({ user_id: userId });
         
         if (!user) {
@@ -74,6 +74,7 @@ export class UsersService {
         // 사용자 정보 업데이트
         user.email = email;
         user.nick_name = nick_name;
+        user.term = term;
 
         await this.usersRepository.save(user); // 업데이트된 사용자 정보 저장
 

@@ -20,8 +20,12 @@ export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty()
+    term: string;
+    
+    @IsString()
+    @IsNotEmpty()
     nick_name: string;
 
     @IsEnum(Role) // enum 검증 추가
-    role_id: Role; 
+    user_role: Role; 
 }
