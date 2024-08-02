@@ -6,6 +6,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { HashService } from '../hash/hash.service';
+import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
+
+
 @Injectable()
 export class UsersService {
     constructor(
@@ -13,11 +16,42 @@ export class UsersService {
         private usersRepository: Repository<User>, private readonly hashService: HashService
     ) {}
 
+
     async create(createUserDto: CreateUserDto): Promise<User> {
+        console.log(createUserDto);
+        const existingUser = await this.usersRepository.findOne({
+            where: [
+                { email: createUserDto.email },
+                { nick_name: createUserDto.nick_name },
+                { id: createUserDto.id }
+            ]
+        });
+    
+        if (existingUser) {
+            let errorMessage = '';
+            if (existingUser.email === createUserDto.email) {
+                errorMessage = '이미 사용 중인 이메일입니다.';
+            }
+            if (existingUser.nick_name === createUserDto.nick_name) {
+                errorMessage = errorMessage ? errorMessage + ' ' : '';
+                errorMessage += '이미 사용 중인 닉네임입니다.';
+            }
+            if (existingUser.id === createUserDto.id) {
+                errorMessage = errorMessage ? errorMessage + ' ' : '';
+                errorMessage += '이미 사용 중인 사용자 ID입니다.';
+            }
+            throw new ConflictException(errorMessage.trim());
+        }
+    
+        if (!createUserDto.password) {
+            throw new HttpException('비밀번호가 필요합니다.', HttpStatus.BAD_REQUEST);
+        }
+    
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
         const user = this.usersRepository.create({ ...createUserDto, password: hashedPassword });
         return await this.usersRepository.save(user);
     }
+    
 
     async findAll(): Promise<User[]> {
         return await this.usersRepository.find();
