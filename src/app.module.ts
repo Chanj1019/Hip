@@ -23,6 +23,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { MaterialModule } from './material/material.module';
+import { ExhibitionModule } from './exhibition/exhibition.module';
 
 @Module({
     imports: [
@@ -41,6 +42,7 @@ import { MaterialModule } from './material/material.module';
         }),
         UsersModule,
         MaterialModule,
+        ExhibitionModule,
     ],
 })
 export class AppModule {}
