@@ -7,7 +7,7 @@
 // @Module({
 //     imports: [
 //         TypeOrmModule.forRoot({
-//         
+//
 //         }),
 //         UsersModule,
 //         MaterialModule,
@@ -22,27 +22,29 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
+import { Course } from './courses/course.entity';
 import { MaterialModule } from './material/material.module';
-import { CourseModule } from './course/course.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot(), // ConfigModule 추가
-        TypeOrmModule.forRootAsync({
-            useFactory: () => ({
-                type: process.env.DB_TYPE as 'mysql',
-                host: process.env.DB_HOST,
-                port: parseInt(process.env.DB_PORT, 10),
-                username: process.env.DB_USERNAME,
-                password: process.env.DB_PASSWORD,
-                database: process.env.DB_DATABASE,
-                entities: [User],
-                synchronize: true,
-            }),
+  imports: [
+    ConfigModule.forRoot(), // ConfigModule 추가
+    TypeOrmModule.forRootAsync({
+        imports: [ConfigModule],
+        useFactory: () => ({
+            type: 'mysql',
+            host: process.env.DB_HOST,
+            port: parseInt(process.env.DB_PORT, 10),
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_DATABASE,
+            entities: [User, Course],
+            synchronize: true,
         }),
-        UsersModule,
-        MaterialModule,
-        CourseModule,
-    ],
+    }),
+    UsersModule,
+    MaterialModule,
+    CoursesModule,
+  ],
 })
 export class AppModule {}
