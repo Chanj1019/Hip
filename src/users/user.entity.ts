@@ -18,7 +18,7 @@ export class User {
     email: string;
 
     @Column()
-    generation: string;
+    term: string;
 
     @Column()
     nick_name: string;

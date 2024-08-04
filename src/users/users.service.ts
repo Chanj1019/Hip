@@ -18,7 +18,7 @@ export class UsersService {
 
 
     async create(createUserDto: CreateUserDto): Promise<User> {
-      
+        console.log(createUserDto);
         const existingUser = await this.usersRepository.findOne({
             where: [
                 { email: createUserDto.email },
@@ -76,38 +76,17 @@ export class UsersService {
     // } >>> 응답개선
 
 
-    // async login(id: string, password: string): Promise<string> {
-    //     const user = await this.usersRepository.findOneBy({ id });
-        
-    //     // 예외 처리 개선: 잘못된 자격 증명에 대해 명확한 HTTP 응답 코드 반환
-    //     if (!user || !(await bcrypt.compare(password, user.password))) {
-    //         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-    //     }
-    //     const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // 환경 변수 사용
-    //     return token;
-    // }
-    async login(id: string, password: string): Promise<string> {
-        const user = await this.usersRepository.findOneBy({ id });
-        console.log('User found:', user); // 사용자 정보 로그 추가
-    
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.UNAUTHORIZED); // 사용자 미존재 에러
+    async login(user_name: string, password: string): Promise<string> {
+        const user = await this.usersRepository.findOneBy({ user_name });
+        // 예외 처리 개선: 잘못된 자격 증명에 대해 명확한 HTTP 응답 코드 반환
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
         }
-    
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED); // 비밀번호 불일치 에러
-        }
-    
-        if (!process.env.JWT_SECRET) {
-            throw new Error('JWT_SECRET is not defined'); // 비밀 키 미설정 에러
-        }
-    
-        const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // 환경 변수 사용
         return token;
     }
-    
-    async update(userId: number, email: string, password: string, nick_name: string, generation:string): Promise<string> {
+
+    async update(userId: number, email: string, password: string, nick_name: string, term:string): Promise<string> {
         const user = await this.usersRepository.findOneBy({ user_id: userId });
         
         if (!user) {
@@ -129,7 +108,7 @@ export class UsersService {
         // 사용자 정보 업데이트
         user.email = email;
         user.nick_name = nick_name;
-        user.generation = generation;
+        user.term = term;
 
         await this.usersRepository.save(user); // 업데이트된 사용자 정보 저장
 
