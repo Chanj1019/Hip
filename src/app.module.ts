@@ -22,7 +22,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
-import { ExhibitionModule } from './exhibition/exhibition.module';
+import { ExhibitionModule } from './exhibitions/exhibitions.module';
+import { Exhibition } from './exhibitions/exhibition.entity';
 
 @Module({
     imports: [
@@ -35,7 +36,7 @@ import { ExhibitionModule } from './exhibition/exhibition.module';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User],
+                entities: [User,Exhibition],
                 synchronize: true,
             }),
         }),
