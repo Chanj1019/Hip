@@ -47,13 +47,29 @@ export class ExhibitionController {
     }
 
 
-    //특정 기수 통게
-    @Get('count/by-generation')
-    async countExhibitionsBygeneration(
-        @Query('generation') generation: string,
-    ): Promise<number> {
-        return this.exhibitionService.countExhibitionsBygeneration(generation);
+    //기수별 정렬
+    @Get('sorted-by-generation')
+    async getExhibitionsSortedByGeneration(
+     @Query('order') order: 'ASC' | 'DESC' = 'ASC', // 기본값은 'ASC'
+        ): Promise<Exhibition[]> {
+        return this.exhibitionService.getExhibitionsSortedByGeneration(order);
     }
+
+
+
+
+
+
+    // //특정 기수 통게
+    // @Get('count/by-generation')
+    // async countExhibitionsBygeneration(
+    //     @Query('generation') generation: string,
+    // ): Promise<number> {
+    //     return this.exhibitionService.countExhibitionsBygeneration(generation);
+    // }
+
+
+    
     
     // 특정 시간의 전시 수 통계
     // @Get('count/by-exhibition_date')
@@ -71,7 +87,30 @@ export class ExhibitionController {
     }
 
 
-
+    @Put(':exhibitionsid')
+    async update(
+        @Param('exhibitionsid') exhibitionsId: number,
+        @Body() body: { exhibition_title: string; description: string; generation: string; }
+    ): Promise<{ message: string }> {
+        try {
+            await this.exhibitionService.updateExhibition(
+                exhibitionsId,
+                body.exhibition_title,
+                body.generation,
+                body.description
+            );
+    
+            return { message: '전시 정보가 성공적으로 업데이트되었습니다.' };
+        } catch (error) {
+            if (error.message === '전시를 찾을 수 없습니다') {
+                throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+            } else if (error.message === '전시 제목이 이미 존재합니다') {
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+            }
+            throw new HttpException('업데이트 중 오류가 발생했습니다', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
 
 
 

@@ -2,7 +2,7 @@ import { Injectable,ConflictException } from '@nestjs/common';
 import { Exhibition } from './exhibition.entity';
 import {HttpException, HttpStatus } from '@nestjs/common'; // HttpException 추가
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository,Not } from 'typeorm';
 import { CreateExhibitionDto } from './dto/create-exhibition.dto';
 @Injectable()
 export class ExhibitionService {
@@ -63,6 +63,14 @@ export class ExhibitionService {
              });
         }
 
+        //기수별 정렬
+        async getExhibitionsSortedByGeneration(order: 'ASC' | 'DESC'): Promise<Exhibition[]> {
+            return this.exhibitionsRepository.find({
+                order: {
+                    generation: order, // 
+                },
+            });
+        }
 
         //특정 기수 전시 통계
         async countExhibitionsBygeneration(generation: string): Promise<number> {
@@ -86,7 +94,45 @@ export class ExhibitionService {
         }
     
 
-
+        async updateExhibition(
+            exhibitionsId: number,
+            exhibition_title?: string,  // 선택적 파라미터로 변경
+            generation?: string,        // 선택적 파라미터로 변경
+            description?: string        // 선택적 파라미터로 변경
+        ): Promise<void> {
+            const exhibition = await this.exhibitionsRepository.findOneBy({ exhibition_id: exhibitionsId });
+        
+            if (!exhibition) {
+                throw new Error('전시를 찾을 수 없습니다'); // 일반 오류 던지기
+            }
+        
+            // 전시 제목 중복 검사 (제목이 제공된 경우에만 검사)
+            if (exhibition_title) {
+                const isTitleDuplicate = await this.isTitleDuplicate(exhibition_title, exhibitionsId);
+                if (isTitleDuplicate) {
+                    throw new Error('전시 제목이 이미 존재합니다'); // 일반 오류 던지기
+                }
+                exhibition.exhibition_title = exhibition_title; // 제목 업데이트
+            }
+        
+            // 각 필드가 제공된 경우에만 업데이트
+            if (generation) {
+                exhibition.generation = generation; // 세대 업데이트
+            }
+            if (description) {
+                exhibition.description = description; // 설명 업데이트
+            }
+        
+            await this.exhibitionsRepository.save(exhibition); // 업데이트된 전시 정보 저장
+        }
+        
+        async isTitleDuplicate(exhibition_title: string, exhibitionsId: number): Promise<boolean> {
+            const existingExhibition = await this.exhibitionsRepository.findOne({
+                where: { exhibition_title, exhibition_id: Not(exhibitionsId) } // 현재 업데이트 중인 전시 제외
+            });
+            return existingExhibition !== null; // 존재하면 true, 아니면 false
+        }
+        
 
     }
       

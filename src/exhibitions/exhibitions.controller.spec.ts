@@ -100,15 +100,15 @@ describe('ExhibitionController', () => {
         });
     });
 
-    describe('countExhibitionsBygeneration', () => {
-        it('should return the count of exhibitions by generation', async () => {
-            const generation = '2023';
-            const result = 10; // 2023년에 해당하는 전시 수
-            mockExhibitionService.countExhibitionsBygeneration.mockResolvedValue(result);
+    // describe('countExhibitionsBygeneration', () => {
+    //     it('should return the count of exhibitions by generation', async () => {
+    //         const generation = '2023';
+    //         const result = 10; // 2023년에 해당하는 전시 수
+    //         mockExhibitionService.countExhibitionsBygeneration.mockResolvedValue(result);
 
-            expect(await exhibitionController.countExhibitionsBygeneration(generation)).toEqual(result);
-        });
-    });
+    //         expect(await exhibitionController.countExhibitionsBygeneration(generation)).toEqual(result);
+    //     });
+    // });
 
     describe('remove', () => {
         it('should delete an exhibition', async () => {

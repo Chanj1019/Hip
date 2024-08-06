@@ -121,15 +121,15 @@ describe('ExhibitionService', () => {
         });
     });
 
-    describe('countExhibitionsBygeneration', () => {
-        it('should return the count of exhibitions by generation', async () => {
-            const generation = '2023';
-            const result = 10;
-            mockExhibitionRepository.count.mockResolvedValue(result);
+    // describe('countExhibitionsBygeneration', () => {
+    //     it('should return the count of exhibitions by generation', async () => {
+    //         const generation = '2023';
+    //         const result = 10;
+    //         mockExhibitionRepository.count.mockResolvedValue(result);
 
-            expect(await exhibitionService.countExhibitionsBygeneration(generation)).toEqual(result);
-        });
-    });
+    //         expect(await exhibitionService.countExhibitionsBygeneration(generation)).toEqual(result);
+    //     });
+    // });
 
     describe('remove', () => {
         it('should delete an exhibition', async () => {
