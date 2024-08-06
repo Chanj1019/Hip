@@ -1,5 +1,5 @@
 
-import {Controller,Get, Post, Put, Delete, Param, Body, HttpException, HttpStatus,} from '@nestjs/common';
+import {Controller,Get, Post, Put, Delete, Param, Body, HttpException, HttpStatus, ParseIntPipe} from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-courses.dto';
 import { Course } from './course.entity';
@@ -36,31 +36,13 @@ export class CoursesController {
         return { message: '강의가 삭제되었습니다.' };
     }
 
-    @Put(':courseid')
+    @Put(':courseId')
     async update(
-    @Param('courseid') courseId: string,
-    @Body() body: { course_title: string; description: string; instructor_id: number; }):
-    Promise<{ message: string }> {
-      const id = parseInt(courseId, 10);
-      if (isNaN(id)) {
-          throw new HttpException('유효하지 않은 강의 ID입니다.', HttpStatus.BAD_REQUEST);
-      }
-
-      if (!body.course_title || !body.description || typeof body.instructor_id !== 'number') {
-          throw new HttpException('모든 필드를 올바르게 입력해야 합니다.', HttpStatus.BAD_REQUEST);
-      }
-
-      const course = await this.coursesService.findOne(id);
-      if (!course) {
-          throw new HttpException('강의가 업데이트되지 못했습니다.', HttpStatus.NOT_FOUND);
-      }
-
-      const result = await this.coursesService.update(id, body.course_title, body.description, body.instructor_id);
-      if (result) {
-          return { message: '강의가 성공적으로 업데이트되었습니다.' };
-      }
-
-      throw new HttpException('강의 업데이트에 실패했습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
+      @Param('courseId', ParseIntPipe) courseId: number,
+      @Body() updateCourseDto: CreateCourseDto
+    ): Promise<{ message: string }> {
+      await this.coursesService.update(courseId, updateCourseDto);
+      return { message: '강의가 성공적으로 업데이트되었습니다.' };
     }
 
 }
