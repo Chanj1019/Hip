@@ -20,7 +20,7 @@ export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty()
-    term: string;
+    generation: string;
     
     @IsString()
     @IsNotEmpty()
