@@ -108,7 +108,7 @@ export class UsersService {
     }
     
 
-    async update(userId: number, email: string, password: string, nick_name: string, generation:string): Promise<string> {
+    async update(userId: number, email?: string, password?: string, nick_name?: string, generation?:string): Promise<string> {
         const user = await this.usersRepository.findOneBy({ user_id: userId });
         
         if (!user) {
