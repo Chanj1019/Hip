@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn ,OneToMany} from 'typeorm';
 import { Role } from '../enums/role.enum';
+import { Exhibition } from 'src/exhibitions/exhibition.entity';
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -28,4 +29,8 @@ export class User {
         enum: Role, // Role enum 사용
     })
     user_role: Role; // Role 타입으로 변경
+
+    @OneToMany(() => Exhibition, exhibition => exhibition.user) // Exhibition과의 관계 설정
+    exhibitions: Exhibition[]; // 사용자가 가진 전시 목록
+    
 }

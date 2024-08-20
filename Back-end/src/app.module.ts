@@ -24,10 +24,10 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { ExhibitionModule } from './exhibitions/exhibitions.module';
 import { Exhibition } from './exhibitions/exhibition.entity';
-import { ExhibitionDocModule } from './exhibition_doc/exhibition_doc.module';
-import { ExhibitionMemberModule } from './exhibition_member/exhibition_member.module';
-import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
+import { ExhibitionsDoc } from './exhibitions_doc/entities/exhibitions_doc.entity';
 import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
+import { ExhibitionsMember } from './exhibitions_member/entities/exhibitions_member.entity';
+import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
 
 @Module({
     imports: [
@@ -40,12 +40,12 @@ import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition],
+                entities: [User,Exhibition,ExhibitionsDoc,ExhibitionsMember],
                 synchronize: true,
             }),
         }),
-        UsersModule,       
-        ExhibitionModule, ExhibitionDocModule, ExhibitionMemberModule, ExhibitionsMemberModule, ExhibitionsDocModule,
+        UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule,
+        ExhibitionModule, 
     ],
 })
 export class AppModule {}
