@@ -24,6 +24,10 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { ExhibitionModule } from './exhibitions/exhibitions.module';
 import { Exhibition } from './exhibitions/exhibition.entity';
+import { ExhibitionDocModule } from './exhibition_doc/exhibition_doc.module';
+import { ExhibitionMemberModule } from './exhibition_member/exhibition_member.module';
+import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
+import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
 
 @Module({
     imports: [
@@ -41,7 +45,7 @@ import { Exhibition } from './exhibitions/exhibition.entity';
             }),
         }),
         UsersModule,       
-        ExhibitionModule,
+        ExhibitionModule, ExhibitionDocModule, ExhibitionMemberModule, ExhibitionsMemberModule, ExhibitionsDocModule,
     ],
 })
 export class AppModule {}
