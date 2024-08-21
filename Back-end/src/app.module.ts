@@ -24,9 +24,9 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { ExhibitionModule } from './exhibitions/exhibitions.module';
 import { Exhibition } from './exhibitions/exhibition.entity';
-import { ExhibitionsDoc } from './exhibitions_doc/entities/exhibitions_doc.entity';
+import { ExhibitionDoc } from './exhibitions_doc/entities/exhibition_doc.entity';
 import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
-import { ExhibitionsMember } from './exhibitions_member/entities/exhibitions_member.entity';
+import { ExhibitionMember } from './exhibitions_member/entities/exhibition_member.entity';
 import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
 
 @Module({
@@ -40,7 +40,7 @@ import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition,ExhibitionsDoc,ExhibitionsMember],
+                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember],
                 synchronize: true,
             }),
         }),

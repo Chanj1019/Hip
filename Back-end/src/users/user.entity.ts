@@ -31,6 +31,6 @@ export class User {
     user_role: Role; // Role 타입으로 변경
 
     @OneToMany(() => Exhibition, exhibition => exhibition.user) // Exhibition과의 관계 설정
-    exhibitions: Exhibition[]; // 사용자가 가진 전시 목록
+    exhibition: Exhibition[]; // 사용자가 가진 전시 목록
     
 }
