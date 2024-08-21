@@ -1,34 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param ,HttpCode,HttpStatus} from '@nestjs/common';
 import { ExhibitionsDocService } from './exhibitions_doc.service';
 import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
+import { ExhibitionDoc } from './entities/exhibition_doc.entity';
 
-@Controller('exhibitions-doc')
+@Controller('exhibition-docs')
 export class ExhibitionsDocController {
-  constructor(private readonly exhibitionsDocService: ExhibitionsDocService) {}
-
-  @Post()
-  create(@Body() createExhibitionsDocDto: CreateExhibitionsDocDto) {
-    return this.exhibitionsDocService.create(createExhibitionsDocDto);
-  }
+  constructor(private readonly exhibitionDocsService: ExhibitionsDocService) {}
 
   @Get()
-  findAll() {
-    return this.exhibitionsDocService.findAll();
+  async findAll(): Promise<ExhibitionDoc[]> {
+    return await this.exhibitionDocsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.exhibitionsDocService.findOne(+id);
+  async findOne(@Param('id') id: number): Promise<ExhibitionDoc> {
+    return await this.exhibitionDocsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExhibitionsDocDto: UpdateExhibitionsDocDto) {
-    return this.exhibitionsDocService.update(+id, updateExhibitionsDocDto);
+  @Post('register')
+    @HttpCode(HttpStatus.CREATED)
+    async create(@Body() createExhibitionDocDto: CreateExhibitionsDocDto): Promise<ExhibitionDoc> {
+        return this.exhibitionDocsService.createExhibitionDoc(createExhibitionDocDto);
+  }
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() updateExhibitionsDocDto: UpdateExhibitionsDocDto,
+  ): Promise<ExhibitionDoc> {
+    return await this.exhibitionDocsService.update(id, updateExhibitionsDocDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.exhibitionsDocService.remove(+id);
+  async remove(@Param('id') id: number): Promise<void> {
+    return await this.exhibitionDocsService.remove(id);
   }
 }
