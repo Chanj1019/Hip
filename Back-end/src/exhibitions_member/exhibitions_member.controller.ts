@@ -3,7 +3,7 @@ import { ExhibitionsMemberService } from './exhibitions_member.service';
 import { CreateExhibitionsMemberDto } from './dto/create-exhibitions_member.dto';
 import { UpdateExhibitionsMemberDto } from './dto/update-exhibitions_member.dto';
 
-@Controller('exhibitions-member')
+@Controller('exhibition-members')
 export class ExhibitionsMemberController {
   constructor(private readonly exhibitionsMemberService: ExhibitionsMemberService) {}
 

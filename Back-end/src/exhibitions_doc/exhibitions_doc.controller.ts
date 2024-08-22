@@ -3,7 +3,8 @@ import { ExhibitionsDocService } from './exhibitions_doc.service';
 import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
 import { ExhibitionDoc } from './entities/exhibition_doc.entity';
-
+import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('exhibition-docs')
 export class ExhibitionsDocController {
   constructor(private readonly exhibitionDocsService: ExhibitionsDocService) {}
@@ -19,10 +20,15 @@ export class ExhibitionsDocController {
   }
 
   @Post('register')
-    @HttpCode(HttpStatus.CREATED)
-    async create(@Body() createExhibitionDocDto: CreateExhibitionsDocDto): Promise<ExhibitionDoc> {
-        return this.exhibitionDocsService.createExhibitionDoc(createExhibitionDocDto);
+  @UseInterceptors(FileInterceptor('file')) // 'file' 필드에서 파일을 업로드 받음
+  async createExhibitionDoc(
+    @Body() createExhibitionDocDto: CreateExhibitionsDocDto,
+    @UploadedFile() file: Express.Multer.File, // 업로드된 파일을 가져옴
+  ) {
+    // createExhibitionDoc 메소드를 호출하고 결과 반환
+    return this.exhibitionDocsService.createExhibitionDoc(createExhibitionDocDto,file);
   }
+  
   @Put(':id')
   async update(
     @Param('id') id: number,

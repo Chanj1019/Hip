@@ -1,9 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateExhibitionsDocDto {
-    @IsString()
-    @IsNotEmpty() // 파일 경로는 필수
-    file_path: string; // 파일 경로
 
     @IsOptional() // 피드백은 선택적
     @IsString()
