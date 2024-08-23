@@ -24,6 +24,14 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { ExhibitionModule } from './exhibitions/exhibitions.module';
 import { Exhibition } from './exhibitions/exhibition.entity';
+import { Course } from './courses/entities/course.entity'
+import { CoursesModule } from './courses/courses.module';
+import { UCat } from './ucat/entities/ucat.entity';
+import { UcatModule } from './ucat/ucat.module';
+import { DocNameModule } from './doc_name/topic.module';
+import { DocName } from './doc_name/entities/topic.entity';
+import { CourseDoc } from './course_doc/entities/course_doc.entity';
+import { DocNameModule } from './doc_name/doc_name.module';
 
 @Module({
     imports: [
@@ -36,12 +44,15 @@ import { Exhibition } from './exhibitions/exhibition.entity';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition],
+                entities: [User,Exhibition, Course, UCat, DocName, CourseDoc],
                 synchronize: true,
             }),
         }),
         UsersModule,       
         ExhibitionModule,
+        CoursesModule,
+        UcatModule,
+        DocNameModule,
     ],
 })
 export class AppModule {}

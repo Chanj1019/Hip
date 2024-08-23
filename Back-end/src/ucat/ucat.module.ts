@@ -1,4 +1,13 @@
 import { Module } from '@nestjs/common';
+import { UCat } from '../ucat/entities/ucat.entity'
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Course } from '../courses/entities/course.entity';
+import { User } from '../users/user.entity';
 
-@Module({})
+@Module({
+    imports: [
+      TypeOrmModule.forFeature([UCat, Course, User]),
+      
+    ],
+  })
 export class UcatModule {}

@@ -34,7 +34,6 @@ export class ExhibitionService {
     
         async findOne(exhibitionsaId: number): Promise<Exhibition> {
             return await this.exhibitionsRepository.findOneBy({ exhibition_id: exhibitionsaId });
-            
         }
     
 
