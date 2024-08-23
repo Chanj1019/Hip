@@ -36,7 +36,7 @@ export class ExhibitionsMemberService {
 
     async findOne(id: number): Promise<ExhibitionMember> {
         const member = await this.exhibitionMemberRepository.findOne({
-            where: { id }, // ID를 명시적으로 지정
+            where: { exhibition_member_id:id }, // ID를 명시적으로 지정
             relations: ['exhibition'], // 관계된 exhibition 데이터 로드
         });
     
