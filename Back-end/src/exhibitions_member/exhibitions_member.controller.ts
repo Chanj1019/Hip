@@ -1,34 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ExhibitionsMemberService } from './exhibitions_member.service';
+import { Controller, Post, Get, Put, Delete, Param, Body } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { CreateExhibitionsMemberDto } from './dto/create-exhibitions_member.dto';
-import { UpdateExhibitionsMemberDto } from './dto/update-exhibitions_member.dto';
+import { ExhibitionsMemberService } from './exhibitions_member.service';
+import { ExhibitionMember } from './entities/exhibition_member.entity';
 
 @Controller('exhibition-members')
 export class ExhibitionsMemberController {
-  constructor(private readonly exhibitionsMemberService: ExhibitionsMemberService) {}
+    constructor(private readonly exhibitionsMemberService: ExhibitionsMemberService) {}
 
-  @Post()
-  create(@Body() createExhibitionsMemberDto: CreateExhibitionsMemberDto) {
-    return this.exhibitionsMemberService.create(createExhibitionsMemberDto);
-  }
+    @Post()
+    async create(@Body() createExhibitionsMemberDto: CreateExhibitionsMemberDto): Promise<ExhibitionMember> {
+        return this.exhibitionsMemberService.create(createExhibitionsMemberDto);
+    }
 
-  @Get()
-  findAll() {
-    return this.exhibitionsMemberService.findAll();
-  }
+    @Get()
+    async findAll(): Promise<ExhibitionMember[]> {
+        return this.exhibitionsMemberService.findAll();
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.exhibitionsMemberService.findOne(+id);
-  }
+    @Get(':memberId')
+    async findOne(@Param('id') id: number): Promise<ExhibitionMember> {
+      return this.exhibitionsMemberService.findOne(id);
+    }
+    
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExhibitionsMemberDto: UpdateExhibitionsMemberDto) {
-    return this.exhibitionsMemberService.update(+id, updateExhibitionsMemberDto);
-  }
+    @Put(':id')
+    async update(@Param('id') id: number, @Body() updateData: Partial<CreateExhibitionsMemberDto>): Promise<ExhibitionMember> {
+        return this.exhibitionsMemberService.update(id, updateData);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.exhibitionsMemberService.remove(+id);
-  }
+    @Delete(':id')
+    async remove(@Param('id') id: number): Promise<void> {
+        return this.exhibitionsMemberService.remove(id);
+    }
 }
