@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { HashService } from '../hash/hash.service';
 import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
-
+import { Role } from '.././enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -135,6 +135,20 @@ export class UsersService {
         await this.usersRepository.save(user); // 업데이트된 사용자 정보 저장
 
         return 'User updated successfully'; // 성공 메시지 반환
+    }
+
+    // 유저가 강사인가 체크 추가
+    async checkUserRole(userId: number): Promise<boolean> {
+        // 1. userId로 DB 조회
+        const user = await this.usersRepository.findOne({ where: { user_id: userId } });
+    
+        // 2. user 없으면 에러
+        if (!user) {
+            throw new Error('User not found');
+        }
+    
+        // 3. 가져온 user의 role 검사
+        return user.user_role === Role.INSTRUCTOR;
     }
 }
     
