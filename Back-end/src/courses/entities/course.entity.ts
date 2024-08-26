@@ -20,10 +20,10 @@ export class Course {
     @Column({nullable:true})
     course_notice: string;
 
-    @OneToMany(() => UCat, (ucat) => ucat.course)
+    @OneToMany(() => UCat, (ucat) => ucat.course, { cascade: true })
     uCats: UCat[];
 
-    @OneToMany(() => DocName, (docname) => docname.course)
+    @OneToMany(() => DocName, (docname) => docname.course, { cascade: true })
     docName: DocName[];
 
 }

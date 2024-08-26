@@ -1,50 +1,61 @@
-import { Controller, Post, Get, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Body } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
-import { Course } from './entities/course.entity'
+import { Course } from './entities/course.entity';
 
 @Controller('courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+    constructor(private readonly coursesService: CoursesService) {}
 
-  @Post()
-  async createCourse(@Body() createCourseDto: CreateCourseDto) {
-    const data = await this.coursesService.createCourse(createCourseDto);
-    return {
-      message: "Course가 성공적으로 생성되었습니다.",
-      data: data,
-    };
-  }
-
-  @Get()
-  async getAllCourses() {
-    return this.coursesService.getAllCourses();
-  }
-
-  @Get(':id')
-  async getOneCourse(@Param('id') id: number): Promise<Course> {
-    return this.coursesService.getOneCourse(id);
-  }
-
-  @Put(':id')
-  async updateCourse(
-    @Param('id') id: number,
-    @Body() updateCourseDto: UpdateCourseDto,
-  ) {
-    const data = this.coursesService.updateCourse(id, updateCourseDto);
-    return {
-      message: "Course가 성공적으로 수정되었습니다.",
-      data: data
+    @Post()
+    async create(
+      @Body() createCourseDto: any
+    ) {
+        const data = await this.coursesService.create(createCourseDto);
+        return {
+            message: "생성에 성공하셨습니다",
+            data: data
+        };
     }
-  }
 
-  @Delete(':id')
-  async deleteCourse(@Param('id') id: number) {
-    const data = this.coursesService.deleteCourse(id); // Convert to number
-    return {
-      message: "Course가 성공적으로 삭제되었습니다.",
-      data: data
+    @Get()
+    async findAll() {
+        const data = await this.coursesService.findAll();
+        return {
+            message: "전체 강의 조회에 성공하셨습니다",
+            data: data
+        };
     }
-  }
+
+    @Get(':id')
+    async findOne(
+      @Param('id') id: number
+    ) {
+        const data = await this.coursesService.findOne(id);
+        return {
+            message: "특정 강의 조회에 성공하셨습니다",
+            data: data
+        };
+    }
+
+    @Patch(':id')
+    async update(
+      @Param('id') id: number, @Body() updateCourseDto: any
+    ) {
+        const data = await this.coursesService.update(id, updateCourseDto);
+        return {
+            message: "강의 수정에 성공하셨습니다",
+            data: data
+        };
+    }
+
+    @Delete(':id')
+    async remove(
+      @Param('id') id: number
+    ) {
+        const data = await this.coursesService.remove(id);
+        return {
+            message: "강의 삭제에 성공하셨습니다",
+            data: data
+        };
+    }
 }

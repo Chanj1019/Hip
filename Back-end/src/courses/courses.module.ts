@@ -4,7 +4,7 @@ import { CoursesController } from './courses.controller';
 import { Course } from './entities/course.entity'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UCat } from '../ucat/entities/ucat.entity';
-import {DocName} from '../doc_name/entities/topic.entity'
+import {DocName} from '../doc_name/entities/doc_name.entity'
 
 @Module({
   imports: [

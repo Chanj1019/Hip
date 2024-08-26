@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { Course } from '../../courses/entities/course.entity'
-import { CourseDoc } from '../../course_doc/entities/course_doc.entity'
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Course } from '../../courses/entities/course.entity';
+import { CourseDoc } from '../../course_doc/entities/course_doc.entity';
 
 @Entity()
 export class DocName {
@@ -10,13 +10,13 @@ export class DocName {
     @Column()
     course_id: number;
 
-    @Column()
-    pa_topic_id: number;
+    @Column({ nullable: true })
+    pa_topic_id: number; // 부모 주제 ID, 소주제일 경우에만 값을 가짐.
 
     @Column()
-    file_path: string;
+    topic_title: string;
 
-    @ManyToOne(() => Course, (course) => course.docName, { onDelete: 'CASCADE'})
+    @ManyToOne(() => Course, (course) => course.docName, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'course_id' })
     course: Course;
 

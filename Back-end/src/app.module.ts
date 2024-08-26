@@ -28,10 +28,9 @@ import { Course } from './courses/entities/course.entity'
 import { CoursesModule } from './courses/courses.module';
 import { UCat } from './ucat/entities/ucat.entity';
 import { UcatModule } from './ucat/ucat.module';
-import { DocNameModule } from './doc_name/topic.module';
-import { DocName } from './doc_name/entities/topic.entity';
-import { CourseDoc } from './course_doc/entities/course_doc.entity';
 import { DocNameModule } from './doc_name/doc_name.module';
+import { DocName } from './doc_name/entities/doc_name.entity';
+import { CourseDoc } from './course_doc/entities/course_doc.entity';
 
 @Module({
     imports: [

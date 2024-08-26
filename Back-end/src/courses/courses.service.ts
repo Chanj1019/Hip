@@ -14,7 +14,7 @@ export class CoursesService {
     private coursesRepository: Repository<Course>,
   ) {}
 
-  async createCourse(createCourseDto: CreateCourseDto): Promise<Course> {
+  async create(createCourseDto: CreateCourseDto): Promise<Course> {
     const existCourse = await this.coursesRepository.findOne({
       where: { course_title: createCourseDto.course_title },
     });
@@ -29,19 +29,19 @@ export class CoursesService {
     return course;
   }
 
-  async getAllCourses(): Promise<Course[]> {
+  async findAll(): Promise<Course[]> {
     return this.coursesRepository.find();
   }
 
-  async getOneCourse(id: number): Promise<Course> {
-    const course = await this.coursesRepository.findOne({ where: { course_id: id } });
+  async findOne(id: number): Promise<Course> {
+    const course = await this.coursesRepository.findOne({ where: { course_id: id }, relations: ['docName'] });
     if (!course) {
       throw new NotFoundException('Course not found'); // 예외 처리 추가
     }
     return course;
   }
 
-  async updateCourse(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
+  async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     // 데이터베이스에서 해당 ID의 강의 조회
     const course = await this.coursesRepository.findOne({ where: { course_id: id } });
     if (!course) {
@@ -69,14 +69,16 @@ export class CoursesService {
     return course;
   }
   
-  async deleteCourse(id: number): Promise<void> {
-    const result = await this.coursesRepository.delete(id);
-    if (result.affected === 0) {
-      this.logger.warn(`Attempt to delete non-existent course with ID ${id}`);
-      throw new NotFoundException(`Course with ID ${id} not found for deletion`);
+  async remove(id: number): Promise<void> {
+    const course = await this.coursesRepository.findOne({ where: { course_id: id }, relations: ['docName'] });
+    if(course){
+      await this.coursesRepository.remove(course);
     }
-    this.logger.log(`Course with ID ${id} deleted`);
+    // if (course.affected === 0) {
+    //   this.logger.warn(`Attempt to delete non-existent course with ID ${id}`);
+    //   throw new NotFoundException(`Course with ID ${id} not found for deletion`);
+    // }
+    // this.logger.log(`Course with ID ${id} deleted`);
   }
   
 }
-

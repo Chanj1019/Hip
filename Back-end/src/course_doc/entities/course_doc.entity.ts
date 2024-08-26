@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToMany, ManyToOne, JoinColumn} from 'typeorm';
-import { DocName } from '../../doc_name/entities/doc_name.entity'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { DocName } from '../../doc_name/entities/doc_name.entity';
 
 @Entity()
 export class CourseDoc {
@@ -7,12 +7,11 @@ export class CourseDoc {
     course_document_id: number;
 
     @Column()
-    course_id: number;
+    doc_name_id: number; // 주제 ID (Foreign Key)
 
     @Column()
     course_document_title: string;
 
-    // @CreateDateColumn()은 자동으로 생성 일자를 설정하는 데코레이터
     @CreateDateColumn()
     upload_date: Date; 
     
@@ -22,8 +21,7 @@ export class CourseDoc {
     @Column()
     course_document_description: string;
 
-    @ManyToOne(() => DocName, (docname) => docname.courseDoc)
-    @JoinColumn({name: 'doc_name_id'})
+    @ManyToOne(() => DocName, (docname) => docname.courseDoc, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'doc_name_id' })
     docName: DocName;
-  
 }

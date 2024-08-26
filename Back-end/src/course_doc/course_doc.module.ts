@@ -3,7 +3,7 @@ import { CourseDocService } from './course_doc.service';
 import { CourseDocController } from './course_doc.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CourseDoc } from '../course_doc/entities/course_doc.entity'
-import {DocName} from '../doc_name/entities/topic.entity'
+import {DocName} from '../doc_name/entities/doc_name.entity'
 
 @Module({
   imports: [

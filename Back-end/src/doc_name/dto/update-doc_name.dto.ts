@@ -4,17 +4,13 @@ import { CreateDocNameDto } from './create-doc_name.dto';
 
 export class UpdateDocNameDto extends PartialType(CreateDocNameDto) {
     @IsNumber()
-    course_id: number;
+    topic_title: string;
 
-    @IsString()
-    @MaxLength(20)
-    topic?: string;
-
-    @IsString()
+    @IsNumber()
     @IsOptional()
-    @MaxLength(100)
-    subtopic?: string;
+    pa_topic_id?: number;
 
     @IsOptional()
-    file_path?: Express.Multer.File; 
+    @IsString()
+    file_path?: string; 
 }

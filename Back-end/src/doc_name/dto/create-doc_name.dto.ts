@@ -1,14 +1,14 @@
 import {IsString, MaxLength, IsOptional, IsNumber} from 'class-validator'
 
 export class CreateDocNameDto {
-    @IsNumber()
-    course_id: number;
+    @IsString()
+    topic_title: string;
 
     @IsNumber()
     @IsOptional()
-    @MaxLength(20)
     pa_topic_id?: number;
 
     @IsOptional()
-    file_path?: Express.Multer.File; 
+    @IsString()
+    file_path?: string; 
 }

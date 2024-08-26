@@ -1,64 +1,82 @@
-import { Injectable, NotFoundException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CourseDoc } from './entities/course_doc.entity';
+import { DocName } from '../doc_name/entities/doc_name.entity';
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';
 import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CourseDoc } from './entities/course_doc.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class CourseDocService {
-  private readonly logger = new Logger(CourseDocService.name);
-
   constructor(
     @InjectRepository(CourseDoc)
-    private courseDocRepository: Repository<CourseDoc>,
-  ){}
+    private readonly courseDocRepository: Repository<CourseDoc>,
+    @InjectRepository(DocName)
+    private readonly docNameRepository: Repository<DocName>,
+  ) {}
 
-  async createCourseDoc(createCourseDocDto: CreateCourseDocDto, file: Express.Multer.File): Promise<CourseDoc> {
-    try {
-        const courseDoc = this.courseDocRepository.create(createCourseDocDto);
-        if (file) {
-            courseDoc.file_path = `uploads/${file.filename}`;  // 파일 경로 저장 (실제 파일 업로드 로직 필요)
-        }
-        await this.courseDocRepository.save(courseDoc);
-        this.logger.log(`Course Document created: ${courseDoc.course_document_title}`);
-        return courseDoc;
-    } catch (error) {
-        this.logger.error(`Failed to create Course Document: ${error.message}`);
-        throw new InternalServerErrorException('Failed to create Course Document');
-    } 
+  async createfile(courseId: number, docNameId: number, createCourseDocDto: CreateCourseDocDto, file: Express.Multer.File): Promise<CourseDoc> {
+      const docName = await this.docNameRepository.findOne({
+      where: { topic_id: docNameId, course_id: courseId }
+    });
+
+    if (!docName) {
+      throw new NotFoundException(`DocName with id ${docNameId} not found for course ${courseId}`);
+    }
+
+    const courseDoc = this.courseDocRepository.create({...createCourseDocDto, docName: docName, file_path: file.path,});
+
+    return await this.courseDocRepository.save(courseDoc);
   }
 
-  async findAll(): Promise<CourseDoc[]> {
-    return this.courseDocRepository.find();
+  async createtext(courseId: number, docNameId: number, createCourseDocDto: CreateCourseDocDto): Promise<CourseDoc> {
+      const docName = await this.docNameRepository.findOne({ 
+        where: { topic_id: docNameId, course_id: courseId }
+    });
+
+    if (!docName) {
+      throw new NotFoundException(`DocName with id ${docNameId} not found for course ${courseId}`);
+    }
+
+    const courseDoc = this.courseDocRepository.create({ ...createCourseDocDto, docName: docName, file_path: null,});
+
+    return await this.courseDocRepository.save(courseDoc);
   }
 
-  async findOne(id: number): Promise<CourseDoc> {
-    const courseDoc = await this.courseDocRepository.findOne({ where: { course_document_id: id } });
+  async findAll(courseId: number, docNameId: number): Promise<CourseDoc[]> {
+    return await this.courseDocRepository.find({ 
+      where: { docName: { topic_id: docNameId, course_id: courseId } }, 
+      relations: ['docName'],
+    });
+  }
+
+  async findOne(courseId: number, docNameId: number, id: number): Promise<CourseDoc> {
+    const courseDoc = await this.courseDocRepository.findOne({
+      where: { course_document_id: id, docName: { topic_id: docNameId, course_id: courseId } },
+      relations: ['docName']
+    });
+
     if (!courseDoc) {
-      this.logger.warn(`Course document with ID ${id} not found`);
-      throw new NotFoundException(`Course document with ID ${id} not found`);
+      throw new NotFoundException(`Course Document with id ${id} not found`);
     }
+
     return courseDoc;
   }
 
-  async update(id: number, updateCourseDocDto: UpdateCourseDocDto, file: Express.Multer.File): Promise<CourseDoc> {
-    const courseDoc = await this.findOne(id);
+  async update( courseId: number, docNameId: number, id: number, updateCourseDocDto: UpdateCourseDocDto, file?: Express.Multer.File): Promise<CourseDoc> {
+    const courseDoc = await this.findOne(courseId, docNameId, id);
+
     Object.assign(courseDoc, updateCourseDocDto);
+
     if (file) {
-        courseDoc.file_path = `uploads/${file.filename}`;  // 새 파일 경로 업데이트 (실제 파일 업로드 로직 필요)
+      courseDoc.file_path = file.path;
     }
-    await this.courseDocRepository.save(courseDoc);
-    this.logger.log(`Course Document updated: ${courseDoc.course_document_title}`);
-    return courseDoc;
+
+    return await this.courseDocRepository.save(courseDoc);
   }
 
-  async remove(id: number): Promise<void> {
-    const result = await this.courseDocRepository.delete(id);
-    if (result.affected === 0) {
-      this.logger.warn(`Attempt to delete non-existent course document with ID ${id}`);
-      throw new NotFoundException(`Course document with ID ${id} not found for deletion`);
-    }
-    this.logger.log(`Course Document with ID ${id} deleted`);
+  async remove(courseId: number, docNameId: number, id: number): Promise<void> {
+    const courseDoc = await this.findOne(courseId, docNameId, id);
+    await this.courseDocRepository.remove(courseDoc);
   }
 }
