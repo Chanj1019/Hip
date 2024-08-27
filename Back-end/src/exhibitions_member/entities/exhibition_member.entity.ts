@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn,JoinColumn } from 'typeorm';
 import { Exhibition } from 'src/exhibitions/exhibition.entity';
 
 @Entity()
@@ -18,6 +18,7 @@ export class ExhibitionMember {
     @Column()
     file_path: string;
 
-    @ManyToOne(() => Exhibition, exhibition => exhibition.exhibitionMembers) // Exhibition과의 관계 설정
+    @ManyToOne(() => Exhibition, exhibition => exhibition.exhibitionMembers, { onDelete: 'CASCADE' }) // Exhibition과의 관계 설정
+    @JoinColumn({ name: 'exhibition_id', referencedColumnName: 'exhibition_id'})
     exhibition: Exhibition; // 전시 정보
 }

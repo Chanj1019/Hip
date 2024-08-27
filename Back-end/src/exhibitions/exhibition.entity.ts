@@ -1,4 +1,4 @@
-import { Entity, Column,ManyToOne,OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column,ManyToOne,OneToMany, PrimaryGeneratedColumn ,} from 'typeorm';
 
 import { ExhibitionDoc } from 'src/exhibitions_doc/entities/exhibition_doc.entity';
 import { ExhibitionMember } from 'src/exhibitions_member/entities/exhibition_member.entity';
@@ -20,11 +20,11 @@ export class Exhibition {
     @Column({ type: 'timestamp' }) // timestamp 타입으로 설정
     exhibition_date: Date; // 날짜와 시간을 함께 저장
 
-    @OneToMany(() => ExhibitionDoc, doc => doc.exhibition) // ExhibitionsDoc과의 관계 설정
-    exhibitionDocs: ExhibitionDoc[]; // 전시 문서 목록
+    @OneToMany(() => ExhibitionDoc, doc => doc.exhibition, { cascade: true }) 
+    exhibitionDocs: ExhibitionDoc[];
 
-    @OneToMany(() => ExhibitionMember, member => member.exhibition) // ExhibitionsMember와의 관계 설정
-    exhibitionMembers: ExhibitionMember[]; // 전시 참가자 목록
+    @OneToMany(() => ExhibitionMember, member => member.exhibition, { cascade: true })
+    exhibitionMembers: ExhibitionMember[];
 
     
    
