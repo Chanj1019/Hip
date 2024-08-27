@@ -15,45 +15,53 @@ export class CourseDocService {
     private readonly docNameRepository: Repository<DocName>,
   ) {}
 
-  async createfile(courseId: number, docNameId: number, createCourseDocDto: CreateCourseDocDto, file: Express.Multer.File): Promise<CourseDoc> {
-      const docName = await this.docNameRepository.findOne({
-      where: { topic_id: docNameId, course_id: courseId }
+  private async findDocName(courseTitle: string, docNameTitle: string): Promise<DocName> {
+    const docName = await this.docNameRepository.findOne({
+      where: { topic_title: docNameTitle, course_title: courseTitle },
     });
 
     if (!docName) {
-      throw new NotFoundException(`DocName with id ${docNameId} not found for course ${courseId}`);
+      throw new NotFoundException(`DocName with id ${docNameTitle} not found for course ${courseTitle}`);
     }
 
-    const courseDoc = this.courseDocRepository.create({...createCourseDocDto, docName: docName, file_path: file.path,});
+    return docName;
+  }
+
+  private async createCourseDoc(
+    createCourseDocDto: CreateCourseDocDto, 
+    docName: DocName, 
+    filePath: string | null
+  ): Promise<CourseDoc> {
+    const courseDoc = this.courseDocRepository.create({ 
+      ...createCourseDocDto, 
+      docName, 
+      file_path: filePath 
+    });
 
     return await this.courseDocRepository.save(courseDoc);
   }
 
-  async createtext(courseId: number, docNameId: number, createCourseDocDto: CreateCourseDocDto): Promise<CourseDoc> {
-      const docName = await this.docNameRepository.findOne({ 
-        where: { topic_id: docNameId, course_id: courseId }
-    });
-
-    if (!docName) {
-      throw new NotFoundException(`DocName with id ${docNameId} not found for course ${courseId}`);
-    }
-
-    const courseDoc = this.courseDocRepository.create({ ...createCourseDocDto, docName: docName, file_path: null,});
-
-    return await this.courseDocRepository.save(courseDoc);
+  async createfile(courseTitle: string, docNameTitle: string, createCourseDocDto: CreateCourseDocDto, file: Express.Multer.File): Promise<CourseDoc> {
+    const docName = await this.findDocName(courseTitle, docNameTitle);
+    return await this.createCourseDoc(createCourseDocDto, docName, file.path);
   }
 
-  async findAll(courseId: number, docNameId: number): Promise<CourseDoc[]> {
+  async createtext(courseTitle: string, docNameTitle: string, createCourseDocDto: CreateCourseDocDto): Promise<CourseDoc> {
+    const docName = await this.findDocName(courseTitle, docNameTitle);
+    return await this.createCourseDoc(createCourseDocDto, docName, null);
+  }
+
+  async findAll(courseTitle: string, docNameTitle: string): Promise<CourseDoc[]> {
     return await this.courseDocRepository.find({ 
-      where: { docName: { topic_id: docNameId, course_id: courseId } }, 
+      where: { docName: { topic_title: docNameTitle, course_title: courseTitle } }, 
       relations: ['docName'],
     });
   }
 
-  async findOne(courseId: number, docNameId: number, id: number): Promise<CourseDoc> {
+  async findOne(courseTitle: string, docNameTitle: string, id: number): Promise<CourseDoc> {
     const courseDoc = await this.courseDocRepository.findOne({
-      where: { course_document_id: id, docName: { topic_id: docNameId, course_id: courseId } },
-      relations: ['docName']
+      where: { course_document_id: id, docName: { topic_title: docNameTitle, course_title: courseTitle } },
+      relations: ['docName'],
     });
 
     if (!courseDoc) {
@@ -63,8 +71,8 @@ export class CourseDocService {
     return courseDoc;
   }
 
-  async update( courseId: number, docNameId: number, id: number, updateCourseDocDto: UpdateCourseDocDto, file?: Express.Multer.File): Promise<CourseDoc> {
-    const courseDoc = await this.findOne(courseId, docNameId, id);
+  async update(courseTitle: string, docNameTitle: string, id: number, updateCourseDocDto: UpdateCourseDocDto, file?: Express.Multer.File): Promise<CourseDoc> {
+    const courseDoc = await this.findOne(courseTitle, docNameTitle, id);
 
     Object.assign(courseDoc, updateCourseDocDto);
 
@@ -75,8 +83,8 @@ export class CourseDocService {
     return await this.courseDocRepository.save(courseDoc);
   }
 
-  async remove(courseId: number, docNameId: number, id: number): Promise<void> {
-    const courseDoc = await this.findOne(courseId, docNameId, id);
+  async remove(courseTitle: string, docNameTitle: string, id: number): Promise<void> {
+    const courseDoc = await this.findOne(courseTitle, docNameTitle, id);
     await this.courseDocRepository.remove(courseDoc);
   }
 }

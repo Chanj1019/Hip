@@ -9,10 +9,10 @@ export class DocNameController {
 
     @Post()
     async create(
-        @Param('courseId') courseId: number,
+        @Param('courseTitle') courseTitle: string,
         @Body() createDocNameDto: CreateDocNameDto
     ) {
-        const data = await this.docNameService.create(courseId, createDocNameDto);
+        const data = await this.docNameService.create(courseTitle, createDocNameDto);
         return {
             message: "doc_name 생성에 성공하셨습니다",
             data: data
@@ -21,9 +21,9 @@ export class DocNameController {
 
     @Get()
     async findAll(
-      @Param('courseId') courseId: number
+      @Param('courseTitle') courseTitle: string
     ) {
-        const data = await this.docNameService.findAll(courseId);
+        const data = await this.docNameService.findAll(courseTitle);
         return {
             message: "특정 강의의 doc_name 조회에 성공하셨습니다",
             data: data
@@ -32,11 +32,11 @@ export class DocNameController {
 
     @Patch(':id')
     async update(
-        @Param('courseId') courseId: number,
+        @Param('courseTitle') courseTitle: string,
         @Param('id') id: number,
         @Body() updateDocNameDto: UpdateDocNameDto
     ) {
-        const data = await this.docNameService.update(courseId, id, updateDocNameDto);
+        const data = await this.docNameService.update(courseTitle, id, updateDocNameDto);
         return {
             message: "doc_name 수정에 성공하셨습니다",
             data: data
