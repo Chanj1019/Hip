@@ -15,6 +15,9 @@ export class ExhibitionMember {
     @Column()
     generation: string;
 
+    @Column()
+    file_path: string;
+
     @ManyToOne(() => Exhibition, exhibition => exhibition.exhibitionMembers) // Exhibition과의 관계 설정
     exhibition: Exhibition; // 전시 정보
 }
