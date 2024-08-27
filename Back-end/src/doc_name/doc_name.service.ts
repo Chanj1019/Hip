@@ -25,7 +25,7 @@ export class DocNameService {
     async update(courseId: number, id: number, updateDocNameDto: UpdateDocNameDto): Promise<DocName> {
       await this.docNameRepository.update({ topic_id: id, course_id: courseId }, updateDocNameDto);
       return this.findOne(id);
-    }
+  }
 
     async remove(id: number): Promise<void> {
       const docName = await this.findOne(id);

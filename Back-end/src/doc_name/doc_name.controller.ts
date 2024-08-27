@@ -3,7 +3,7 @@ import { DocNameService } from './doc_name.service';
 import { CreateDocNameDto } from './dto/create-doc_name.dto'; // CreateDocNameDto 임포트
 import { UpdateDocNameDto } from './dto/update-doc_name.dto'; // UpdateDocNameDto 임포트
 
-@Controller('courses/:courseId/doc-names')
+@Controller('courses/:courseTitle/doc-names')
 export class DocNameController {
     constructor(private readonly docNameService: DocNameService) {}
 

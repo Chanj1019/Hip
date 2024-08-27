@@ -3,7 +3,7 @@ import {IsString, MaxLength, IsOptional, IsNumber} from 'class-validator'
 import { CreateDocNameDto } from './create-doc_name.dto';
 
 export class UpdateDocNameDto extends PartialType(CreateDocNameDto) {
-    @IsNumber()
+    @IsString()
     topic_title: string;
 
     @IsNumber()
