@@ -49,7 +49,7 @@ export class ExhibitionsDocService {
 
     try {
         const command = new PutObjectCommand({
-            Bucket: 'my-app-files-test',
+            Bucket: process.env.S3_BUCKET_NAME,
             Key: `exhibitions/${uniqueFileName}`,
             Body: file.buffer,
             ContentType: file.mimetype,
