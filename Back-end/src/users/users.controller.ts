@@ -66,8 +66,8 @@ export class UsersController {
     }
 
     @Delete(':userid')
-    async remove(@Param('userid') userId: number): Promise<{ message: string }> {
-        await this.usersService.remove(userId);
+    async remove(@Param('userid') id: number): Promise<{ message: string }> {
+        await this.usersService.remove(id);
         return { message: '사용자가 삭제되었습니다.' };
     }
 
