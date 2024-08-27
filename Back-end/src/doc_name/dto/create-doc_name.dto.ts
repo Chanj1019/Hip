@@ -6,7 +6,7 @@ export class CreateDocNameDto {
 
     @IsNumber()
     @IsOptional()
-    pa_topic_title?: string;
+    pa_topic_title?: string | null;
 
     @IsOptional()
     @IsString()
