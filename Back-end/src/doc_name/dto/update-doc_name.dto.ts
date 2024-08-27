@@ -8,7 +8,7 @@ export class UpdateDocNameDto extends PartialType(CreateDocNameDto) {
 
     @IsNumber()
     @IsOptional()
-    pa_topic_id?: number;
+    pa_topic_title?: string;
 
     @IsOptional()
     @IsString()

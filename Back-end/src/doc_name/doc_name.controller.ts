@@ -3,7 +3,7 @@ import { DocNameService } from './doc_name.service';
 import { CreateDocNameDto } from './dto/create-doc_name.dto'; // CreateDocNameDto 임포트
 import { UpdateDocNameDto } from './dto/update-doc_name.dto'; // UpdateDocNameDto 임포트
 
-@Controller('courses/:courseTitle/doc-names')
+@Controller('courses/:courseTitle/docNames')
 export class DocNameController {
     constructor(private readonly docNameService: DocNameService) {}
 
@@ -25,7 +25,7 @@ export class DocNameController {
     ) {
         const data = await this.docNameService.findAll(courseTitle);
         return {
-            message: "특정 강의의 doc_name 조회에 성공하셨습니다",
+            message: "전체 강의의 doc_name 조회에 성공하셨습니다",
             data: data
         };
     }

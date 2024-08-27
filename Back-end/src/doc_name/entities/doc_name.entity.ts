@@ -11,7 +11,7 @@ export class DocName {
     course_title: string;
 
     @Column({ nullable: true })
-    pa_topic_id: number; // 부모 주제 ID, 소주제일 경우에만 값을 가짐.
+    pa_topic_title: string; // 부모 주제 ID, 소주제일 경우에만 값을 가짐.
 
     @Column()
     topic_title: string;
