@@ -98,6 +98,7 @@ export class ExhibitionsMemberService {
         return await this.exhibitionMemberRepository.find({ relations: ['exhibition'] });
     }
 
+    
     async findOne(id: number): Promise<ExhibitionMember> {
         const member = await this.exhibitionMemberRepository.findOne({
             where: { exhibition_member_id: id },
