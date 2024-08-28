@@ -13,33 +13,47 @@ export class DocNameService {
         private docNameRepository: Repository<DocName>,
     ) {}
 
-    async create(courseTitle: string, createDocNameDto: CreateDocNameDto): Promise<DocName> {
-        const docName = this.docNameRepository.create({ course_title: courseTitle, ...createDocNameDto });
+    async create(topicTitle: string, createDocNameDto: CreateDocNameDto): Promise<DocName> {
+        const docName = this.docNameRepository.create({ topic_title: topicTitle, ...createDocNameDto });
         return await this.docNameRepository.save(docName);
     }
 
-    async findAll(courseTitle: string): Promise<DocName[]> {
-        return await this.docNameRepository.find({ where: { course_title: courseTitle }, relations: ['courseDoc'] });
+    async findAll(topicTitle: string): Promise<DocName[]> {
+        return await this.docNameRepository.find({ where: { topic_title: topicTitle }, relations: ['courseDoc'] });
     }
 
-    async update(courseTitle: string, id: number, updateDocNameDto: UpdateDocNameDto): Promise<DocName> {
-      await this.docNameRepository.update({ topic_id: id, course_title: courseTitle }, updateDocNameDto);
-      return this.findOne(id);
-  }
+    async update(topicTitle: string, id: number, updateDocNameDto: UpdateDocNameDto): Promise<DocName> {
+      await this.docNameRepository.update({ topic_id: id, topic_title: topicTitle }, updateDocNameDto);
+      return this.findOne(topicTitle);
+    }
 
-    async remove(id: number): Promise<void> {
-      const docName = await this.findOne(id);
+    async remove(topicTitle: string): Promise<void> {
+      const docName = await this.findOne(topicTitle);
       await this.docNameRepository.remove(docName);
     }
 
-    private async findOne(id: number): Promise<DocName> {
+    async findOne(topicTitle: string): Promise<DocName> {
       const docName = await this.docNameRepository.findOne({ 
-        where: { topic_id: id },
-        relations: ['courseDoc']
-       });
+          where: { topic_title: topicTitle },
+          relations: ['courseDoc']
+      });
       if (!docName) {
-          throw new NotFoundException(`DocName with id ${id} not found`);
+          throw new NotFoundException(`DocName with title ${topicTitle} not found`);
       }
       return docName;
-  }
+    }
+    
+    // async getOne(topicTitle: string): Promise<DocName> {
+    //   const docName = await this.docNameRepository.findOne({
+    //       where: { topic_title: topicTitle },
+    //       relations: ['courseDoc']
+    //   });
+      
+    //   if (!docName) {
+    //       throw new NotFoundException(`DocName not found for course title: ${topicTitle}`);
+    //   }
+      
+    //   return docName; // docName을 반환
+    // }
+  
 }

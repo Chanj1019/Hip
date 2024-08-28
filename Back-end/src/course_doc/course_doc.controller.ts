@@ -4,7 +4,7 @@ import { CourseDocService } from './course_doc.service';
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';
 import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
 
-@Controller('courses/:courseTitle/doc-names/:docNameTitle/course-docs')
+@Controller('courses/:courseTitle/docNames/:docNameTitle/courseDocs')
 export class CourseDocController {
   constructor(private readonly courseDocService: CourseDocService) {}
 

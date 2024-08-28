@@ -4,9 +4,9 @@ export class CreateDocNameDto {
     @IsString()
     topic_title: string;
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
-    pa_topic_title?: string | null;
+    pa_topic_title?: string
 
     @IsOptional()
     @IsString()
