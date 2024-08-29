@@ -8,30 +8,17 @@ import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
 export class CourseDocController {
   constructor(private readonly courseDocService: CourseDocService) {}
 
-  @Post('file')
+  @Post('register')
   @UseInterceptors(FileInterceptor('file'))
-  async createfile(
+  async create(
     @Param('courseTitle') courseTitle: string,
     @Param('docNameTitle') docNameTitle: string,
     @Body() createCourseDocDto: CreateCourseDocDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    const data = await this.courseDocService.createfile(courseTitle, docNameTitle, createCourseDocDto, file);
+    const data = await this.courseDocService.create(courseTitle, docNameTitle, createCourseDocDto, file);
     return {
-      message: "Course Document가 성공적으로 생성되었습니다.",
-      data: data,
-    };
-  }
-
-  @Post('text')
-  async createtext(
-    @Param('courseTitle') courseTitle: string,
-    @Param('docNameTitle') docNameTitle: string,
-    @Body() createCourseDocDto: CreateCourseDocDto
-  ) {
-    const data = await this.courseDocService.createtext(courseTitle, docNameTitle, createCourseDocDto);
-    return {
-      message: "Course Document가 성공적으로 생성되었습니다.",
+      message: "File을 성공적으로 업로드 하셨습니다.",
       data: data,
     };
   }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CourseDoc } from './entities/course_doc.entity';
@@ -41,14 +41,14 @@ export class CourseDocService {
     return await this.courseDocRepository.save(courseDoc);
   }
 
-  async createfile(courseTitle: string, docNameTitle: string, createCourseDocDto: CreateCourseDocDto, file: Express.Multer.File): Promise<CourseDoc> {
-    const docName = await this.findDocName(courseTitle, docNameTitle);
-    return await this.createCourseDoc(createCourseDocDto, docName, file.path);
-  }
+  async create(courseTitle: string, docNameTitle: string, createCourseDocDto: CreateCourseDocDto, file: Express.Multer.File): Promise<CourseDoc> {
+    if (!file) {
+      throw new BadRequestException('파일이 업로드되지 않았습니다.');
+    }
 
-  async createtext(courseTitle: string, docNameTitle: string, createCourseDocDto: CreateCourseDocDto): Promise<CourseDoc> {
     const docName = await this.findDocName(courseTitle, docNameTitle);
-    return await this.createCourseDoc(createCourseDocDto, docName, null);
+    
+    return await this.createCourseDoc(createCourseDocDto, docName, file.path);
   }
 
   async findAll(courseTitle: string, docNameTitle: string): Promise<CourseDoc[]> {
