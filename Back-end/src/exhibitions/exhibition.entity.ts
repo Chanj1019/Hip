@@ -1,5 +1,5 @@
-import { Entity, Column,ManyToOne,OneToMany, PrimaryGeneratedColumn ,} from 'typeorm';
-
+import { Entity, Column,ManyToOne,OneToMany, PrimaryGeneratedColumn ,JoinColumn} from 'typeorm';
+import { User } from 'src/users/user.entity';
 import { ExhibitionDoc } from 'src/exhibitions_doc/entities/exhibition_doc.entity';
 import { ExhibitionMember } from 'src/exhibitions_member/entities/exhibition_member.entity';
 
@@ -11,7 +11,7 @@ export class Exhibition {
     @Column()
     generation: string;
 
-    @Column()
+    @Column({ unique: true })
     exhibition_title: string;
 
     @Column()
@@ -26,6 +26,9 @@ export class Exhibition {
     @OneToMany(() => ExhibitionMember, member => member.exhibition, { cascade: true })
     exhibitionMembers: ExhibitionMember[];
 
-    
-   
+    @ManyToOne(() => User, user => user.exhibition, {
+        onDelete: 'CASCADE', // 사용자가 삭제될 때 전시도 삭제
+    })
+    @JoinColumn({ name: 'user_id' }) // 외래 키 설정
+    user: User; // 사용자 정보
 }

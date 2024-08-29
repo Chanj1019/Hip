@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn ,OneToMany} from 'typeorm';
 import { Role } from '../enums/role.enum';
-
+import { Exhibition } from 'src/exhibitions/exhibition.entity';
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -30,5 +30,6 @@ export class User {
     })
     user_role: Role; // Role 타입으로 변경
 
-  
+    @OneToMany(() => Exhibition, exhibition => exhibition.user,{cascade:true})
+    exhibition: Exhibition[];
 }
