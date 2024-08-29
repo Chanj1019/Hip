@@ -9,10 +9,11 @@ export class DocNameController {
 
     @Post()
     async create(
+        @Param('courseTitle') courseTitle: string,
         @Param('topicTitle') topicTitle: string,
         @Body() createDocNameDto: CreateDocNameDto
     ) {
-        const data = await this.docNameService.create(topicTitle, createDocNameDto);
+        const data = await this.docNameService.create(courseTitle, topicTitle, createDocNameDto);
         return {
             message: "doc_name 생성에 성공하셨습니다",
             data: data

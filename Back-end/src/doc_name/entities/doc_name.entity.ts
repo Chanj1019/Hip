@@ -7,11 +7,12 @@ export class DocName {
     @PrimaryGeneratedColumn()
     topic_id: number;
 
-    @Column()
+    @Column({ nullable: true })
     course_title: string;
 
+    // 부모 주제 ID, 소주제일 경우에만 값을 가지는 필드
     @Column({ nullable: true })
-    pa_topic_title: string; // 부모 주제 ID, 소주제일 경우에만 값을 가짐.
+    pa_topic_title: string;
 
     @Column()
     topic_title: string;

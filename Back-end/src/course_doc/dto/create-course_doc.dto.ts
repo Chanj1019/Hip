@@ -1,8 +1,5 @@
 import {IsString, IsNotEmpty, MaxLength, IsOptional, IsDate} from 'class-validator'
 export class CreateCourseDocDto {
-    @IsString()
-    @IsNotEmpty()
-    course_document_title: string;
 
     @IsDate()
     @IsOptional()

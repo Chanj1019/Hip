@@ -13,10 +13,15 @@ export class DocNameService {
         private docNameRepository: Repository<DocName>,
     ) {}
 
-    async create(topicTitle: string, createDocNameDto: CreateDocNameDto): Promise<DocName> {
-        const docName = this.docNameRepository.create({ topic_title: topicTitle, ...createDocNameDto });
-        return await this.docNameRepository.save(docName);
-    }
+    async create(courseTitle: string, topicTitle: string, createDocNameDto: CreateDocNameDto): Promise<DocName> {
+      const docName = this.docNameRepository.create({ 
+          course_title: courseTitle, 
+          topic_title: topicTitle, 
+          ...createDocNameDto 
+      });
+      return await this.docNameRepository.save(docName);
+  }
+  
 
     async findAll(topicTitle: string): Promise<DocName[]> {
         return await this.docNameRepository.find({ where: { topic_title: topicTitle }, relations: ['courseDoc'] });
