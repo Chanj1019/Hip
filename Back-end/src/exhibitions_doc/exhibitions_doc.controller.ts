@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Body, Param ,HttpCode,HttpStatus} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param ,HttpCode, Res,HttpStatus} from '@nestjs/common';
 import { ExhibitionsDocService } from './exhibitions_doc.service';
 import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
 import { ExhibitionDoc } from './entities/exhibition_doc.entity';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 @Controller('exhibition-docs')
 export class ExhibitionsDocController {
   constructor(private readonly exhibitionDocsService: ExhibitionsDocService) {}
@@ -35,10 +36,11 @@ export class ExhibitionsDocController {
     @Body() updateExhibitionsDocDto: UpdateExhibitionsDocDto,
   ): Promise<ExhibitionDoc> {
     return await this.exhibitionDocsService.update(id, updateExhibitionsDocDto);
-  }
-
+  } 
+  
   @Delete(':id')
-  async remove(@Param('id') id: number): Promise<void> {
-    return await this.exhibitionDocsService.remove(id);
+  async remove(@Param('id') id: number, @Res() res: Response): Promise<Response> {
+      const message = await this.exhibitionDocsService.remove(id);
+      return res.status(200).json({ message });
   }
 }
