@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum, IsInt, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsInt } from 'class-validator';
 export enum Status {
     IN_PROGRESS = 'in_progress',
     COMPLETED = 'completed'

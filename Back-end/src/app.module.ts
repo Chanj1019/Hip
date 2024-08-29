@@ -26,6 +26,7 @@ import { ExhibitionModule } from './exhibitions/exhibitions.module';
 import { Exhibition } from './exhibitions/exhibition.entity';
 import { ProjectsModule } from './projects/projects.module';
 import { Project } from './projects/entities/project.entity';
+import { ProjectDocModule } from './project_doc/project_doc.module';
 
 @Module({
     imports: [
@@ -43,7 +44,7 @@ import { Project } from './projects/entities/project.entity';
             }),
         }),
         UsersModule,       
-        ExhibitionModule, ProjectsModule,
+        ExhibitionModule, ProjectsModule, ProjectDocModule,
     ],
 })
 export class AppModule {}

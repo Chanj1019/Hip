@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinColumn, JoinTable } from 'typeorm';
 import { User } from '../../users/user.entity';
+import { Project_doc } from 'src/project_doc/entities/project_doc.entity';
 
 @Entity()
 export class Project {
@@ -19,7 +20,12 @@ export class Project {
     })
     status: 'in_progress' | 'completed';
 
+    //user-project
     @ManyToMany(() => User, (user) => user.projects)
     users: User[];
 
+    //project-project_doc
+    @OneToMany(() => Project_doc, (project_doc) => project_doc.project)
+    @JoinTable()
+    project_docs: Project_doc[];
 }
