@@ -1,4 +1,4 @@
-import { Injectable,ConflictException } from '@nestjs/common';
+import { Injectable,ConflictException,BadRequestException,NotFoundException } from '@nestjs/common';
 import { Exhibition } from './exhibition.entity';
 import {HttpException, HttpStatus } from '@nestjs/common'; // HttpException 추가
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,10 +34,21 @@ export class ExhibitionService {
         }
     
         async findOne(exhibitionTitle: string): Promise<Exhibition> {
-            return await this.exhibitionsRepository.findOneBy({ exhibition_title: exhibitionTitle });
-            
+            if (!exhibitionTitle) {
+                throw new BadRequestException('Exhibition title must be provided');
+            }
+        
+            const exhibition = await this.exhibitionsRepository.findOne({
+                where: { exhibition_title: exhibitionTitle },
+                relations: ['exhibitionDocs', 'exhibitionMembers'],
+            });
+        
+            if (!exhibition) {
+                throw new NotFoundException('Exhibition not found');
+            }
+        
+            return exhibition;
         }
-    
 
         //내용이나 제목 , 내용+ 제목 으로 키워드 조회
         async searchExhibitions(keyword: string, searchIn: 'title' | 'description' | 'both'): Promise<Exhibition[]> {
