@@ -35,18 +35,19 @@ export class CourseDocController {
     };
   }
 
-  @Get(':id')
-  async findOne(
-    @Param('courseTitle') courseTitle: string,
-    @Param('docNameTitle') docNameTitle: string,
-    @Param('id') id: number
-  ) {
-    const data = await this.courseDocService.findOne(courseTitle, docNameTitle, id);
-    return {
-      message: "Course Document 조회에 성공하셨습니다.",
-      data: data,
-    };
-  }
+  // 특정 강의 자료 조회
+  // @Get(':id')
+  // async findOne(
+  //   @Param('courseTitle') courseTitle: string,
+  //   @Param('docNameTitle') docNameTitle: string,
+  //   @Param('id') id: number
+  // ) {
+  //   const data = await this.courseDocService.findOne(courseTitle, docNameTitle, id);
+  //   return {
+  //     message: "Course Document 조회에 성공하셨습니다.",
+  //     data: data,
+  //   };
+  // }
 
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
