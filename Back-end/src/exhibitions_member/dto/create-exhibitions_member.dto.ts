@@ -1,7 +1,7 @@
 import { IsInt, IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class CreateExhibitionsMemberDto {
-    @IsInt()
+    @IsNotEmpty()
     exhibitions_id: number; // 외래 키
 
     @IsString()
