@@ -6,7 +6,7 @@ import { Course } from './entities/course.entity';
 export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
-    @Post()
+    @Post('register')
     async create(
       @Body() createCourseDto: any
     ) {

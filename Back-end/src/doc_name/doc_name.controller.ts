@@ -7,7 +7,7 @@ import { UpdateDocNameDto } from './dto/update-doc_name.dto'; // UpdateDocNameDt
 export class DocNameController {
     constructor(private readonly docNameService: DocNameService) {}
 
-    @Post()
+    @Post('register')
     async create(
         @Param('courseTitle') courseTitle: string,
         @Param('topicTitle') topicTitle: string,
