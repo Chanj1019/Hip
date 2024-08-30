@@ -12,4 +12,8 @@ export class UpdateExhibitionDto {
     @IsOptional()
     @IsString()
     description?: string;
+
+    @IsOptional()
+    @IsString()
+    team_name?: string;
 }

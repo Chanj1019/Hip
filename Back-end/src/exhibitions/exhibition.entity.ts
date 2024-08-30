@@ -20,6 +20,13 @@ export class Exhibition {
     @Column({ type: 'timestamp' }) // timestamp 타입으로 설정
     exhibition_date: Date; // 날짜와 시간을 함께 저장
 
+    
+    @Column()
+    file_path: string; // 파일 경로
+    
+    @Column()
+    team_name: string; // 파일 경로
+
     @OneToMany(() => ExhibitionDoc, doc => doc.exhibition, { cascade: true }) 
     exhibitionDocs: ExhibitionDoc[];
 
