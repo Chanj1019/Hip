@@ -7,28 +7,28 @@ import { UpdateExhibitionIntroDto } from './dto/update-exhibition_intro.dto';
 export class ExhibitionIntroController {
   constructor(private readonly exhibitionIntroService: ExhibitionIntroService) {}
 
-  @Post()
-  create(@Body() createExhibitionIntroDto: CreateExhibitionIntroDto) {
-    return this.exhibitionIntroService.create(createExhibitionIntroDto);
+  @Post('register')
+  async create(@Body() createExhibitionIntroDto: CreateExhibitionIntroDto) {
+    return await this.exhibitionIntroService.create(createExhibitionIntroDto);
   }
 
   @Get()
-  findAll() {
-    return this.exhibitionIntroService.findAll();
+  async findAll() {
+    return await this.exhibitionIntroService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.exhibitionIntroService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.exhibitionIntroService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExhibitionIntroDto: UpdateExhibitionIntroDto) {
-    return this.exhibitionIntroService.update(+id, updateExhibitionIntroDto);
+  async update(@Param('id') id: string, @Body() updateExhibitionIntroDto: UpdateExhibitionIntroDto) {
+    return await this.exhibitionIntroService.update(+id, updateExhibitionIntroDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.exhibitionIntroService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.exhibitionIntroService.remove(+id);
   }
 }
