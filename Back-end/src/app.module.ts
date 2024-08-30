@@ -28,6 +28,8 @@ import { ExhibitionDoc } from './exhibitions_doc/entities/exhibition_doc.entity'
 import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
 import { ExhibitionMember } from './exhibitions_member/entities/exhibition_member.entity';
 import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
+import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
+import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
 
 @Module({
     imports: [
@@ -45,7 +47,8 @@ import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member
             }),
         }),
         UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule,
-        ExhibitionModule, 
+        ExhibitionModule,
+        ExhibitionIntroModule, 
     ],
 })
 export class AppModule {}
