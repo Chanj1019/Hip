@@ -1,34 +1,79 @@
-import { Injectable,ConflictException,BadRequestException,NotFoundException } from '@nestjs/common';
+import { Injectable,ConflictException,BadRequestException,NotFoundException,InternalServerErrorException} from '@nestjs/common';
 import { Exhibition } from './exhibition.entity';
 import {HttpException, HttpStatus } from '@nestjs/common'; // HttpException 추가
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository,Not } from 'typeorm';
 import { CreateExhibitionDto } from './dto/create-exhibition.dto';
 import { UpdateExhibitionDto } from './dto/update-exhibition.dto';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { v4 as uuidv4 } from 'uuid';
+import * as dotenv from 'dotenv';
+
+dotenv.config(); // .env 파일 로드
 @Injectable()
 export class ExhibitionService {
-    
+        private s3: S3Client;
         constructor(
             @InjectRepository(Exhibition)
             private exhibitionsRepository: Repository<Exhibition>
-        ) {}
+        ) { 
+            // .env 파일에서 AWS 자격 증명 및 리전 가져오기
+             const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+             const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+             const AWS_REGION = process.env.AWS_REGION;
+             const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
+         
+             if (!S3_BUCKET_NAME) {
+                 throw new InternalServerErrorException('S3 버킷 이름이 설정되지 않았습니다.');
+             }
+         
+             // S3 클라이언트 초기화
+             this.s3 = new S3Client({
+                 region: AWS_REGION,
+                 credentials: {
+                     accessKeyId: AWS_ACCESS_KEY_ID,
+                     secretAccessKey: AWS_SECRET_ACCESS_KEY,
+                 },
+             });
+           }
 
-        async create(createExhibitionDto: CreateExhibitionDto): Promise<Exhibition> {
-
+        async create(createExhibitionDto: CreateExhibitionDto, file: Express.Multer.File): Promise<Exhibition> {
             const existingExhibition = await this.exhibitionsRepository.findOne({
                 where: { exhibition_title: createExhibitionDto.exhibition_title },
             });
-    
+
             if (existingExhibition) {
                 throw new ConflictException('이미 존재하는 전시회 제목입니다.');
             }
+
+            // 파일이 제공되었는지 확인
+            let filePath = null;
+            if (file) {
+                const uniqueFileName = `${uuidv4()}_${file.originalname}`;
+                try {
+                    const command = new PutObjectCommand({
+                        Bucket:process.env.S3_BUCKET_NAME,
+                        Key: `exhibitions/${uniqueFileName}`,
+                        Body: file.buffer,
+                        ContentType: file.mimetype,
+                    });
+                    await this.s3.send(command);
+                    filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/${uniqueFileName}`;
+                } catch (error) {
+                    console.error('파일 업로드 오류:', error);
+                    throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
+                }
+            }
+
+            // 전시회 객체 생성
             const exhibition = this.exhibitionsRepository.create({
                 ...createExhibitionDto,
                 exhibition_date: new Date(), // 현재 날짜를 자동으로 설정
+                file_path: filePath, // 파일 경로 저장
             });
+
             return await this.exhibitionsRepository.save(exhibition);
         }
-
         async findAll(): Promise<Exhibition[]> {
             return await this.exhibitionsRepository.find();
         }
@@ -93,17 +138,16 @@ export class ExhibitionService {
             });
         }
 
-        // 특정 시간의 전시 수 집계
-        // async countExhibitionsByexhibition_date(exhibition_date: Date): Promise<number> {
-        //     return this.exhibitionsRepository.count({
-        //     where: {
-        //         exhibition_date:exhibition_date, // 'exhibition_date' 필드가 존재해야 합니다.
-        //     },
-        //     });
-        // }
         async remove(exhibitionTitle: string): Promise<void> {
-            await this.exhibitionsRepository.delete(exhibitionTitle);
+            const result = await this.exhibitionsRepository.delete({
+                exhibition_title: exhibitionTitle,
+            });
+        
+            if (result.affected === 0) {
+                throw new NotFoundException(`Exhibition with title "${exhibitionTitle}" not found`);
+            }
         }
+        
         
         async updateExhibition(
             exhibitionTitle: string, // 전시 제목

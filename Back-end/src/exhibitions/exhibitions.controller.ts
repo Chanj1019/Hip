@@ -4,17 +4,22 @@ import { CreateExhibitionDto } from './dto/create-exhibition.dto';
 import { Exhibition } from './exhibition.entity';
 import { Get, Post, Body, Query, Param, Delete,Patch, HttpException, HttpStatus } from '@nestjs/common';
 import { UpdateExhibitionDto } from './dto/update-exhibition.dto';
+import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('exhibitions')
 export class ExhibitionController {
     constructor(private readonly exhibitionService: ExhibitionService) {}
 
     @Post('register')
-    async create(@Body() createExhibitionDto: CreateExhibitionDto): Promise<{ message: string; exhibition: Exhibition }> {
-        const exhibition = await this.exhibitionService.create(createExhibitionDto);
+    @UseInterceptors(FileInterceptor('file')) // 'file'은 전송할 파일의 필드 이름입니다.
+    async create(
+        @Body() createExhibitionDto: CreateExhibitionDto,
+        @UploadedFile() file: Express.Multer.File // 파일을 인자로 받음
+    ): Promise<{ message: string; exhibition: Exhibition }> {
+        const exhibition = await this.exhibitionService.create(createExhibitionDto, file);
         return { message: '등록이 완료되었습니다', exhibition };
     }
-
     // 모든 전시 조회
     @Get()
     async findAll(): Promise<{ message: string; exhibitions: Exhibition[] }> {
