@@ -2,14 +2,21 @@ import { Controller, Post, Get, Put, Delete, Body, Param } from '@nestjs/common'
 import { ExhibitionsMemberService } from './exhibitions_member.service';
 import { CreateExhibitionsMemberDto } from './dto/create-exhibitions_member.dto';
 import { ExhibitionMember } from './entities/exhibition_member.entity';
+import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+
 
 @Controller('exhibition-members')
 export class ExhibitionsMemberController {
     constructor(private readonly exhibitionsMemberService: ExhibitionsMemberService) {}
 
     @Post('register')
-    async create(@Body() createExhibitionsMemberDto: CreateExhibitionsMemberDto): Promise<ExhibitionMember> {
-        const exhibitionMember = await this.exhibitionsMemberService.create(createExhibitionsMemberDto);
+    @UseInterceptors(FileInterceptor('file')) // 'file'은 업로드할 파일의 필드 이름
+    async create(
+        @Body() createExhibitionsMemberDto: CreateExhibitionsMemberDto,
+        @UploadedFile() file: Express.Multer.File // 파일 정보
+    ): Promise<ExhibitionMember> {
+        const exhibitionMember = await this.exhibitionsMemberService.create(createExhibitionsMemberDto, file);
         return exhibitionMember; // 생성된 전시 멤버 반환
     }
 
