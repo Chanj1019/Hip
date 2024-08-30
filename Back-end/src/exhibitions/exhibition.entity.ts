@@ -2,6 +2,7 @@ import { Entity, Column,ManyToOne,OneToMany, PrimaryGeneratedColumn ,JoinColumn}
 import { User } from 'src/users/user.entity';
 import { ExhibitionDoc } from 'src/exhibitions_doc/entities/exhibition_doc.entity';
 import { ExhibitionMember } from 'src/exhibitions_member/entities/exhibition_member.entity';
+import { ExhibitionIntro } from 'src/exhibition_intro/entities/exhibition_intro.entity';
 
 @Entity()
 export class Exhibition {
@@ -32,6 +33,9 @@ export class Exhibition {
 
     @OneToMany(() => ExhibitionMember, member => member.exhibition, { cascade: true })
     exhibitionMembers: ExhibitionMember[];
+
+    @OneToMany(() => ExhibitionIntro, exhibitionIntro => exhibitionIntro.exhibition , {cascade:true})
+    exhibitionIntros: ExhibitionIntro[];
 
     @ManyToOne(() => User, user => user.exhibition, {
         onDelete: 'CASCADE', // 사용자가 삭제될 때 전시도 삭제
