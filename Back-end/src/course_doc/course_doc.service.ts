@@ -1,13 +1,14 @@
-import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CourseDoc } from './entities/course_doc.entity';
 import { DocName } from '../doc_name/entities/doc_name.entity';
+import { Course } from '../courses/entities/course.entity'
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';
 import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Readable } from 'stream';
 import { Response } from 'express';
 
@@ -20,6 +21,9 @@ export class CourseDocService {
         private readonly courseDocRepository: Repository<CourseDoc>,
         @InjectRepository(DocName)
         private readonly docNameRepository: Repository<DocName>,
+        @InjectRepository(Course)
+        private readonly coursesRepository: Repository<Course>,
+        private readonly configService: ConfigService 
     ) {
         const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
         const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
@@ -35,46 +39,61 @@ export class CourseDocService {
     }
 
     async uploadFile(
+        courseTitle: string,
+        docNameTitle: string,
         createCourseDocDto: CreateCourseDocDto,
         file: Express.Multer.File
-      ): Promise<string> {
+    ): Promise<string> {
+        const docName = await this.docNameRepository.findOne({
+            where: { course_title: courseTitle, topic_title: docNameTitle }
+        });
+        if (!docName) {
+            throw new NotFoundException('docName is not found');
+        }
+
         const fileName = `${uuidv4()}-${file.originalname}`;
-        
-        try {
-          const command = new PutObjectCommand({
-            Bucket: process.env.AWS_S3_BUCKET_NAME,
-            Key: fileName,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-          });
-          await this.s3.send(command);
-      
-          const url = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
+        const bucketName = this.configService.get<string>('AWS_S3_BUCKET_NAME');
 
-          // 파일 정보를 저장하는 메서드 호출
-          await this.saveFile(url, createCourseDocDto);
-          
-          return url;
-        } catch (error) {
-          throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
+        if (!bucketName) {
+            throw new Error('AWS S3 bucket name is not configured');
         }
-      }
+
+        try {
+            const command = new PutObjectCommand({
+                Bucket: bucketName,
+                Key: fileName,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+            });
+            await this.s3.send(command);
+            const url = `https://${bucketName}.s3.amazonaws.com/${fileName}`;
+            
+            await this.saveFile(url, createCourseDocDto, docName);
+            return url;
+        } catch (error) {
+            console.error('File upload error:', error);
+            throw new InternalServerErrorException(`파일 업로드에 실패했습니다: ${error.message}`);
+        }
+    }
       
 
-      async saveFile(
+    async saveFile(
         file_path: string,
-        createCourseDocDto: CreateCourseDocDto
-      ): Promise<void> {
+        createCourseDocDto: CreateCourseDocDto,
+        docName: DocName
+    ): Promise<void> {
         try {
-          const fileUpload = this.courseDocRepository.create({
-            file_path,
-            ...createCourseDocDto, // DTO의 다른 필드들을 포함
-          });
-          await this.courseDocRepository.save(fileUpload);
+            const fileUpload = this.courseDocRepository.create({
+                file_path,
+                ...createCourseDocDto,
+                docName
+            });
+            await this.courseDocRepository.save(fileUpload);
         } catch (error) {
-          throw new BadRequestException('파일 URL 저장에 실패했습니다.');
+            console.error('File save error:', error);
+            throw new BadRequestException(`파일 URL 저장에 실패했습니다: ${error.message}`);
         }
-      }
+    }
     // [file을 자른다]의 의미, 클라와 서버에서의 처리 과정
     async downloadFile(filePath: string): Promise<Buffer> {
         const fileUpload = await this.courseDocRepository.findOne({ where: { file_path: filePath } });
