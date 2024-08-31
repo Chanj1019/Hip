@@ -35,6 +35,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { MulterModule } from '@nestjs/platform-express';
 import { CourseDocModule } from './course_doc/course_doc.module';
+import { CourseTextModule } from './course_text/course_text.module';
 
 @Module({
     imports: [
@@ -63,6 +64,7 @@ import { CourseDocModule } from './course_doc/course_doc.module';
         UcatModule,
         DocNameModule,
         CourseDocModule,
+        CourseTextModule,
     ],
 })
 export class AppModule {}
