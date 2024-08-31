@@ -6,7 +6,7 @@ export class CourseDoc {
     @PrimaryGeneratedColumn()
     course_document_id: number;
 
-    @CreateDateColumn()
+    @CreateDateColumn({nullable: true})
     upload_date: Date; 
     
     @Column()
