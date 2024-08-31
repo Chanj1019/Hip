@@ -1,8 +1,8 @@
 import {IsString, IsNotEmpty, MaxLength, IsOptional, IsDate} from 'class-validator'
 export class CreateCourseDocDto {
     @IsDate()
-    @IsNotEmpty()
-    upload_data: Date = new Date(); // 자동
+    @IsOptional()
+    upload_data?: Date = new Date(); // 자동
 
     @IsString()
     @IsOptional()
