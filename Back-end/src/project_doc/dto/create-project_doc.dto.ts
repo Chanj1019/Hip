@@ -3,10 +3,10 @@ import { IsString, IsNotEmpty, IsEnum, IsInt } from 'class-validator';
 export class CreateProjectDocDto {
 
     @IsString()
-    feedback: string;
+    project_material: string;
 
     @IsString()
-    project_material: string;
+    description: string;
 
     // @IsInt()
     // userId: number;

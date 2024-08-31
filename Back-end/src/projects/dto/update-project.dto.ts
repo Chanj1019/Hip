@@ -1,16 +1,13 @@
-import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
 import { Role } from '../../enums/role.enum';
 
 export class UpdateProjectDto {
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
     title?: string;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
     team_name?: string;
-
-    @IsEnum(Role)
-    status?: Role;
 
 }

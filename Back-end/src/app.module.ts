@@ -27,6 +27,7 @@ import { Exhibition } from './exhibitions/exhibition.entity';
 import { ProjectsModule } from './projects/projects.module';
 import { Project } from './projects/entities/project.entity';
 import { ProjectDocModule } from './project_doc/project_doc.module';
+import { Project_doc } from './project_doc/entities/project_doc.entity';
 
 @Module({
     imports: [
@@ -39,12 +40,11 @@ import { ProjectDocModule } from './project_doc/project_doc.module';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition,Project],
+                entities: [User,Exhibition,Project,Project_doc],
                 synchronize: true,
             }),
         }),
-        UsersModule,       
-        ExhibitionModule, ProjectsModule, ProjectDocModule,
+        UsersModule,ExhibitionModule, ProjectsModule, ProjectDocModule,
     ],
 })
 export class AppModule {}
