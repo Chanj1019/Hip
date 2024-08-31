@@ -29,16 +29,16 @@ export class DocNameService {
 
     async update(topicTitle: string, id: number, updateDocNameDto: UpdateDocNameDto): Promise<DocName> {
       await this.docNameRepository.update({ topic_id: id, topic_title: topicTitle }, updateDocNameDto);
-      return this.findOne(topicTitle);
+      return this.findOneDocName(topicTitle);
     }
 
     async remove(topicTitle: string): Promise<void> {
-      const docName = await this.findOne(topicTitle);
+      const docName = await this.findOneDocName(topicTitle);
       await this.docNameRepository.remove(docName);
     }
 
-    async findOne(topicTitle: string): Promise<DocName> {
-      const docName = await this.docNameRepository.findOne({ 
+    async findOneDocName(topicTitle: string): Promise<DocName> {
+      const docName = await this.docNameRepository.findOne({
           where: { topic_title: topicTitle },
           relations: ['courseDoc']
       });
