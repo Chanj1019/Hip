@@ -5,14 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CourseDoc } from '../course_doc/entities/course_doc.entity'
 import {DocName} from '../doc_name/entities/doc_name.entity'
 import { ConfigModule } from '@nestjs/config';
-
+import { Course } from 'src/courses/entities/course.entity';
+import { ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([CourseDoc, DocName]),
+    TypeOrmModule.forFeature([CourseDoc, DocName, Course]),
     
   ],
   controllers: [CourseDocController],
-  providers: [CourseDocService],
+  providers: [CourseDocService, ConfigService],
 })
 export class CourseDocModule {}
