@@ -31,6 +31,8 @@ import { UcatModule } from './ucat/ucat.module';
 import { DocNameModule } from './doc_name/doc_name.module';
 import { DocName } from './doc_name/entities/doc_name.entity';
 import { CourseDoc } from './course_doc/entities/course_doc.entity';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
     imports: [
@@ -46,6 +48,9 @@ import { CourseDoc } from './course_doc/entities/course_doc.entity';
                 entities: [User,Exhibition, Course, UCat, DocName, CourseDoc],
                 synchronize: true,
             }),
+        }),
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, '..', 'public'),
         }),
         UsersModule,       
         ExhibitionModule,
