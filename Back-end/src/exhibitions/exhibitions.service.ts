@@ -85,7 +85,7 @@ export class ExhibitionService {
         
             const exhibition = await this.exhibitionsRepository.findOne({
                 where: { exhibition_title: exhibitionTitle },
-                relations: ['exhibitionDocs', 'exhibitionMembers'],
+                relations: ['exhibitionDocs', 'exhibitionMembers','exhibitionIntros'],
             });
         
             if (!exhibition) {
