@@ -66,7 +66,7 @@ export class CourseDocService {
                 ContentType: file.mimetype,
             });
             await this.s3.send(command);
-            const url = `https://${bucketName}.s3.amazonaws.com/${fileName}`;
+            const url = `${fileName}`; // 저장할 객체 키 명시적으로 작성
             
             await this.saveFile(url, createCourseDocDto, docName);
             return url;
@@ -94,40 +94,34 @@ export class CourseDocService {
             throw new BadRequestException(`파일 URL 저장에 실패했습니다: ${error.message}`);
         }
     }
-    // [file을 자른다]의 의미, 클라와 서버에서의 처리 과정
-    async downloadFile(filePath: string): Promise<Buffer> {
-        const fileUpload = await this.courseDocRepository.findOne({ where: { file_path: filePath } });
-        if (!fileUpload) {
-            throw new BadRequestException('파일을 찾을 수 없습니다.');
-        }
-
-        const key = fileUpload.file_path.split('/').pop();
-
+    
+    async downloadFile(url: string): Promise<Buffer> {
+        const bucketName = this.configService.get<string>('AWS_S3_BUCKET_NAME');
+    
         const command = new GetObjectCommand({
-          Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: key,
+            Bucket: bucketName,
+            Key: url, // URL에서 추출한 객체 키 사용
         });
-
+    
         try {
             const data = await this.s3.send(command);
             if (!data.Body) {
                 throw new Error('파일 스트림을 가져올 수 없습니다.');
             }
-
+    
             const stream = data.Body as Readable;
-
             const chunks: Buffer[] = [];
             for await (const chunk of stream) {
                 chunks.push(Buffer.from(chunk));
             }
-            
-
             return Buffer.concat(chunks);
         } catch (error) {
             console.error('파일 다운로드 중 오류 발생:', error);
-            throw new Error('파일 다운로드에 실패했습니다.');
+            throw new InternalServerErrorException('파일 다운로드에 실패했습니다.');
         }
     }
+    
+    
 
     async findAll(courseTitle: string, docNameTitle: string): Promise<CourseDoc[]> {
         return await this.courseDocRepository.find({ 
