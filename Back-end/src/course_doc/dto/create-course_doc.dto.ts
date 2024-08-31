@@ -6,10 +6,6 @@ export class CreateCourseDocDto {
 
     @IsString()
     @IsOptional()
-    file_path?: string;
-
-    @IsString()
-    @IsOptional()
     @MaxLength(100)
     course_document_description?: string;
 
