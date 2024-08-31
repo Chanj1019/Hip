@@ -33,6 +33,8 @@ import { DocName } from './doc_name/entities/doc_name.entity';
 import { CourseDoc } from './course_doc/entities/course_doc.entity';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { MulterModule } from '@nestjs/platform-express';
+import { CourseDocModule } from './course_doc/course_doc.module';
 
 @Module({
     imports: [
@@ -52,11 +54,15 @@ import { ServeStaticModule } from '@nestjs/serve-static';
         ServeStaticModule.forRoot({
             rootPath: join(__dirname, '..', 'public'),
         }),
+        MulterModule.register({
+            dest: './uploads',
+        }),
         UsersModule,       
         ExhibitionModule,
         CoursesModule,
         UcatModule,
         DocNameModule,
+        CourseDocModule,
     ],
 })
 export class AppModule {}
