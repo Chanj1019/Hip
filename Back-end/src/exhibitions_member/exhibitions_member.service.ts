@@ -5,9 +5,11 @@ import { Exhibition } from 'src/exhibitions/exhibition.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExhibitionService } from 'src/exhibitions/exhibitions.service';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
+import { Readable } from 'stream';
+
 dotenv.config(); // .env 파일 로드
 @Injectable()
 export class ExhibitionsMemberService {
@@ -120,7 +122,40 @@ export class ExhibitionsMemberService {
 
     async remove(id: number): Promise<void> {
         const member = await this.findOne(id); // 존재 여부 확인
-        await this.exhibitionMemberRepository.remove(member);
+
+        // S3에서 파일 삭제
+        const filePath = member.file_path.split('/').pop(); // 파일 이름 추출
+        const deleteCommand = new DeleteObjectCommand({
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: `exhibition_members/${filePath}`, // S3에서 삭제할 파일 경로
+        });
+
+        try {
+            await this.s3.send(deleteCommand); // S3에서 파일 삭제
+        } catch (error) {
+            console.error(error); // logger로 변경 가능
+            throw new InternalServerErrorException('파일 삭제에 실패했습니다.');
+        }
+
+        await this.exhibitionMemberRepository.remove(member); // 데이터베이스에서 멤버 삭제
+    }
+
+    async downloadFile(id: number): Promise<Readable> {
+        const member = await this.findOne(id); // 존재 여부 확인
+        const filePath = member.file_path.split('/').pop(); // 파일 이름 추출
+        
+        const getCommand = new GetObjectCommand({
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: `exhibition_members/${filePath}`, // 다운로드할 파일 경로
+        });
+
+        try {
+            const response = await this.s3.send(getCommand); // S3에서 파일 가져오기
+            return response.Body as Readable; // Readable 스트림 반환
+        } catch (error) {
+            console.error(error);
+            throw new InternalServerErrorException('파일 다운로드에 실패했습니다.');
+        }
     }
 }
 
