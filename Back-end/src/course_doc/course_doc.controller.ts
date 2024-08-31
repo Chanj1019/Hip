@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, NotFoundException, Param, Delete, UseInterceptors, UploadedFile, HttpStatus, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CourseDocService } from './course_doc.service';
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';
 import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
 import { DocName } from 'src/doc_name/entities/doc_name.entity';
-
+import { Response } from 'express';
 
 @Controller('courses/:courseTitle/docNames/:docNameTitle/courseDocs')
 export class CourseDocController {
@@ -37,6 +37,25 @@ export class CourseDocController {
       data: data,
     };
   }
+
+  @Get('download/:fileName')
+  async downloadFile(@Param('fileName') fileName: string, @Res() res: Response) {
+    try {
+      const fileBuffer = await this.courseDocService.downloadFile(fileName);
+
+      res.set({
+        'Content-Type': 'application/octet-stream',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Content-Length': fileBuffer.length,
+      });
+
+      res.end(fileBuffer);
+    } catch (error) {
+      console.error('파일 다운로드 중 오류 발생:', error);
+      throw new NotFoundException('파일 다운로드에 실패했습니다.');
+    }
+  }
+
 
   // 특정 강의 자료 조회
   // @Get(':id')
