@@ -15,6 +15,12 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }));
 
+    app.enableCors({
+      origin: 'http://127.0.0.1:5500',
+      methods: 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS',
+      credentials: true,
+    })
+
   await app.listen(3002);
 }
 bootstrap();
