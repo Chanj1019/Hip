@@ -3,6 +3,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CourseDocService } from './course_doc.service';
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';
 import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
+import { DocName } from 'src/doc_name/entities/doc_name.entity';
+
 
 @Controller('courses/:courseTitle/docNames/:docNameTitle/courseDocs')
 export class CourseDocController {
@@ -16,7 +18,8 @@ export class CourseDocController {
     @Body() createCourseDocDto: CreateCourseDocDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    const data = await this.courseDocService.uploadFile(createCourseDocDto, file);
+    // const sanitizedDocNameTitle = docNameTitle.replace(/ /g, '');
+    const data = await this.courseDocService.uploadFile(courseTitle, docNameTitle, createCourseDocDto, file);
     return {
       message: "File을 성공적으로 업로드 하셨습니다.",
       data: data,
