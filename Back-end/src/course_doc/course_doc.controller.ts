@@ -16,7 +16,7 @@ export class CourseDocController {
     @Body() createCourseDocDto: CreateCourseDocDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    const data = await this.courseDocService.create(courseTitle, docNameTitle, createCourseDocDto, file);
+    const data = await this.courseDocService.uploadFile(createCourseDocDto, file);
     return {
       message: "File을 성공적으로 업로드 하셨습니다.",
       data: data,
@@ -48,22 +48,6 @@ export class CourseDocController {
   //     data: data,
   //   };
   // }
-
-  @Patch(':id')
-  @UseInterceptors(FileInterceptor('file'))
-  async update(
-    @Param('courseTitle') courseTitle: string, 
-    @Param('docNameTitle') docNameTitle: string,
-    @Param('id') id: number,
-    @Body() updateCourseDocDto: UpdateCourseDocDto, 
-    @UploadedFile() file: Express.Multer.File
-  ) {
-    const data = await this.courseDocService.update(courseTitle, docNameTitle, id, updateCourseDocDto, file);
-    return {
-      message: "Course Document가 성공적으로 수정되었습니다.",
-      data: data,
-    };
-  }
 
   @Delete(':id')
   async remove(
