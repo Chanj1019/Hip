@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { ExhibitionIntro } from './entities/exhibition_intro.entity';
 import { CreateExhibitionIntroDto } from './dto/create-exhibition_intro.dto';
 import { UpdateExhibitionIntroDto } from './dto/update-exhibition_intro.dto';
-import { Exhibition } from 'src/exhibitions/exhibition.entity';
+import { Exhibition } from '../exhibitions/exhibition.entity';
 
 @Injectable()
 export class ExhibitionIntroService {

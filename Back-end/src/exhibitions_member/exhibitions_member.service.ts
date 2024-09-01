@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException,ConflictException,InternalServerErrorException } from '@nestjs/common';
 import { CreateExhibitionsMemberDto } from './dto/create-exhibitions_member.dto';
 import { ExhibitionMember } from './entities/exhibition_member.entity';
-import { Exhibition } from 'src/exhibitions/exhibition.entity';
+import { Exhibition } from '../exhibitions/exhibition.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ExhibitionService } from 'src/exhibitions/exhibitions.service';
+import { ExhibitionService } from '../exhibitions/exhibitions.service';
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';

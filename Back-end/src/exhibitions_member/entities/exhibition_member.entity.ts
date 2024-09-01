@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn,JoinColumn } from 'typeorm';
-import { Exhibition } from 'src/exhibitions/exhibition.entity';
+import { Exhibition } from '../../exhibitions/exhibition.entity';
 
 @Entity()
 export class ExhibitionMember {
