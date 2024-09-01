@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
 import { ExhibitionDoc } from './entities/exhibition_doc.entity';
-import { Exhibition } from 'src/exhibitions/exhibition.entity';
+import { Exhibition } from '../exhibitions/exhibition.entity';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
@@ -88,25 +88,31 @@ export class ExhibitionsDocService {
   }
 
   async findOne(id: number): Promise<ExhibitionDoc> {
+    // ID가 유효하지 않은 경우 BadRequestException 던지기
+    if (id <= 0) {
+      throw new BadRequestException('유효하지 않은 ID입니다.');
+    }
+  
     const doc = await this.exhibitionsDocRepository.findOne({
       where: { exhibition_doc_id: id },
       relations: ['exhibition'],
     });
-
+  
     if (!doc) {
-      throw new NotFoundException(`자료를 찾을 수 없습니다.`);
+      throw new NotFoundException('자료를 찾을 수 없습니다.');
     }
+  
     return doc;
   }
   
   
   async update(id: number, updateExhibitionsDocDto: UpdateExhibitionsDocDto): Promise<ExhibitionDoc> {
     const doc = await this.findOne(id);
-
+  
     if (updateExhibitionsDocDto.exhibition_id) {
       const exhibition = await this.exhibitionRepository.findOne({ where: { exhibition_id: updateExhibitionsDocDto.exhibition_id } });
       if (!exhibition) {
-        throw new BadRequestException(`ID가 ${updateExhibitionsDocDto.exhibition_id}인 전시를 찾을 수 없습니다.`);
+        throw new NotFoundException(`ID가 ${updateExhibitionsDocDto.exhibition_id}인 전시를 찾을 수 없습니다.`);
       }
     }
 
