@@ -1,120 +1,148 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { ExhibitionController } from './exhibitions.controller';
-// import { ExhibitionService } from './exhibitions.service';
-// import { CreateExhibitionDto } from './dto/create-exhibition.dto';
-// import { Exhibition } from './exhibition.entity';
+import { Test, TestingModule } from '@nestjs/testing';
+import { ExhibitionController } from './exhibitions.controller';
+import { ExhibitionService } from './exhibitions.service';
+import { CreateExhibitionDto } from './dto/create-exhibition.dto';
+import { UpdateExhibitionDto } from './dto/update-exhibition.dto';
+import { Exhibition } from './exhibition.entity';
+import { User } from '../users/user.entity';
 
-// describe('ExhibitionController', () => {
-//     let exhibitionController: ExhibitionController;
-//     let exhibitionService: ExhibitionService;
+describe('ExhibitionController', () => {
+    let exhibitionController: ExhibitionController;
+    let exhibitionService: ExhibitionService;
 
-//     const mockExhibitionService = {
-//         create: jest.fn(),
-//         findAll: jest.fn(),
-//         findOne: jest.fn(),
-//         searchExhibitions: jest.fn(),
-//         getExhibitionsSortedByDate: jest.fn(),
-//         countExhibitionsBygeneration: jest.fn(),
-//         remove: jest.fn(),
-//     };
+    const mockExhibitionService = {
+        create: jest.fn(),
+        findAll: jest.fn(),
+        findOne: jest.fn(),
+        searchExhibitions: jest.fn(),
+        getExhibitionsSortedByDate: jest.fn(),
+        getExhibitionsSortedByGeneration: jest.fn(),
+        remove: jest.fn(),
+        updateExhibition: jest.fn(),
+    };
 
-//     beforeEach(async () => {
-//         const module: TestingModule = await Test.createTestingModule({
-//             controllers: [ExhibitionController],
-//             providers: [
-//                 {
-//                     provide: ExhibitionService,
-//                     useValue: mockExhibitionService,
-//                 },
-//             ],
-//         }).compile();
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            controllers: [ExhibitionController],
+            providers: [
+                {
+                    provide: ExhibitionService,
+                    useValue: mockExhibitionService,
+                },
+            ],
+        }).compile();
 
-//         exhibitionController = module.get<ExhibitionController>(ExhibitionController);
-//         exhibitionService = module.get<ExhibitionService>(ExhibitionService);
-//     });
+        exhibitionController = module.get<ExhibitionController>(ExhibitionController);
+        exhibitionService = module.get<ExhibitionService>(ExhibitionService);
+    });
 
-//     describe('create', () => {
-//         it('should create a new exhibition', async () => {
-//             const createExhibitionDto: CreateExhibitionDto = { generation: '1기', description: '힙', exhibition_title: 'hip' };
-//             const result: Exhibition = { exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() };
-//             mockExhibitionService.create.mockResolvedValue(result);
+    it('should be defined', () => {
+        expect(exhibitionController).toBeDefined();
+    });
 
-//             expect(await exhibitionController.create(createExhibitionDto)).toEqual({
-//                 message: '등록이 완료되었습니다',
-//                 exhibition: result,
-//             });
-//         });
-//     });
+    describe('create', () => {
+        it('should create a new exhibition', async () => {
+            const createExhibitionDto: CreateExhibitionDto = {
+                generation: '2024',
+                exhibition_title: 'New Exhibition',
+                team_name: 'Team A',
+                description: 'This is a new exhibition.',
+                
+            };
+            const result: Exhibition = {
+                exhibition_id: 1, ...createExhibitionDto,
+                exhibition_date: undefined,
+                file_path: '',
+                exhibitionDocs: [],
+                exhibitionMembers: [],
+                exhibitionIntros: [],
+                user: new User
+            };
 
-//     describe('findAll', () => {
-//         it('should return all exhibitions', async () => {
-//             const result: Exhibition[] = [
-//                 { exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() },
-//                 { exhibition_id: 2, generation: '2기', description: '아트', exhibition_title: 'art', exhibition_date: new Date() },
-//             ];
-//             mockExhibitionService.findAll.mockResolvedValue(result);
+            mockExhibitionService.create.mockResolvedValue(result);
 
-//             expect(await exhibitionController.findAll()).toEqual({
-//                 message: '모든 전시 조회를 완료했습니다.',
-//                 exhibitions: result,
-//             });
-//         });
-//     });
+            expect(await exhibitionController.create(createExhibitionDto, null)).toEqual({
+                message: '등록이 완료되었습니다',
+                exhibition: result,
+            });
+        });
+    });
 
-//     describe('findOne', () => {
-//         it('should return a specific exhibition', async () => {
-//             const exhibitionId = 1;
-//             const result: Exhibition = { exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() };
-//             mockExhibitionService.findOne.mockResolvedValue(result);
+    describe('findAll', () => {
+        it('should return all exhibitions', async () => {
+            const result: Exhibition[] = [{
+                exhibition_id: 1, exhibition_title: 'Exhibition 1',
+                generation: '',
+                description: '',
+                exhibition_date: undefined,
+                file_path: '',
+                team_name: '',
+                exhibitionDocs: [],
+                exhibitionMembers: [],
+                exhibitionIntros: [],
+                user: new User
+            }];
 
-//             expect(await exhibitionController.findOne(exhibitionId)).toEqual({
-//                 message: '전시 조회를 완료했습니다.',
-//                 exhibition: result,
-//             });
-//         });
-//     });
+            mockExhibitionService.findAll.mockResolvedValue(result);
 
-//     describe('searchExhibitions', () => {
-//         it('should return exhibitions based on the search criteria', async () => {
-//             const keyword = 'test';
-//             const searchIn = 'title';
-//             const result: Exhibition[] = [
-//                 { exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'test exhibition', exhibition_date: new Date() },
-//                 { exhibition_id: 2, generation: '2기', description: '아트', exhibition_title: 'another test exhibition', exhibition_date: new Date() },
-//             ];
-//             mockExhibitionService.searchExhibitions.mockResolvedValue(result);
+            expect(await exhibitionController.findAll()).toEqual({
+                message: '모든 전시 조회를 완료했습니다.',
+                exhibitions: result,
+            });
+        });
+    });
 
-//             expect(await exhibitionController.searchExhibitions(keyword, searchIn)).toEqual(result);
-//         });
-//     });
+    describe('findOne', () => {
+        it('should return a single exhibition', async () => {
+            const exhibitionTitle = 'Exhibition 1';
+            const result: Exhibition = {
+                exhibition_id: 1, exhibition_title: exhibitionTitle,
+                generation: '',
+                description: '',
+                exhibition_date: undefined,
+                file_path: '',
+                team_name: '',
+                exhibitionDocs: [],
+                exhibitionMembers: [],
+                exhibitionIntros: [],
+                user: new User
+            };
 
-//     describe('getExhibitionsSortedByDate', () => {
-//         it('should return exhibitions sorted by date', async () => {
-//             const result: Exhibition[] = [
-//                 { exhibition_id: 2, generation: '2기', description: '아트', exhibition_title: 'art', exhibition_date: new Date('2023-01-01') },
-//                 { exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date('2023-02-01') },
-//             ];
-//             mockExhibitionService.getExhibitionsSortedByDate.mockResolvedValue(result);
+            mockExhibitionService.findOne.mockResolvedValue(result);
 
-//             expect(await exhibitionController.getExhibitionsSortedByDate('ASC')).toEqual(result);
-//         });
-//     });
+            expect(await exhibitionController.findOne(exhibitionTitle)).toEqual({
+                message: '전시 조회를 완료했습니다.',
+                exhibition: result,
+            });
+        });
+    });
 
-//     // describe('countExhibitionsBygeneration', () => {
-//     //     it('should return the count of exhibitions by generation', async () => {
-//     //         const generation = '2023';
-//     //         const result = 10; // 2023년에 해당하는 전시 수
-//     //         mockExhibitionService.countExhibitionsBygeneration.mockResolvedValue(result);
+    describe('remove', () => {
+        it('should delete an exhibition', async () => {
+            const exhibitionTitle = 'Exhibition 1';
 
-//     //         expect(await exhibitionController.countExhibitionsBygeneration(generation)).toEqual(result);
-//     //     });
-//     // });
+            await exhibitionController.remove(exhibitionTitle);
 
-//     describe('remove', () => {
-//         it('should delete an exhibition', async () => {
-//             const exhibitionId = 1;
-//             await exhibitionController.remove(exhibitionId);
-//             expect(mockExhibitionService.remove).toHaveBeenCalledWith(exhibitionId);
-//         });
-//     });
-// });
+            expect(mockExhibitionService.remove).toHaveBeenCalledWith(exhibitionTitle);
+            expect(await exhibitionController.remove(exhibitionTitle)).toEqual({
+                message: '전시가 삭제되었습니다.',
+            });
+        });
+    });
+
+    describe('update', () => {
+        it('should update an exhibition', async () => {
+            const exhibitionTitle = 'Exhibition 1';
+            const updateExhibitionDto: UpdateExhibitionDto = {
+                exhibition_title: 'Updated Exhibition',
+                description: 'Updated description',
+            };
+
+            mockExhibitionService.updateExhibition.mockResolvedValue(undefined);
+
+            expect(await exhibitionController.update(exhibitionTitle, updateExhibitionDto)).toEqual({
+                message: '전시 정보가 성공적으로 업데이트되었습니다.',
+            });
+        });
+    });
+});
