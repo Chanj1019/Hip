@@ -148,26 +148,80 @@ export class ExhibitionService {
             }
         }
         
-        
-        async updateExhibition(
-            exhibitionTitle: string, // 전시 제목
-            updateExhibitionDto: UpdateExhibitionDto // DTO 사용
-        ): Promise<void> {
-            const { generation, description } = updateExhibitionDto;
+        //  async updateExhibition(
+        //     exhibitionTitle: string, // 전시 제목
+        //     updateExhibitionDto: UpdateExhibitionDto // DTO 사용
+        // ): Promise<Exhibition> { // 반환 타입 변경
+        //     const { generation, description } = updateExhibitionDto;
+                
+        //     const exhibition = await this.exhibitionsRepository.findOne({ where: { exhibition_title: exhibitionTitle } });
             
-            const exhibition = await this.exhibitionsRepository.findOneBy({ exhibition_title: exhibitionTitle });
+        //     if (!exhibition) {
+        //         throw new NotFoundException('전시를 찾을 수 없습니다');
+        //     }
+        
+        //     // 전시 제목 중복 검사
+        //     if (updateExhibitionDto.exhibition_title) {
+        //         const newTitle = updateExhibitionDto.exhibition_title;
+        
+        //         // 현재 제목과 새 제목이 동일한 경우
+        //         if (exhibition.exhibition_title === newTitle) {
+        //             throw new ConflictException('전시 제목이 현재 제목과 동일합니다');
+        //         }
+        
+        //         const isTitleDuplicate = await this.isTitleDuplicate(newTitle, exhibition.exhibition_id);
+        //         if (isTitleDuplicate) {
+        //             throw new ConflictException('전시 제목이 이미 존재합니다');
+        //         }
+        
+        //         exhibition.exhibition_title = newTitle; // 제목 업데이트
+        //     }
+        
+        //     // 각 필드가 제공된 경우에만 업데이트
+        //     if (generation) {
+        //         exhibition.generation = generation; // 세대 업데이트
+        //     }
+        //     if (description) {
+        //         exhibition.description = description; // 설명 업데이트
+        //     }
+            
+        //     await this.exhibitionsRepository.save(exhibition); // 업데이트된 전시 정보 저장
+            
+        //     return exhibition; // 업데이트된 전시 정보 반환
+        // }
+        
+        
+        // async isTitleDuplicate(exhibition_title: string, exhibitionsId: number): Promise<boolean> {
+        //     const existingExhibition = await this.exhibitionsRepository.findOne({
+        //         where: { exhibition_title, exhibition_id: Not(exhibitionsId) } // 현재 업데이트 중인 전시 제외
+        //     });
+        //     return existingExhibition !== null; // 존재하면 true, 아니면 false
+        // }
+        async updateExhibition(
+            exhibitionTitle: string,
+            updateExhibitionDto: UpdateExhibitionDto
+        ): Promise<Exhibition> {
+            const { generation, description } = updateExhibitionDto;
+        
+            const exhibition = await this.exhibitionsRepository.findOne({ where: { exhibition_title: exhibitionTitle } });
         
             if (!exhibition) {
-                throw new HttpException('전시를 찾을 수 없습니다', HttpStatus.NOT_FOUND);
+                throw new NotFoundException('전시를 찾을 수 없습니다');
             }
         
             // 전시 제목 중복 검사
             if (updateExhibitionDto.exhibition_title) {
-                const isTitleDuplicate = await this.isTitleDuplicate(updateExhibitionDto.exhibition_title, exhibition.exhibition_id);
-                if (isTitleDuplicate) {
-                    throw new HttpException('전시 제목이 이미 존재합니다', HttpStatus.BAD_REQUEST);
+                const newTitle = updateExhibitionDto.exhibition_title;
+        
+                if (exhibition.exhibition_title === newTitle) {
+                    throw new ConflictException('전시 제목이 현재 제목과 동일합니다');
                 }
-                exhibition.exhibition_title = updateExhibitionDto.exhibition_title; // 제목 업데이트
+        
+                if (await this.isTitleDuplicate(newTitle, exhibition.exhibition_id)) {
+                    throw new ConflictException('전시 제목이 이미 존재합니다');
+                }
+        
+                exhibition.exhibition_title = newTitle; // 제목 업데이트
             }
         
             // 각 필드가 제공된 경우에만 업데이트
@@ -179,45 +233,15 @@ export class ExhibitionService {
             }
         
             await this.exhibitionsRepository.save(exhibition); // 업데이트된 전시 정보 저장
+        
+            return exhibition; // 업데이트된 전시 정보 반환
         }
         
-
-        // async updateExhibition(
-        //     exhibitionTitle?: string,
-        //     generation?: string,
-        //     description?: string
-        // ): Promise<void> {
-        //     const exhibition = await this.exhibitionsRepository.findOneBy({ exhibition_title: exhibitionTitle });
-        
-        //     if (!exhibition) {
-        //         throw new HttpException('전시를 찾을 수 없습니다', HttpStatus.NOT_FOUND);
-        //     }
-        
-        //     // 전시 제목 중복 검사
-        //     if (exhibitionTitle) {
-        //         const isTitleDuplicate = await this.isTitleDuplicate(exhibitionTitle, exhibition.exhibition_id);
-        //         if (isTitleDuplicate) {
-        //             throw new HttpException('전시 제목이 이미 존재합니다', HttpStatus.BAD_REQUEST);
-        //         }
-        //         exhibition.exhibition_title = exhibitionTitle; // 제목 업데이트
-        //     }
-        
-        //     // 각 필드가 제공된 경우에만 업데이트
-        //     if (generation) {
-        //         exhibition.generation = generation; // 세대 업데이트
-        //     }
-        //     if (description) {
-        //         exhibition.description = description; // 설명 업데이트
-        //     }
-        
-        //     await this.exhibitionsRepository.save(exhibition); // 업데이트된 전시 정보 저장
-        // }
-        
         async isTitleDuplicate(exhibition_title: string, exhibitionsId: number): Promise<boolean> {
-            const existingExhibition = await this.exhibitionsRepository.findOne({
-                where: { exhibition_title, exhibition_id: Not(exhibitionsId) } // 현재 업데이트 중인 전시 제외
+            const count = await this.exhibitionsRepository.count({
+                where: { exhibition_title, exhibition_id: Not(exhibitionsId) }
             });
-            return existingExhibition !== null; // 존재하면 true, 아니면 false
+            return count > 0; // 존재하면 true, 아니면 false
         }
         
 

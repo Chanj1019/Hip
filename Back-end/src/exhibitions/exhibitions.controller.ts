@@ -66,25 +66,46 @@ export class ExhibitionController {
     }
 
  
-    @Patch(':exhibition_title')
-    async update(
-        @Param('exhibition_title') exhibitionTitle: string,
-        @Body() body: UpdateExhibitionDto // DTO 사용
-    ): Promise<{ message: string }> {
-        try {
-            await this.exhibitionService.updateExhibition(
-                exhibitionTitle,
-                body // 두 번째 인자로 DTO를 전달
-            );
+    // @Patch(':exhibition_title')
+    // async update(
+    //     @Param('exhibition_title') exhibitionTitle: string,
+    //     @Body() body: UpdateExhibitionDto // DTO 사용
+    // ): Promise<{ message: string }> {
+    //     try {
+    //         await this.exhibitionService.updateExhibition(
+    //             exhibitionTitle,
+    //             body // 두 번째 인자로 DTO를 전달
+    //         );
     
-            return { message: '전시 정보가 성공적으로 업데이트되었습니다.' };
-        } catch (error) {
-            if (error.message === '전시를 찾을 수 없습니다') {
-                throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-            } else if (error.message === '전시 제목이 이미 존재합니다') {
-                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-            }
-            throw new HttpException('업데이트 중 오류가 발생했습니다', HttpStatus.INTERNAL_SERVER_ERROR);
+    //         return { message: '전시 정보가 성공적으로 업데이트되었습니다.' };
+    //     } catch (error) {
+    //         if (error.message === '전시를 찾을 수 없습니다') {
+    //             throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    //         } else if (error.message === '전시 제목이 이미 존재합니다') {
+    //             throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    //         }
+    //         throw new HttpException('업데이트 중 오류가 발생했습니다', HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+    // }
+    @Patch(':exhibition_title')
+async update(
+    @Param('exhibition_title') exhibitionTitle: string,
+    @Body() body: UpdateExhibitionDto // DTO 사용
+): Promise<{ message: string }> {
+    try {
+        await this.exhibitionService.updateExhibition(
+            exhibitionTitle,
+            body // 두 번째 인자로 DTO를 전달
+        );
+
+        return { message: '전시 정보가 성공적으로 업데이트되었습니다.' };
+    } catch (error) {
+        if (error.message === '전시를 찾을 수 없습니다') {
+            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+        } else if (error.message === '전시 제목이 현재 제목과 동일합니다' || error.message === '전시 제목이 이미 존재합니다') {
+            throw new HttpException(error.message, HttpStatus.CONFLICT);
         }
+        throw new HttpException('업데이트 중 오류가 발생했습니다', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+}
 }
