@@ -62,8 +62,9 @@ export class UsersService {
         
     }
 
-    async remove(userId: number): Promise<void> {
-        await this.usersRepository.delete(userId);
+    async remove(id: number): Promise<void> {
+        const userId = await this.findOne(id);
+        await this.usersRepository.remove(userId);
     }
 
     // async login(user_name: string, password: string): Promise<string> {

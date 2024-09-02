@@ -24,6 +24,12 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { ExhibitionModule } from './exhibitions/exhibitions.module';
 import { Exhibition } from './exhibitions/exhibition.entity';
+import { ExhibitionDoc } from './exhibitions_doc/entities/exhibition_doc.entity';
+import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
+import { ExhibitionMember } from './exhibitions_member/entities/exhibition_member.entity';
+import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
+import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
+import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
 
 @Module({
     imports: [
@@ -36,12 +42,13 @@ import { Exhibition } from './exhibitions/exhibition.entity';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition],
+                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro],
                 synchronize: true,
             }),
         }),
-        UsersModule,       
+        UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule,
         ExhibitionModule,
+        ExhibitionIntroModule, 
     ],
 })
 export class AppModule {}
