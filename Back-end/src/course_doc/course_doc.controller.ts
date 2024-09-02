@@ -41,15 +41,16 @@ export class CourseDocController {
   @Get('download/:fileName')
   async downloadFile(@Param('fileName') fileName: string, @Res() res: Response) {
     try {
-      const fileBuffer = await this.courseDocService.downloadFile(fileName);
+      const { stream, metadata } = await this.courseDocService.downloadFile(fileName);
 
       res.set({
-        'Content-Type': 'application/octet-stream',
+        'Content-Type': metadata.ContentType || 'application/octet-stream',
         'Content-Disposition': `attachment; filename="${fileName}"`,
-        'Content-Length': fileBuffer.length,
+        'Content-Length': metadata.ContentLength,
       });
 
-      res.end(fileBuffer);
+      // res.end(fileBuffer);
+      stream.pipe(res);
     } catch (error) {
       console.error('파일 다운로드 중 오류 발생:', error);
       throw new NotFoundException('파일 다운로드에 실패했습니다.');
