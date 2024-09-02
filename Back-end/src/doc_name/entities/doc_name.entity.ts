@@ -10,17 +10,23 @@ export class DocName {
     @Column({ nullable: true })
     course_title: string;
 
-    // 부모 주제 ID, 소주제일 경우에만 값을 가지는 필드
-    @Column({ nullable: true })
-    pa_topic_title: string;
-
-    @Column()
+    @Column({ type: 'varchar', length: 255 })
     topic_title: string;
 
-    @ManyToOne(() => Course, (course) => course.docName, { onDelete: 'CASCADE' })
+    @Column({ nullable: true })
+    pa_topic_title: string;
+    
+    // @ManyToOne(() => DocName, docName => docName.subTopics, { nullable: true })
+    // @JoinColumn({ name: 'pa_topic_id' })
+    // pa_topic: DocName;
+
+    // @OneToMany(() => DocName, docName => docName.pa_topic)
+    // subTopics: DocName[];
+
+    @ManyToOne(() => Course, course => course.docName, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'course_id' })
     course: Course;
 
-    @OneToMany(() => CourseDoc, (coursedoc) => coursedoc.docName, { cascade: true })
-    courseDoc: CourseDoc[];
+    @OneToMany(() => CourseDoc, courseDoc => courseDoc.docName, { cascade: true })
+    courseDocs: CourseDoc[];
 }
