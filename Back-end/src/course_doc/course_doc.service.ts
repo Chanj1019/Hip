@@ -95,7 +95,7 @@ export class CourseDocService {
         }
     }
     
-    async downloadFile(url: string): Promise<Buffer> {
+    async downloadFile(url: string): Promise<{ stream: Readable; metadata: any }> {
         const bucketName = this.configService.get<string>('AWS_S3_BUCKET_NAME');
     
         const command = new GetObjectCommand({
@@ -108,13 +108,22 @@ export class CourseDocService {
             if (!data.Body) {
                 throw new Error('파일 스트림을 가져올 수 없습니다.');
             }
-    
+
             const stream = data.Body as Readable;
-            const chunks: Buffer[] = [];
-            for await (const chunk of stream) {
-                chunks.push(Buffer.from(chunk));
-            }
-            return Buffer.concat(chunks);
+            return { 
+                stream,
+                metadata: {
+                    ContentType: data.ContentType,
+                    ContentLength: data.ContentLength,
+                }
+            };
+            // const stream = data.Body as Readable;
+            // return stream
+            // const chunks: Buffer[] = [];
+            // for await (const chunk of stream) {
+            //     chunks.push(Buffer.from(chunk));
+            // }
+            // return Buffer.concat(chunks);
         } catch (error) {
             console.error('파일 다운로드 중 오류 발생:', error);
             throw new InternalServerErrorException('파일 다운로드에 실패했습니다.');
