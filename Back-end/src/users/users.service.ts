@@ -58,7 +58,7 @@ export class UsersService {
     }
 
     async findOne(userId: number): Promise<User> {
-        return await this.usersRepository.findOneBy({ user_id: userId });
+        return await this.usersRepository.findOne({where:{user_id: userId} });
         
     }
 
@@ -88,7 +88,7 @@ export class UsersService {
     // }
 
     async login(id: string, password: string): Promise<string> {
-        const user = await this.usersRepository.findOneBy({ id });
+        const user = await this.usersRepository.findOne({where:{ id }});
         console.log('User found:', user); // 사용자 정보 로그 추가
     
         if (!user) {
@@ -109,34 +109,37 @@ export class UsersService {
     }
     
 
-    async update(userId: number, email?: string, password?: string, nick_name?: string, generation?:string): Promise<string> {
-        const user = await this.usersRepository.findOneBy({ user_id: userId });
-        
+    async update(userId: number, email?: string, password?: string, nick_name?: string, generation?: string): Promise<string> {
+        const user = await this.usersRepository.findOne({ where: { user_id: userId } });
+    
         if (!user) {
             throw new HttpException('사용자를 찾을 수 없습니다', HttpStatus.NOT_FOUND); // 사용자 미존재 시 예외 처리
         }
-
+    
         // 이메일 중복 검사
-        const existingEmailUser = await this.usersRepository.findOneBy({ email });
-        if (existingEmailUser && existingEmailUser.user_id !== userId) {
-            throw new HttpException('이메일이 이미 존재합니다', HttpStatus.CONFLICT); // 이메일 중복 시 예외 처리
+        if (email) {
+            const existingEmailUser = await this.usersRepository.findOne({ where: { email } });
+            if (existingEmailUser && existingEmailUser.user_id !== userId) {
+                throw new HttpException('이메일이 이미 존재합니다', HttpStatus.CONFLICT); // 이메일 중복 시 예외 처리
+            }
         }
-
+    
         // 비밀번호가 제공된 경우에만 해싱 처리
         if (password) {
             const hashedPassword = await this.hashService.hashPassword(password);
             user.password = hashedPassword; // 해싱된 비밀번호 저장
         }
-
+    
         // 사용자 정보 업데이트
         user.email = email;
         user.nick_name = nick_name;
         user.generation = generation;
-
+    
         await this.usersRepository.save(user); // 업데이트된 사용자 정보 저장
-
+    
         return 'User updated successfully'; // 성공 메시지 반환
     }
+    
 }
     
 
