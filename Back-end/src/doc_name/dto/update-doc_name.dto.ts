@@ -4,13 +4,12 @@ import { CreateDocNameDto } from './create-doc_name.dto';
 
 export class UpdateDocNameDto extends PartialType(CreateDocNameDto) {
     @IsString()
-    topic_title: string;
-
-    @IsNumber()
     @IsOptional()
-    pa_topic_title?: string;
+    @MaxLength(255)
+    topic_title?: string;
 
-    @IsOptional()
     @IsString()
-    file_path?: string; 
+    @IsOptional()
+    @MaxLength(255)
+    pa_topic_title?: string;
 }
