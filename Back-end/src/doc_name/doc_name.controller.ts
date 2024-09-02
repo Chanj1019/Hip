@@ -35,7 +35,7 @@ export class DocNameController {
     async findOne(
       @Param('topicTitle') topicTitle: string
     ) {
-        const data = await this.docNameService.findOneDocName(topicTitle);
+        const data = await this.docNameService.findOne(topicTitle);
         return {
             message: "특정 강의의 doc_name 조회에 성공하셨습니다",
             data: data
