@@ -12,7 +12,7 @@ export class CourseDoc {
     @Column()
     file_path: string;
 
-    @ManyToOne(() => DocName, (docname) => docname.courseDoc, { onDelete: 'CASCADE' })
+    @ManyToOne(() => DocName, (docname) => docname.courseDocs, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'doc_name_id' })
     docName: DocName;
 }
