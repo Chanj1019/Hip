@@ -2,12 +2,11 @@ import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, HttpSta
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
-import { HashService } from '../hash/hash.service';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService,
-        private readonly hashService: HashService
+        
     ) {}
 
     @Post('register')
