@@ -67,26 +67,6 @@ export class UsersService {
         await this.usersRepository.remove(userId);
     }
 
-    // async login(user_name: string, password: string): Promise<string> {
-    //     const user = await this.usersRepository.findOneBy({ user_name });
-    //     if (!user || !(await bcrypt.compare(password, user.password))) {
-    //         throw new Error('Invalid credentials');
-    //     }
-    //     const token = jwt.sign({ id: user.user_id }, 'your_secret_key', { expiresIn: '1h' });
-    //     return token;
-    // } >>> 응답개선
-
-
-    // async login(user_name: string, password: string): Promise<string> {
-    //     const user = await this.usersRepository.findOneBy({ user_name });
-    //     // 예외 처리 개선: 잘못된 자격 증명에 대해 명확한 HTTP 응답 코드 반환
-    //     if (!user || !(await bcrypt.compare(password, user.password))) {
-    //         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-    //     }
-    //     const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // 환경 변수 사용
-    //     return token;
-    // }
-
     async login(id: string, password: string): Promise<string> {
         const user = await this.usersRepository.findOne({where:{ id }});
         console.log('User found:', user); // 사용자 정보 로그 추가
