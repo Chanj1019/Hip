@@ -7,13 +7,14 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { HashService } from '../hash/hash.service';
 import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
-
+import { JwtService } from '@nestjs/jwt'; // JwtService 추가
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
-        private usersRepository: Repository<User>, private readonly hashService: HashService
+        private usersRepository: Repository<User>, private readonly hashService: HashService,
+        private readonly jwtService: JwtService // JwtService 주입
     ) {}
 
 
@@ -119,7 +120,18 @@ export class UsersService {
     
         return 'User updated successfully'; // 성공 메시지 반환
     }
-    
+    async verifyToken(token: string): Promise<User | null> {
+        try {
+            const decoded = this.jwtService.verify(token); // JwtService로 토큰 검증
+            const userId = (decoded as any).id; // 디코딩된 토큰에서 사용자 ID 추출
+            
+            // 사용자 찾기 (DB에서 사용자 조회)
+            const user = await this.usersRepository.findOneBy({ id: userId });
+            return user || null; // 사용자 반환 (없으면 null)
+        } catch (error) {
+            return null; // 검증 실패 시 null 반환
+        }
+    }
 }
     
 
