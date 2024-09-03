@@ -8,6 +8,7 @@ import * as jwt from 'jsonwebtoken';
 import { HashService } from '../hash/hash.service';
 import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
 import { JwtService } from '@nestjs/jwt'; // JwtService 추가
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -132,6 +133,13 @@ export class UsersService {
             return null; // 검증 실패 시 null 반환
         }
     }
+
+      // 사용자 역할을 확인하는 메소드
+    async getUserRole(userId: number): Promise<Role> {
+        const user = await this.findOne(userId);
+        return user.user_role; // 역할 반환
+    }
+
 }
     
 
