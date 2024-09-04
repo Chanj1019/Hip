@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Body, Param ,HttpCode, Res,HttpStatus} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param ,HttpCode, Res,HttpStatus, UseGuards} from '@nestjs/common';
 import { ExhibitionsDocService } from './exhibitions_doc.service';
 import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
 import { ExhibitionDoc } from './entities/exhibition_doc.entity';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { RolesGuard } from '../guards/roles.guard';
 
 @Controller('exhibition-docs')
 export class ExhibitionsDocController {
@@ -25,6 +26,7 @@ export class ExhibitionsDocController {
   
   @Post('register')
   @UseInterceptors(FileInterceptor('file')) // 'file' 필드에서 파일을 업로드 받음
+  @UseGuards(RolesGuard)
   async createExhibitionDoc(
     @Body() createExhibitionDocDto: CreateExhibitionsDocDto,
     @UploadedFile() file: Express.Multer.File, // 업로드된 파일을 가져옴
@@ -34,6 +36,7 @@ export class ExhibitionsDocController {
   }
 
   @Put(':id')
+  @UseGuards(RolesGuard)
   async update(
     @Param('id') id: number,
     @Body() updateExhibitionsDocDto: UpdateExhibitionsDocDto,
@@ -43,6 +46,7 @@ export class ExhibitionsDocController {
   } 
   
   @Delete(':id')
+  @UseGuards(RolesGuard)
   async remove(@Param('id') id: number): Promise<{message:string}> {
     await this.exhibitionDocsService.remove(id);
     return ({ message: '성공적으로 삭제되었습니다.' });

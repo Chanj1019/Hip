@@ -1,4 +1,3 @@
-// exhibitions_doc.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExhibitionsDocController } from './exhibitions_doc.controller';
