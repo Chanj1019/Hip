@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, HttpStatus } from '@nestjs/common';//추가
+import { Controller, Get, Post, Body, Param, Delete, Put, HttpException,Req,Res, HttpStatus } from '@nestjs/common';//추가
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
+import { Request, Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -54,5 +55,15 @@ export class UsersController {
 
         return { message: result }; // 성공 메시지 반환
     }
+
+    @Post('logout')
+    async logout(@Req() request: Request, @Res() response: Response) {
+      // JWT 토큰을 담고 있는 쿠키를 삭제
+      response.clearCookie('token'); // 'token'은 쿠키의 이름입니다.
+      
+      // 로그아웃 성공 메시지 반환
+      return response.json({ message: '로그아웃 성공' });
+    }
+    
 }
 
