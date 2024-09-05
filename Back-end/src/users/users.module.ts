@@ -17,6 +17,7 @@ dotenv.config();
     }),
   ],
   providers: [UsersService,HashService],
-  controllers: [UsersController]
+  controllers: [UsersController],
+  exports: [UsersService],
 })
 export class UsersModule {}
