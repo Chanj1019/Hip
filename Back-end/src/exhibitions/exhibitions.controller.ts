@@ -7,7 +7,7 @@ import { UpdateExhibitionDto } from './dto/update-exhibition.dto';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from '../guards/roles.guard';
-
+import { Roles } from '../decorator/roles.decorator';
 
 @Controller('exhibitions')
 export class ExhibitionController {
@@ -15,6 +15,7 @@ export class ExhibitionController {
 
     @Post('register')
     @UseGuards(RolesGuard)
+    @Roles('admin')
     @UseInterceptors(FileInterceptor('file')) // 'file'은 전송할 파일의 필드 이름입니다.
     async create(
         @Body() createExhibitionDto: CreateExhibitionDto,
