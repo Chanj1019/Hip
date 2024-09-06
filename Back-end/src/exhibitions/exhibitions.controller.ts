@@ -65,6 +65,8 @@ export class ExhibitionController {
     
     @Delete(':exhibition_title')
     @UseGuards(RolesGuard)
+    @Roles('admin')
+    @UseGuards(RolesGuard)
     async remove(@Param('exhibition_title') exhibitionTitle: string): Promise<{ message: string }> {
         await this.exhibitionService.remove(exhibitionTitle);
         return { message: '전시가 삭제되었습니다.' };
@@ -94,10 +96,11 @@ export class ExhibitionController {
     // }
     @Patch(':exhibition_title')
     @UseGuards(RolesGuard)
-async update(
+    @Roles('admin')
+    async update(
     @Param('exhibition_title') exhibitionTitle: string,
     @Body() body: UpdateExhibitionDto // DTO 사용
-): Promise<{ message: string }> {
+    ): Promise<{ message: string }> {
     try {
         await this.exhibitionService.updateExhibition(
             exhibitionTitle,
