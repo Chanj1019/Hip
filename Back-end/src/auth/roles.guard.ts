@@ -7,14 +7,11 @@ export class RolesGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers['authorization']?.split(' ')[1];
+    const user = request.user; // JWT 전략에서 설정된 사용자 정보
 
-    if (!token) {
-      throw new UnauthorizedException('토큰이 필요합니다.');
+    if (!user) {
+      throw new UnauthorizedException('사용자가 인증되지 않았습니다.');
     }
-
-    const user = await this.userService.verifyToken(token);
-    request.user = user; // 사용자 정보를 request에 설정
 
     const role = await this.userService.getUserRole(user.user_id);
     if (role === null) {
@@ -22,7 +19,7 @@ export class RolesGuard implements CanActivate {
     }
 
     const roles = this.getRequiredRoles(context);
-    if (!roles.includes(role)) {
+    if (!roles.length || !roles.includes(role)) {
       throw new ForbiddenException('접근 권한이 없습니다.');
     }
 
