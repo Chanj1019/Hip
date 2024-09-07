@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { HashService } from '../hash/hash.service';
 import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
-import { JwtService } from '@nestjs/jwt'; // JwtService 추가
+
 import { Role } from 'src/enums/role.enum';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class UsersService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>, private readonly hashService: HashService,
-        private readonly jwtService: JwtService // JwtService 주입
+       
     ) {}
 
 
