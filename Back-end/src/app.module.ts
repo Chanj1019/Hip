@@ -32,6 +32,8 @@ import { RegistrationController } from './registration/registration.controller';
 import { RegistrationService } from './registration/registration.service';
 import { RegistrationModule } from './registration/registration.module';
 import { Registration } from './registration/entities/registration.entity';
+import { FeedbackModule } from './feedback/feedback.module';
+import { Feedback } from './feedback/entities/feedback.entity';
 
 @Module({
     imports: [
@@ -44,11 +46,11 @@ import { Registration } from './registration/entities/registration.entity';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition,Project,Project_doc, Registration],
+                entities: [User,Exhibition,Project,Project_doc, Registration, Feedback],
                 synchronize: true,
             }),
         }),
-        UsersModule,ExhibitionModule, ProjectsModule, ProjectDocModule, RegistrationModule,
+        UsersModule,ExhibitionModule, ProjectsModule, ProjectDocModule, RegistrationModule, FeedbackModule,
     ],
     controllers: [RegistrationController],
     providers: [RegistrationService],

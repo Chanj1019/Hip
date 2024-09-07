@@ -1,5 +1,6 @@
+import { Feedback } from 'src/feedback/entities/feedback.entity';
 import { Project } from '../../projects/entities/project.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Project_doc {
@@ -12,6 +13,11 @@ export class Project_doc {
     @Column()
     file_path: string; // 파일 경로
 
+    // project_doc - project
     @ManyToOne(() => Project, (project) => project.project_docs)
     project: Project;
+
+    // project_Doc - feedback
+    @OneToMany(() => Feedback, (feedback) => feedback.projectDoc)
+    feedbacks: Feedback;
 }
