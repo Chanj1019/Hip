@@ -62,34 +62,13 @@ export class UsersService {
     async findOne(userId: number): Promise<User> {
         return await this.usersRepository.findOne({where:{user_id: userId} });
         
+        
     }
 
     async remove(id: number): Promise<void> {
         const userId = await this.findOne(id);
         await this.usersRepository.remove(userId);
     }
-
-    async login(id: string, password: string): Promise<string> {
-        const user = await this.usersRepository.findOne({where:{ id }});
-        console.log('User found:', user); // 사용자 정보 로그 추가
-    
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.UNAUTHORIZED); // 사용자 미존재 에러
-        }
-    
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED); // 비밀번호 불일치 에러
-        }
-    
-        if (!process.env.JWT_SECRET) {
-            throw new Error('JWT_SECRET is not defined'); // 비밀 키 미설정 에러
-        }
-    
-        const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        return token;
-    }
-    
 
     async update(userId: number, email?: string, password?: string, nick_name?: string, generation?: string): Promise<string> {
         const user = await this.usersRepository.findOne({ where: { user_id: userId } });
@@ -120,18 +99,6 @@ export class UsersService {
         await this.usersRepository.save(user); // 업데이트된 사용자 정보 저장
     
         return 'User updated successfully'; // 성공 메시지 반환
-    }
-    async verifyToken(token: string): Promise<User | null> {
-        try {
-            const decoded = this.jwtService.verify(token); // JwtService로 토큰 검증
-            const userId = (decoded as any).id; // 디코딩된 토큰에서 사용자 ID 추출
-            
-            // 사용자 찾기 (DB에서 사용자 조회)
-            const user = await this.usersRepository.findOneBy({ id: userId });
-            return user || null; // 사용자 반환 (없으면 null)
-        } catch (error) {
-            return null; // 검증 실패 시 null 반환
-        }
     }
 
       // 사용자 역할을 확인하는 메소드
