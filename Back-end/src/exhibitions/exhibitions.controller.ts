@@ -6,8 +6,8 @@ import { Get, Post, Body, Query, Param, Delete,Patch, HttpException, HttpStatus 
 import { UpdateExhibitionDto } from './dto/update-exhibition.dto';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { RolesGuard } from '../guards/roles.guard';
-import { Roles } from '../decorator/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('exhibitions')
 export class ExhibitionController {
