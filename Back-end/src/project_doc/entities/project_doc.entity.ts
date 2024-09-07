@@ -7,10 +7,10 @@ export class Project_doc {
     project_doc_id: number;
 
     @Column({ type: 'varchar', length: 255 })
-    project_material: string;
-
-    @Column({ type: 'varchar', length: 255 })
     description: string;
+
+    @Column()
+    file_path: string; // 파일 경로
 
     @ManyToOne(() => Project, (project) => project.project_docs)
     project: Project;
