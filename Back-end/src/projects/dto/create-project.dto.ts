@@ -1,8 +1,6 @@
 import { IsString, IsNotEmpty, IsEnum, IsInt } from 'class-validator';
-export enum Status {
-    IN_PROGRESS = 'in_progress',
-    COMPLETED = 'completed'
-}
+import { Status } from '../../enums/role.enum';
+
 export class CreateProjectDto {
 
     @IsString()
