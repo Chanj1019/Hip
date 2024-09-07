@@ -30,6 +30,7 @@ import { ExhibitionMember } from './exhibitions_member/entities/exhibition_membe
 import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
 import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
 import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -48,7 +49,8 @@ import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.en
         }),
         UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule,
         ExhibitionModule,
-        ExhibitionIntroModule, 
+        ExhibitionIntroModule,
+        AuthModule, 
     ],
 })
 export class AppModule {}
