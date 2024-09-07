@@ -8,7 +8,6 @@ export class RolesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = request.headers['authorization']?.split(' ')[1];
-    console.log('Received token:', token);
 
     if (!token) {
       throw new UnauthorizedException('토큰이 필요합니다.');
