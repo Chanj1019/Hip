@@ -12,14 +12,6 @@ import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member
 import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
 import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
 import { AuthModule } from './auth/auth.module';
-
-import { ExhibitionDoc } from './exhibitions_doc/entities/exhibition_doc.entity';
-import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
-import { ExhibitionMember } from './exhibitions_member/entities/exhibition_member.entity';
-import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
-import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
-import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
-import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
 import { Project } from './projects/entities/project.entity';
 import { ProjectDocModule } from './project_doc/project_doc.module';

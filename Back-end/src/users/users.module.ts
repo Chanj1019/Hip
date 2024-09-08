@@ -4,18 +4,12 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity'; 
 import { HashService } from '../hash/hash.service';
-
+import { ProjectsModule } from '../projects/projects.module'; 
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-@Module({
-  imports: [
-    TypeOrmModule.forFeature([User]),
-  ],
-  providers: [UsersService,HashService],
-  controllers: [UsersController],
-  exports: [UsersService],
-  import { ProjectsModule } from '../projects/projects.module'; // ProjectsModule 임포트
+
+  // ProjectsModule 임포트
 //손정민 작성
  @Module({
   imports: [
