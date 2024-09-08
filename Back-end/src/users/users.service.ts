@@ -7,7 +7,6 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { HashService } from '../hash/hash.service';
 import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
-
 import { Role } from 'src/enums/role.enum';
 
 @Injectable()
@@ -101,11 +100,7 @@ export class UsersService {
         return 'User updated successfully'; // 성공 메시지 반환
     }
 
-      // 사용자 역할을 확인하는 메소드
-    async getUserRole(userId: number): Promise<Role> {
-        const user = await this.findOne(userId);
-        return user.user_role; // 역할 반환
-    }
+   
 
 }
     
