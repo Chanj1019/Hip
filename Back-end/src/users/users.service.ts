@@ -69,9 +69,10 @@ export class UsersService {
         await this.usersRepository.remove(userId);
     }
 
+
     async update(userId: number, email?: string, password?: string, nick_name?: string, generation?: string): Promise<string> {
         const user = await this.usersRepository.findOne({ where: { user_id: userId } });
-    
+
         if (!user) {
             throw new HttpException('사용자를 찾을 수 없습니다', HttpStatus.NOT_FOUND); // 사용자 미존재 시 예외 처리
         }
@@ -100,7 +101,8 @@ export class UsersService {
         return 'User updated successfully'; // 성공 메시지 반환
     }
 
-   
+
+
 
 }
     

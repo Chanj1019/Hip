@@ -13,6 +13,25 @@ import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.modul
 import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
 import { AuthModule } from './auth/auth.module';
 
+import { ExhibitionDoc } from './exhibitions_doc/entities/exhibition_doc.entity';
+import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
+import { ExhibitionMember } from './exhibitions_member/entities/exhibition_member.entity';
+import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
+import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
+import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
+import { AuthModule } from './auth/auth.module';
+import { ProjectsModule } from './projects/projects.module';
+import { Project } from './projects/entities/project.entity';
+import { ProjectDocModule } from './project_doc/project_doc.module';
+import { Project_doc } from './project_doc/entities/project_doc.entity';
+import { RegistrationController } from './registration/registration.controller';
+import { RegistrationService } from './registration/registration.service';
+import { RegistrationModule } from './registration/registration.module';
+import { Registration } from './registration/entities/registration.entity';
+import { FeedbackModule } from './feedback/feedback.module';
+import { Feedback } from './feedback/entities/feedback.entity';
+
+
 @Module({
     imports: [
         AuthModule,UsersModule,
@@ -25,14 +44,17 @@ import { AuthModule } from './auth/auth.module';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro],
+
+                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro , Project,Project_doc, Registration, Feedback],
                 synchronize: true,
             }),
         }),
-        UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule,
+        UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule, ProjectsModule, ProjectDocModule, RegistrationModule, FeedbackModule,
         ExhibitionModule,
         ExhibitionIntroModule,
         AuthModule, 
     ],
+    controllers: [RegistrationController],
+    providers: [RegistrationService],
 })
 export class AppModule {}
