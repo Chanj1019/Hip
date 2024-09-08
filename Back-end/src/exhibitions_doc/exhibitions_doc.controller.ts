@@ -7,6 +7,8 @@ import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
+
 @Controller('exhibition-docs')
 export class ExhibitionsDocController {
   constructor(private readonly exhibitionDocsService: ExhibitionsDocService) {}
@@ -16,7 +18,7 @@ export class ExhibitionsDocController {
     const doc = await this.exhibitionDocsService.findAll();
     return {message:'전체 자료 조회를 완료했습니다.',doc};
   }
-
+  
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<{doc:ExhibitionDoc; message:string}> {
     const doc =await this.exhibitionDocsService.findOne(id);
@@ -26,7 +28,7 @@ export class ExhibitionsDocController {
   
   @Post('register')
   @UseInterceptors(FileInterceptor('file')) // 'file' 필드에서 파일을 업로드 받음
-  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard('jwt'),RolesGuard)
   @Roles('admin')
   async createExhibitionDoc(
     @Body() createExhibitionDocDto: CreateExhibitionsDocDto,
@@ -37,7 +39,7 @@ export class ExhibitionsDocController {
   }
 
   @Put(':id')
-  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard('jwt'),RolesGuard)
   @Roles('admin')
   async update(
     @Param('id') id: number,
@@ -48,7 +50,7 @@ export class ExhibitionsDocController {
   } 
   
   @Delete(':id')
-  @UseGuards(RolesGuard)
+  @UseGuards(AuthGuard('jwt'),RolesGuard)
   @Roles('admin')
   async remove(@Param('id') id: number): Promise<{message:string}> {
     await this.exhibitionDocsService.remove(id);
