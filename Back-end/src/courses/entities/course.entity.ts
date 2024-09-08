@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { UCat} from '../../ucat/entities/ucat.entity';
 import { create } from 'domain';
-import { DocName } from 'src/doc_name/entities/doc_name.entity';
+import { DocName } from '../../doc_name/entities/doc_name.entity';
 
 @Entity()
 export class Course {
