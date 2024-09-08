@@ -8,13 +8,14 @@ import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('exhibitions')
 export class ExhibitionController {
     constructor(private readonly exhibitionService: ExhibitionService) {}
 
     @Post('register')
-    @UseGuards(RolesGuard)
+    @UseGuards(AuthGuard('jwt'),RolesGuard)
     @Roles('admin')
     @UseInterceptors(FileInterceptor('file')) // 'file'은 전송할 파일의 필드 이름입니다.
     async create(
@@ -64,9 +65,8 @@ export class ExhibitionController {
     }
     
     @Delete(':exhibition_title')
-    @UseGuards(RolesGuard)
+    @UseGuards(AuthGuard('jwt'),RolesGuard)
     @Roles('admin')
-    @UseGuards(RolesGuard)
     async remove(@Param('exhibition_title') exhibitionTitle: string): Promise<{ message: string }> {
         await this.exhibitionService.remove(exhibitionTitle);
         return { message: '전시가 삭제되었습니다.' };
@@ -95,7 +95,7 @@ export class ExhibitionController {
     //     }
     // }
     @Patch(':exhibition_title')
-    @UseGuards(RolesGuard)
+    @UseGuards(AuthGuard('jwt'),RolesGuard)
     @Roles('admin')
     async update(
     @Param('exhibition_title') exhibitionTitle: string,
