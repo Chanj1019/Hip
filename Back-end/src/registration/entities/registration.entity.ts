@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { User } from '../../users/user.entity';
 
 export enum Status {
     Pending = 'PENDING',
@@ -16,4 +17,11 @@ export class Registration {
 
     @Column()
     personnel: number;
+
+    @ManyToOne(() => User, (user) => user.regstrations)
+    user: User;
+
+    // @ManyToOne(() => Course, (course) => course.registrations)
+    // course: Course;
+
 }

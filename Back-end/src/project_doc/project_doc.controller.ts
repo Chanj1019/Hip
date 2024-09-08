@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, Res, HttpStatus } from '@nestjs/common';
-import { ProjectDocService } from './project_doc.service';  // 서비스 이름 수정
-import { CreateProjectDocDto } from './dto/create-project_doc.dto';  // DTO 이름 수정
-import { UpdateProjectDocDto } from './dto/update-project_doc.dto';  // DTO 이름 수정
-import { Project_doc } from './entities/project_doc.entity';  // 엔티티 이름 수정
+import { ProjectDocService } from './project_doc.service';
+import { CreateProjectDocDto } from './dto/create-project_doc.dto';
+import { UpdateProjectDocDto } from './dto/update-project_doc.dto';
+import { Project_doc } from './entities/project_doc.entity';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('project-docs')  // 엔드포인트 수정
+@Controller('project-docs')
 export class ProjectDocController {
-  constructor(private readonly projectDocsService: ProjectDocService) {}  // 서비스 이름 수정
+  constructor(private readonly projectDocsService: ProjectDocService) {}
 
   @Get()
   async findAll(): Promise<{ doc: Project_doc[]; message: string }> {

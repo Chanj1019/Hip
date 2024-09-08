@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Project } from './../projects/entities/project.entity';
-import { Role } from '.././enums/role.enum'
+import { Role } from '.././enums/role.enum';
+import { Registration } from '../registration/entities/registration.entity';
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -35,5 +36,9 @@ export class User {
     @ManyToMany(() => Project, (project) => project.users)
     @JoinTable() 
     projects: Project[];
+
+    // user - registration 연결 추가
+    @OneToMany(() => Registration, (registration) => registration.user)
+    regstrations: Registration[];
 
 }
