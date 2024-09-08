@@ -1,22 +1,3 @@
-// import { Module } from '@nestjs/common';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { UsersModule } from './users/users.module';
-// import { User } from './users/user.entity';
-// import { MaterialModule } from './material/material.module';
-
-// @Module({
-//     imports: [
-//         TypeOrmModule.forRoot({
-//         
-//         }),
-//         UsersModule,
-//         MaterialModule,
-//     ],
-// })
-// export class AppModule {}
-
-//>>>>>>>> .env 파일을 만들어 Db정보 저장후 은닉
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -30,9 +11,11 @@ import { ExhibitionMember } from './exhibitions_member/entities/exhibition_membe
 import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
 import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
 import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
+        AuthModule,UsersModule,
         ConfigModule.forRoot(), // ConfigModule 추가
         TypeOrmModule.forRootAsync({
             useFactory: () => ({
@@ -48,7 +31,8 @@ import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.en
         }),
         UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule,
         ExhibitionModule,
-        ExhibitionIntroModule, 
+        ExhibitionIntroModule,
+        AuthModule, 
     ],
 })
 export class AppModule {}

@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { ExhibitionService } from './exhibitions.service';
 import { CreateExhibitionDto } from './dto/create-exhibition.dto';
 import { Exhibition } from './exhibition.entity';
@@ -6,12 +6,17 @@ import { Get, Post, Body, Query, Param, Delete,Patch, HttpException, HttpStatus 
 import { UpdateExhibitionDto } from './dto/update-exhibition.dto';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('exhibitions')
 export class ExhibitionController {
     constructor(private readonly exhibitionService: ExhibitionService) {}
 
     @Post('register')
+    @UseGuards(AuthGuard('jwt'),RolesGuard)
+    @Roles('admin')
     @UseInterceptors(FileInterceptor('file')) // 'file'은 전송할 파일의 필드 이름입니다.
     async create(
         @Body() createExhibitionDto: CreateExhibitionDto,
@@ -58,8 +63,10 @@ export class ExhibitionController {
     ): Promise<Exhibition[]> {
         return this.exhibitionService.getExhibitionsSortedByGeneration(order);
     }
-
+    
     @Delete(':exhibition_title')
+    @UseGuards(AuthGuard('jwt'),RolesGuard)
+    @Roles('admin')
     async remove(@Param('exhibition_title') exhibitionTitle: string): Promise<{ message: string }> {
         await this.exhibitionService.remove(exhibitionTitle);
         return { message: '전시가 삭제되었습니다.' };
@@ -88,10 +95,12 @@ export class ExhibitionController {
     //     }
     // }
     @Patch(':exhibition_title')
-async update(
+    @UseGuards(AuthGuard('jwt'),RolesGuard)
+    @Roles('admin')
+    async update(
     @Param('exhibition_title') exhibitionTitle: string,
     @Body() body: UpdateExhibitionDto // DTO 사용
-): Promise<{ message: string }> {
+    ): Promise<{ message: string }> {
     try {
         await this.exhibitionService.updateExhibition(
             exhibitionTitle,
