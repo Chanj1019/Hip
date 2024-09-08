@@ -1,10 +1,9 @@
 
 import { Entity, Column, PrimaryGeneratedColumn ,OneToMany, ManyToMany, JoinTable} from 'typeorm';
-import { Role } from '../enums/role.enum';
-import { Exhibition } from '../exhibitions/exhibition.entity';
 import { Registration } from '../registration/entities/registration.entity';
 import { Project } from './../projects/entities/project.entity';
-
+import { Role } from '../enums/role.enum';
+import { Exhibition } from '../exhibitions/exhibition.entity';
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -35,6 +34,7 @@ export class User {
 
     @OneToMany(() => Exhibition, exhibition => exhibition.user,{cascade:true})
     exhibition: Exhibition[];
+
      @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
     nick_name: string;
     
@@ -46,5 +46,6 @@ export class User {
     // user - registration 연결 추가
     @OneToMany(() => Registration, (registration) => registration.user)
     regstrations: Registration[];
+
 
 }

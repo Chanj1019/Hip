@@ -5,6 +5,13 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { ExhibitionModule } from './exhibitions/exhibitions.module';
 import { Exhibition } from './exhibitions/exhibition.entity';
+import { ExhibitionDoc } from './exhibitions_doc/entities/exhibition_doc.entity';
+import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
+import { ExhibitionMember } from './exhibitions_member/entities/exhibition_member.entity';
+import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
+import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
+import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
+import { AuthModule } from './auth/auth.module';
 
 import { ExhibitionDoc } from './exhibitions_doc/entities/exhibition_doc.entity';
 import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
@@ -38,7 +45,7 @@ import { Feedback } from './feedback/entities/feedback.entity';
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
 
-                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro, Project,Project_doc, Registration, Feedback],
+                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro , Project,Project_doc, Registration, Feedback],
                 synchronize: true,
             }),
         }),
@@ -46,7 +53,6 @@ import { Feedback } from './feedback/entities/feedback.entity';
         ExhibitionModule,
         ExhibitionIntroModule,
         AuthModule, 
-
     ],
     controllers: [RegistrationController],
     providers: [RegistrationService],
