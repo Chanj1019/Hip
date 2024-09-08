@@ -38,7 +38,7 @@ export class UsersController {
     async update(
         @Param('userid') userId: number,
         @Body() body: { email: string; password?: string; nick_name: string; generation:string; }
-    ): Promise<{ message: string; result:string}> {
+    ): Promise<{ message: string }> {
         const user = await this.usersService.findOne(userId);
 
         if (!user) {
@@ -47,7 +47,7 @@ export class UsersController {
 
         const result = await this.usersService.update(userId, body.email, body.password, body.nick_name,body.generation); // 업데이트 서비스 호출
 
-        return { message: result,result }; // 성공 메시지 반환
+        return { message: result }; // 성공 메시지 반환
     }
 
     @Post('logout')
