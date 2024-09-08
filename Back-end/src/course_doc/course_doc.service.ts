@@ -8,9 +8,8 @@ import { CreateCourseDocDto } from './dto/create-course_doc.dto';
 import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { Readable } from 'stream';
-import { Response } from 'express';
 
 @Injectable()
 export class CourseDocService {
