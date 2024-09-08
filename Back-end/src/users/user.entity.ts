@@ -1,7 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
-import { Project } from './../projects/entities/project.entity';
-import { Role } from '.././enums/role.enum';
+
+import { Entity, Column, PrimaryGeneratedColumn ,OneToMany, ManyToMany, JoinTable} from 'typeorm';
+import { Role } from '../enums/role.enum';
+import { Exhibition } from '../exhibitions/exhibition.entity';
 import { Registration } from '../registration/entities/registration.entity';
+import { Project } from './../projects/entities/project.entity';
+
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -27,9 +30,12 @@ export class User {
         enum: Role,
         nullable: false,
     })
-    user_role: Role;
 
-    @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
+    user_role: Role; // Role 타입으로 변경
+
+    @OneToMany(() => Exhibition, exhibition => exhibition.user,{cascade:true})
+    exhibition: Exhibition[];
+     @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
     nick_name: string;
     
     // user - project 연결 추가

@@ -1,22 +1,3 @@
-// import { Module } from '@nestjs/common';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { UsersModule } from './users/users.module';
-// import { User } from './users/user.entity';
-// import { MaterialModule } from './material/material.module';
-
-// @Module({
-//     imports: [
-//         TypeOrmModule.forRoot({
-//         
-//         }),
-//         UsersModule,
-//         MaterialModule,
-//     ],
-// })
-// export class AppModule {}
-
-//>>>>>>>> .env 파일을 만들어 Db정보 저장후 은닉
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -24,6 +5,14 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { ExhibitionModule } from './exhibitions/exhibitions.module';
 import { Exhibition } from './exhibitions/exhibition.entity';
+
+import { ExhibitionDoc } from './exhibitions_doc/entities/exhibition_doc.entity';
+import { ExhibitionsDocModule } from './exhibitions_doc/exhibitions_doc.module';
+import { ExhibitionMember } from './exhibitions_member/entities/exhibition_member.entity';
+import { ExhibitionsMemberModule } from './exhibitions_member/exhibitions_member.module';
+import { ExhibitionIntroModule } from './exhibition_intro/exhibition_intro.module';
+import { ExhibitionIntro } from './exhibition_intro/entities/exhibition_intro.entity';
+import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
 import { Project } from './projects/entities/project.entity';
 import { ProjectDocModule } from './project_doc/project_doc.module';
@@ -35,8 +24,10 @@ import { Registration } from './registration/entities/registration.entity';
 import { FeedbackModule } from './feedback/feedback.module';
 import { Feedback } from './feedback/entities/feedback.entity';
 
+
 @Module({
     imports: [
+        AuthModule,UsersModule,
         ConfigModule.forRoot(), // ConfigModule 추가
         TypeOrmModule.forRootAsync({
             useFactory: () => ({
@@ -46,11 +37,16 @@ import { Feedback } from './feedback/entities/feedback.entity';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition,Project,Project_doc, Registration, Feedback],
+
+                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro, Project,Project_doc, Registration, Feedback],
                 synchronize: true,
             }),
         }),
-        UsersModule,ExhibitionModule, ProjectsModule, ProjectDocModule, RegistrationModule, FeedbackModule,
+        UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule, ProjectsModule, ProjectDocModule, RegistrationModule, FeedbackModule,
+        ExhibitionModule,
+        ExhibitionIntroModule,
+        AuthModule, 
+
     ],
     controllers: [RegistrationController],
     providers: [RegistrationService],
