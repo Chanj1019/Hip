@@ -71,12 +71,6 @@ export class UsersController {
         return { message: '사용자가 삭제되었습니다.' };
     }
 
-    @Post('login')
-    async login(@Body() body: {id: string; password: string }): Promise<{ message: string }> {
-        const result = await this.usersService.login(body.id, body.password);
-        return { message: result }; // 로그인 성공 시 메시지 또는 토큰 반환
-    }
-
     @Put(':userid')
     async update(
         @Param('userid') userId: number,

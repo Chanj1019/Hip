@@ -86,28 +86,6 @@ export class UsersService {
     //     return token;
     // }
 
-    async login(id: string, password: string): Promise<string> {
-        const user = await this.usersRepository.findOneBy({ id });
-        console.log('User found:', user); // 사용자 정보 로그 추가
-    
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.UNAUTHORIZED); // 사용자 미존재 에러
-        }
-    
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED); // 비밀번호 불일치 에러
-        }
-    
-        if (!process.env.JWT_SECRET) {
-            throw new Error('JWT_SECRET is not defined'); // 비밀 키 미설정 에러
-        }
-    
-        const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        return token;
-    }
-    
-
     async update(userId: number, email?: string, password?: string, nick_name?: string, generation?:string): Promise<string> {
         const user = await this.usersRepository.findOneBy({ user_id: userId });
         
