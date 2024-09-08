@@ -1,134 +1,107 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { DocNameService } from './doc_name.service';
-// import { getRepositoryToken } from '@nestjs/typeorm';
-// import { DocName } from './entities/doc_name.entity';
-// import { Repository } from 'typeorm';
-// import { NotFoundException } from '@nestjs/common';
-// import { CreateDocNameDto } from './dto/create-doc_name.dto';
-// import { UpdateDocNameDto } from './dto/update-doc_name.dto';
+import { Test, TestingModule } from '@nestjs/testing';
+import { DocNameService } from './doc_name.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { DocName } from './entities/doc_name.entity';
+import { Repository } from 'typeorm';
+import { CreateDocNameDto } from './dto/create-doc_name.dto';
+import { UpdateDocNameDto } from './dto/update-doc_name.dto';
+import { NotFoundException, InternalServerErrorException } from '@nestjs/common';
 
-// describe('DocNameService', () => {
-//   let service: DocNameService;
-//   let repository: Repository<DocName>;
+describe('DocNameService', () => {
+  let service: DocNameService;
+  let repository: Repository<DocName>;
 
-//   const mockDocNameRepository = {
-//     create: jest.fn(),
-//     save: jest.fn(),
-//     find: jest.fn(),
-//     update: jest.fn(),
-//     remove: jest.fn(),
-//     findOne: jest.fn(),
-//   };
+  const mockRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    find: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
 
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       providers: [
-//         DocNameService,
-//         {
-//           provide: getRepositoryToken(DocName),
-//           useValue: mockDocNameRepository,
-//         },
-//       ],
-//     }).compile();
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        DocNameService,
+        {
+          provide: getRepositoryToken(DocName),
+          useValue: mockRepository,
+        },
+      ],
+    }).compile();
 
-//     service = module.get<DocNameService>(DocNameService);
-//     repository = module.get<Repository<DocName>>(getRepositoryToken(DocName));
-//   });
+    service = module.get<DocNameService>(DocNameService);
+    repository = module.get<Repository<DocName>>(getRepositoryToken(DocName));
+  });
 
-//   describe('create', () => {
-//     it('should create and return a doc name', async () => {
-//       const createDocNameDto: CreateDocNameDto = {
-//         topic_title: 'Sample Topic',
-//         pa_topic_title: null,
-//         file_path: 'path/to/file',
-//       };
-//       const courseTitle = 'Sample Course';
-//       const createdDocName = { topic_id: 1, course_title: courseTitle, ...createDocNameDto };
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
 
-//       jest.spyOn(mockDocNameRepository, 'create').mockReturnValue(createdDocName);
-//       jest.spyOn(mockDocNameRepository, 'save').mockResolvedValue(createdDocName);
+  describe('create', () => {
+    it('should successfully create a doc name', async () => {
+      const createDocNameDto: CreateDocNameDto = { topic_title: 'Topic', pa_topic_title: 'Subtopic' };
+      const result = { topic_id: 1, ...createDocNameDto };
 
-//       const result = await service.create(courseTitle, createDocNameDto);
-//       expect(result).toEqual(createdDocName);
-//       expect(mockDocNameRepository.create).toHaveBeenCalledWith({ course_title: courseTitle, ...createDocNameDto });
-//       expect(mockDocNameRepository.save).toHaveBeenCalledWith(createdDocName);
-//     });
-//   });
+      mockRepository.create.mockReturnValue(result);
+      mockRepository.save.mockResolvedValue(result);
 
-//   describe('findAll', () => {
-//     it('should return an array of doc names', async () => {
-//       const courseTitle = 'Sample Course';
-//       const resultArray = [
-//         { topic_id: 1, course_title: courseTitle, topic_title: 'Topic 1' },
-//         { topic_id: 2, course_title: courseTitle, topic_title: 'Topic 2' },
-//       ];
+      expect(await service.create('Course Title', 'Topic Title', createDocNameDto)).toEqual(result);
+    });
+  });
 
-//       jest.spyOn(mockDocNameRepository, 'find').mockResolvedValue(resultArray);
+  describe('findAll', () => {
+    it('should return an array of doc names', async () => {
+      const result = [new DocName()];
+      mockRepository.find.mockResolvedValue(result);
 
-//       const result = await service.findAll(courseTitle);
-//       expect(result).toEqual(resultArray);
-//       expect(mockDocNameRepository.find).toHaveBeenCalledWith({ where: { course_title: courseTitle }, relations: ['courseDoc'] });
-//     });
-//   });
+      expect(await service.findAll('Topic Title')).toEqual(result);
+    });
+  });
 
-//   describe('update', () => {
-//     it('should update and return a doc name', async () => {
-//       const courseTitle = 'Sample Course';
-//       const id = 1;
-//       const updateDocNameDto: UpdateDocNameDto = {
-//         topic_title: 'Updated Topic',
-//         pa_topic_title: 2,
-//         file_path: 'updated/path/to/file',
-//       };
-//       const updatedDocName = { topic_id: id, course_title: courseTitle, ...updateDocNameDto };
+  describe('findOne', () => {
+    it('should return a single doc name', async () => {
+      const result = new DocName();
+      mockRepository.findOne.mockResolvedValue(result);
 
-//       jest.spyOn(mockDocNameRepository, 'update').mockResolvedValue(undefined);
-//       jest.spyOn(mockDocNameRepository, 'findOne').mockResolvedValue(updatedDocName);
+      expect(await service.findOne('Topic Title')).toEqual(result);
+    });
 
-//       const result = await service.update(courseTitle, id, updateDocNameDto);
-//       expect(result).toEqual(updatedDocName);
-//       expect(mockDocNameRepository.update).toHaveBeenCalledWith(id, updateDocNameDto);
-//     });
-//   });
+    it('should throw NotFoundException if doc name not found', async () => {
+      mockRepository.findOne.mockResolvedValue(null);
 
-//   describe('remove', () => {
-//     it('should remove a doc name', async () => {
-//       const id = 1;
-//       const docName = { topic_id: id };
+      await expect(service.findOne('Invalid Title')).rejects.toThrow(NotFoundException);
+    });
+  });
 
-//       jest.spyOn(mockDocNameRepository, 'findOne').mockResolvedValue(docName);
-//       jest.spyOn(mockDocNameRepository, 'remove').mockResolvedValue(undefined);
+  describe('update', () => {
+    it('should successfully update a doc name', async () => {
+      const updateDocNameDto: UpdateDocNameDto = { topic_title: 'Updated Topic' };
+      const docName = new DocName();
+      docName.topic_id = 1;
 
-//       await service.remove(id);
-//       expect(mockDocNameRepository.remove).toHaveBeenCalledWith(docName);
-//     });
+      mockRepository.findOne.mockResolvedValue(docName);
+      mockRepository.update.mockResolvedValue({ affected: 1 });
 
-//     it('should throw a NotFoundException if doc name not found', async () => {
-//       const id = 1;
+      expect(await service.update('Topic Title', updateDocNameDto)).toEqual(docName);
+    });
 
-//       jest.spyOn(mockDocNameRepository, 'findOne').mockResolvedValue(null);
+    it('should throw NotFoundException if doc name not found', async () => {
+        mockRepository.findOne.mockResolvedValue(null);
+    
+        await expect(service.update('Invalid Title', {})).rejects.toThrow(NotFoundException);
+    });
+  });
 
-//       await expect(service.remove(id)).rejects.toThrow(NotFoundException);
-//     });
-//   });
+  describe('remove', () => {
+    it('should remove a doc name', async () => {
+      const docName = new DocName();
+      mockRepository.findOne.mockResolvedValue(docName);
+      mockRepository.remove.mockResolvedValue({});
 
-//   describe('findOne', () => {
-//     it('should return a doc name', async () => {
-//       const id = 1;
-//       const docName = { topic_id: id, course_title: 'Sample Course', topic_title: 'Sample Topic' };
-
-//       jest.spyOn(mockDocNameRepository, 'findOne').mockResolvedValue(docName);
-
-//       const result = await service.findOne(id);
-//       expect(result).toEqual(docName);
-//     });
-
-//     it('should throw a NotFoundException if doc name not found', async () => {
-//       const id = 1;
-
-//       jest.spyOn(mockDocNameRepository, 'findOne').mockResolvedValue(null);
-
-//       await expect(service.findOne(id)).rejects.toThrow(NotFoundException);
-//     });
-//   });
-// });
+      await service.remove('Topic Title');
+      expect(mockRepository.remove).toHaveBeenCalledWith(docName);
+    });
+  });
+});

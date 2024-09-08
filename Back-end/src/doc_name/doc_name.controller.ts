@@ -45,24 +45,13 @@ export class DocNameController {
     @Patch(':topicTitle')
     async update(
       @Param('topicTitle') topicTitle: string,
-      @Param('id') id: number,
       @Body() updateDocNameDto: UpdateDocNameDto
     ) {
-      try {
-        const data = await this.docNameService.update(topicTitle, id, updateDocNameDto);
-        
-        if (!data) {
-          throw new NotFoundException('Document not found or update failed.');
-        }
-  
+        const data = await this.docNameService.update(topicTitle, updateDocNameDto);
         return {
           message: "doc_name 수정에 성공하셨습니다",
           data: data
         };
-      } catch (error) {
-        console.error('Error updating doc name:', error);
-        throw new InternalServerErrorException('Failed to update doc name');
-      }
     }
   
 
