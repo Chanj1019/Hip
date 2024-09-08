@@ -1,22 +1,3 @@
-// import { Module } from '@nestjs/common';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { UsersModule } from './users/users.module';
-// import { User } from './users/user.entity';
-// import { MaterialModule } from './material/material.module';
-
-// @Module({
-//     imports: [
-//         TypeOrmModule.forRoot({
-//         
-//         }),
-//         UsersModule,
-//         MaterialModule,
-//     ],
-// })
-// export class AppModule {}
-
-//>>>>>>>> .env 파일을 만들어 Db정보 저장후 은닉
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -34,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
+        AuthModule,UsersModule,
         ConfigModule.forRoot(), // ConfigModule 추가
         TypeOrmModule.forRootAsync({
             useFactory: () => ({
