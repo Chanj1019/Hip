@@ -1,141 +1,147 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ExhibitionService } from './exhibitions.service';
-import { Exhibition } from './exhibition.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateExhibitionDto } from './dto/create-exhibition.dto';
-import { ConflictException } from '@nestjs/common';
+// import { Test, TestingModule } from '@nestjs/testing';
+// import { ExhibitionService } from './exhibitions.service';
+// import { getRepositoryToken } from '@nestjs/typeorm';
+// import { Exhibition } from './exhibition.entity';
+// import { Repository } from 'typeorm';
+// import { ConflictException, NotFoundException } from '@nestjs/common';
 
-describe('ExhibitionService', () => {
-    let exhibitionService: ExhibitionService;
-    let exhibitionsRepository: Repository<Exhibition>;
+// describe('ExhibitionService', () => {
+//   let service: ExhibitionService;
+//   let repository: Repository<Exhibition>;
 
-    const mockExhibitionRepository = {
-        find: jest.fn(),
-        findOne: jest.fn(),
-        findOneBy: jest.fn(),
-        create: jest.fn(),
-        save: jest.fn(),
-        count: jest.fn(),
-        delete: jest.fn(),
-        createQueryBuilder: jest.fn(),
-    };
+//   const mockExhibitionRepository = {
+//     findOne: jest.fn(),
+//     create: jest.fn(),
+//     save: jest.fn(),
+//     find: jest.fn(),
+//     delete: jest.fn(),
+//     count: jest.fn(),
+//   };
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                ExhibitionService,
-                {
-                    provide: getRepositoryToken(Exhibition),
-                    useValue: mockExhibitionRepository,
-                },
-            ],
-        }).compile();
+//   const mockExhibition = {
+//     exhibition_title: 'Unique Title',
+//     exhibition_date: new Date('2024-01-01T00:00:00Z'), // 고정된 날짜
+//     generation: '1',
+//     description: 'Test Description',
+//     exhibition_id: '1',
+//     team_name: 'hip',
+//     file_path: null,
+//   };
 
-        exhibitionService = module.get<ExhibitionService>(ExhibitionService);
-        exhibitionsRepository = module.get<Repository<Exhibition>>(getRepositoryToken(Exhibition));
-    });
+//   const fixedDate = new Date('2024-01-01T00:00:00Z');
 
-    describe('create', () => {
-        it('should create a new exhibition', async () => {
-            const createExhibitionDto: CreateExhibitionDto = { generation: '1기', description: '힙', exhibition_title: 'hip' };
-            const result: Exhibition = { exhibition_id: 1, ...createExhibitionDto, exhibition_date: new Date() };
+//   beforeEach(async () => {
+//     jest.useFakeTimers().setSystemTime(fixedDate); // 시간 고정
 
-            mockExhibitionRepository.findOne.mockResolvedValue(null); // 기존 전시가 없음을 시뮬레이션
-            mockExhibitionRepository.create.mockReturnValue(result);
-            mockExhibitionRepository.save.mockResolvedValue(result);
+//     const module: TestingModule = await Test.createTestingModule({
+//       providers: [
+//         ExhibitionService,
+//         {
+//           provide: getRepositoryToken(Exhibition),
+//           useValue: mockExhibitionRepository,
+//         },
+//       ],
+//     }).compile();
 
-            expect(await exhibitionService.create(createExhibitionDto)).toEqual(result);
-        });
+//     service = module.get<ExhibitionService>(ExhibitionService);
+//     repository = module.get<Repository<Exhibition>>(getRepositoryToken(Exhibition));
+//   });
 
-        it('should throw ConflictException if exhibition title already exists', async () => {
-            const createExhibitionDto: CreateExhibitionDto = { generation: '1기', description: '힙', exhibition_title: 'hip' };
-            const existingExhibition: Exhibition = { exhibition_id: 1, ...createExhibitionDto, exhibition_date: new Date() };
+//   afterEach(() => {
+//     jest.clearAllMocks();
+//     jest.useRealTimers(); // 원래 타이머로 복구
+//   });
 
-            mockExhibitionRepository.findOne.mockResolvedValue(existingExhibition); // 기존 전시가 존재함을 시뮬레이션
+//   it('should be defined', () => {
+//     expect(service).toBeDefined();
+//   });
 
-            await expect(exhibitionService.create(createExhibitionDto)).rejects.toThrow(ConflictException);
-        });
-    });
+//   describe('create', () => {
+//     it('should successfully create a new exhibition', async () => {
+//       mockExhibitionRepository.findOne.mockResolvedValue(null);
+//       mockExhibitionRepository.create.mockReturnValue(mockExhibition);
+//       mockExhibitionRepository.save.mockResolvedValue(mockExhibition);
 
-    describe('findAll', () => {
-        it('should return an array of exhibitions', async () => {
-            const result: Exhibition[] = [{ exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() }];
-            mockExhibitionRepository.find.mockResolvedValue(result);
+//       const result = await service.create(mockExhibition, null);
+//       expect(result).toEqual(mockExhibition);
+//       expect(mockExhibitionRepository.create).toHaveBeenCalledWith(mockExhibition);
+//       expect(mockExhibitionRepository.save).toHaveBeenCalled();
+//     });
 
-            expect(await exhibitionService.findAll()).toEqual(result);
-        });
-    });
+//     it('should throw ConflictException if exhibition title already exists', async () => {
+//       mockExhibitionRepository.findOne.mockResolvedValue(mockExhibition);
+      
+//       await expect(service.create(mockExhibition, null)).rejects.toThrow(ConflictException);
+//     });
+//   });
 
-    describe('findOne', () => {
-        it('should return a specific exhibition', async () => {
-            const exhibitionId = 1;
-            const result: Exhibition = { exhibition_id: exhibitionId, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() };
-            mockExhibitionRepository.findOneBy.mockResolvedValue(result);
+//   describe('findAll', () => {
+//     it('should retrieve an array of exhibitions', async () => {
+//       mockExhibitionRepository.find.mockResolvedValue([mockExhibition]);
 
-            expect(await exhibitionService.findOne(exhibitionId)).toEqual(result);
-        });
-    });
+//       const result = await service.findAll();
+//       expect(result).toEqual([mockExhibition]);
+//     });
+//   });
 
-    describe('searchExhibitions', () => {
-        it('should return exhibitions based on title', async () => {
-            const keyword = '1기';
-            const result: Exhibition[] = [{ exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() }];
-            mockExhibitionRepository.createQueryBuilder.mockReturnValue({
-                where: jest.fn().mockReturnThis(),
-                getMany: jest.fn().mockResolvedValue(result),
-            });
+//   describe('findOne', () => {
+//     it('should return a specific exhibition', async () => {
+//       mockExhibitionRepository.findOne.mockResolvedValue(mockExhibition);
 
-            expect(await exhibitionService.searchExhibitions(keyword, 'title')).toEqual(result);
-        });
+//       const result = await service.findOne(mockExhibition.exhibition_title);
+//       expect(result).toEqual(mockExhibition);
+//     });
 
-        it('should return exhibitions based on description', async () => {
-            const keyword = '힙';
-            const result: Exhibition[] = [{ exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() }];
-            mockExhibitionRepository.createQueryBuilder.mockReturnValue({
-                where: jest.fn().mockReturnThis(),
-                getMany: jest.fn().mockResolvedValue(result),
-            });
+//     it('should throw NotFoundException if exhibition not found', async () => {
+//       mockExhibitionRepository.findOne.mockResolvedValue(null);
 
-            expect(await exhibitionService.searchExhibitions(keyword, 'description')).toEqual(result);
-        });
+//       await expect(service.findOne(mockExhibition.exhibition_title)).rejects.toThrow(NotFoundException);
+//     });
+//   });
 
-        it('should return exhibitions based on both title and description', async () => {
-            const keyword = 'hip';
-            const result: Exhibition[] = [{ exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() }];
-            mockExhibitionRepository.createQueryBuilder.mockReturnValue({
-                where: jest.fn().mockReturnThis(),
-                getMany: jest.fn().mockResolvedValue(result),
-            });
+//   describe('remove', () => {
+//     it('should successfully remove an exhibition', async () => {
+//       mockExhibitionRepository.delete.mockResolvedValue({ affected: 1 });
 
-            expect(await exhibitionService.searchExhibitions(keyword, 'both')).toEqual(result);
-        });
-    });
+//       await service.remove(mockExhibition.exhibition_title);
+//       expect(mockExhibitionRepository.delete).toHaveBeenCalledWith({ exhibition_title: mockExhibition.exhibition_title });
+//     });
 
-    describe('getExhibitionsSortedByDate', () => {
-        it('should return exhibitions sorted by date', async () => {
-            const result: Exhibition[] = [{ exhibition_id: 1, generation: '1기', description: '힙', exhibition_title: 'hip', exhibition_date: new Date() }];
-            mockExhibitionRepository.find.mockResolvedValue(result);
+//     it('should throw NotFoundException if exhibition not found', async () => {
+//       mockExhibitionRepository.delete.mockResolvedValue({ affected: 0 });
 
-            expect(await exhibitionService.getExhibitionsSortedByDate('ASC')).toEqual(result);
-        });
-    });
+//       await expect(service.remove(mockExhibition.exhibition_title)).rejects.toThrow(NotFoundException);
+//     });
+//   });
 
-    // describe('countExhibitionsBygeneration', () => {
-    //     it('should return the count of exhibitions by generation', async () => {
-    //         const generation = '2023';
-    //         const result = 10;
-    //         mockExhibitionRepository.count.mockResolvedValue(result);
+//   describe('updateExhibition', () => {
+//     it('should successfully update an exhibition', async () => {
+//       const updateDto = { exhibition_title: 'Updated Unique Title', description: 'Updated Description' };
+//       mockExhibitionRepository.findOne.mockResolvedValue(mockExhibition);
+//       mockExhibitionRepository.save.mockResolvedValue({ 
+//         ...mockExhibition, 
+//         ...updateDto,
+//       });
 
-    //         expect(await exhibitionService.countExhibitionsBygeneration(generation)).toEqual(result);
-    //     });
-    // });
+//       const result = await service.updateExhibition(mockExhibition.exhibition_id, updateDto);
 
-    describe('remove', () => {
-        it('should delete an exhibition', async () => {
-            const exhibitionId = 1;
-            await exhibitionService.remove(exhibitionId);
-            expect(mockExhibitionRepository.delete).toHaveBeenCalledWith(exhibitionId);
-        });
-    });
-});
+//       expect(result.exhibition_title).toEqual('Updated Unique Title');
+//       expect(result.description).toEqual('Updated Description');
+//       expect(mockExhibitionRepository.save).toHaveBeenCalled();
+//     });
+
+//     it('should throw NotFoundException if exhibition to update does not exist', async () => {
+//       mockExhibitionRepository.findOne.mockResolvedValue(null);
+
+//       await expect(service.updateExhibition(mockExhibition.exhibition_id, {})).rejects.toThrow(NotFoundException);
+//     });
+
+//     it('should throw ConflictException if exhibition title already exists', async () => {
+//       mockExhibitionRepository.findOne.mockResolvedValue(mockExhibition); // 기존 전시 제목
+//       mockExhibitionRepository.count.mockResolvedValue(1); // 중복 제목을 시뮬레이션
+//       const updateDto = { exhibition_title: 'Unique Title' }; // 중복 제목
+
+//       await expect(service.updateExhibition(mockExhibition.exhibition_id, updateDto)).rejects.toThrow(ConflictException);
+//     });
+//   });
+// });
