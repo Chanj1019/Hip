@@ -29,17 +29,13 @@ import { ProjectsModule } from './projects/projects.module';
 import { Project } from './projects/entities/project.entity';
 import { ProjectDocModule } from './project_doc/project_doc.module';
 import { Project_doc } from './project_doc/entities/project_doc.entity';
-import { RegistrationController } from './registration/registration.controller';
-import { RegistrationService } from './registration/registration.service';
 import { RegistrationModule } from './registration/registration.module';
 import { Registration } from './registration/entities/registration.entity';
 import { FeedbackModule } from './feedback/feedback.module';
 import { Feedback } from './feedback/entities/feedback.entity';
 
-
 @Module({
     imports: [
-        AuthModule,UsersModule,
         ConfigModule.forRoot(), // ConfigModule 추가
         TypeOrmModule.forRootAsync({
             useFactory: () => ({
@@ -49,7 +45,8 @@ import { Feedback } from './feedback/entities/feedback.entity';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro , Project,Project_doc, Registration, Feedbac, Course, UCat, DocName, CourseDoc],
+                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro,
+                    Project,Project_doc, Registration,Feedback, Course, UCat, DocName, CourseDoc],
                 synchronize: true,
             }),
         }),
@@ -60,17 +57,13 @@ import { Feedback } from './feedback/entities/feedback.entity';
             dest: './uploads',
         }),
         UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule, ProjectsModule, ProjectDocModule, RegistrationModule, FeedbackModule,
-        ExhibitionModule,
-        ExhibitionIntroModule,
-        AuthModule,
-        CoursesModule,
+        CoursesModule,ExhibitionIntroModule,ExhibitionModule,
         UcatModule,
         DocNameModule,
         CourseDocModule,
         VideoTopicModule,
         VideoModule,
+        AuthModule,
     ],
-    controllers: [RegistrationController],
-    providers: [RegistrationService],
 })
 export class AppModule {}
