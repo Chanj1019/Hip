@@ -1,1 +1,27 @@
-export class VideoTopic {}
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Course } from '../../courses/entities/course.entity';
+
+export class VideoTopic {
+    @PrimaryGeneratedColumn()
+    video_topic_id: number;
+
+    @Column({ nullable: true })
+    course_title: string;
+
+    @Column({ type: 'varchar', length: 255 })
+    video_topic_title: string;
+
+    @Column({ nullable: true })
+    video_pa_topic_title: string;
+    
+    // @ManyToOne(() => VideoTopic, videoTopic => VideoTopic.subTopics, { nullable: true })
+    // @JoinColumn({ name: 'pa_topic_id' })
+    // pa_topic: VideoTopic;
+
+    // @OneToMany(() => VideoTopic, videoTopic => videoTopic.pa_topic)
+    // subTopics: VideoTopic[];
+
+    @ManyToOne(() => Course, course => course.videoTopic, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'course_id' })
+    course: Course;
+}
