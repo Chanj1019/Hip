@@ -1,15 +1,15 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe, ForbiddenException, UseGuards } from '@nestjs/common';
+import { Controller , Get , Post , Body , Param , Put , Delete , ParseIntPipe , UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { UsersService } from '../users/users.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // JWT 인증 가드 임포트
 import { RolesGuard } from '../auth/roles.guard'; // 역할 기반 가드 임포트
 import { Roles } from '../auth/roles.decorator'; // 역할 데코레이터 임포트
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('projects')
-@UseGuards(JwtAuthGuard, RolesGuard) // 모든 경로에 JWT 인증 및 역할 기반 가드 사용
 export class ProjectsController {
     constructor(private readonly projectsService: ProjectsService, private readonly usersService: UsersService) {}
 
