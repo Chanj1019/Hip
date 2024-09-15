@@ -1,17 +1,16 @@
 import { Controller, Post, Get, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { Course } from './entities/course.entity';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')
 export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @UseGuards(AuthGuard('jwt'),RolesGuard)
-    @Roles('instructor')
+    @Roles('amdin','instructor')
     async create(
       @Body() createCourseDto: any
     ) {
@@ -23,6 +22,7 @@ export class CoursesController {
     }
 
     @Get()
+    @Roles('admin')
     async findAll() {
         const data = await this.coursesService.findAll();
         return {
@@ -43,8 +43,7 @@ export class CoursesController {
     }
 
     @Patch(':id')
-    @UseGuards(AuthGuard('jwt'),RolesGuard)
-    @Roles('instructor')
+    @Roles('instructor','admin')
     async update(
       @Param('id') id: string, @Body() updateCourseDto: any
     ) {
@@ -56,8 +55,7 @@ export class CoursesController {
     }
 
     @Delete(':id')
-    @UseGuards(AuthGuard('jwt'),RolesGuard)
-    @Roles('instructor')
+    @Roles('instructor','admin')
     async remove(
       @Param('id') id: string
     ) {
