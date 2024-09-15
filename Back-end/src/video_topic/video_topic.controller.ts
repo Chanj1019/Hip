@@ -1,79 +1,75 @@
-import { Controller, Post, Get, Patch, Delete, Param, Body, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Query, Body, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { VideoTopicService } from './video_topic.service';
 import { CreateVideoTopicDto } from './dto/create-video_topic.dto'; // CreateDocNameDto 임포트
 import { UpdateVideoTopicDto } from './dto/update-video_topic.dto'; // UpdateDocNameDto 임포트
 
-@Controller('courses/:courseTitle/docNames')
+@Controller('courses/:courseTitle/videoTopic')
 export class VideoTopicController {
-    // constructor(private readonly docNameService: VideoTopicService) {}
+    constructor(private readonly videoTopicService: VideoTopicService) {}
 
-    // @Post('register')
-    // async create(
-    //     @Param('courseTitle') courseTitle: string,
-    //     @Param('topicTitle') topicTitle: string,
-    //     @Body() createDocNameDto: CreateVideoTopicDto
-    // ) {
-    //     const data = await this.docNameService.create(courseTitle, topicTitle, createDocNameDto);
-    //     return {
-    //         message: "doc_name 생성에 성공하셨습니다",
-    //         data: data
-    //     };
-    // }
+    @Post('register')
+    async create(
+        @Param('courseTitle') courseTitle: string,
+        @Query('videoTopic') videoTopic: string,
+        @Body() createVideoTopicDto: CreateVideoTopicDto
+    ) {
+        const data = await this.videoTopicService.create(courseTitle, videoTopic, createVideoTopicDto);
+        return {
+            message: "video topic 생성에 성공하셨습니다",
+            data: data
+        };
+    }
 
-    // @Get()
-    // async findAll(
-    //   @Param('topicTitle') topicTitle: string
-    // ) {
-    //     const data = await this.docNameService.findAll(topicTitle);
-    //     return {
-    //         message: "전체 강의의 doc_name 조회에 성공하셨습니다",
-    //         data: data
-    //     };
-    // }
+    @Get()
+    async findAll(
+      @Query('videoTopic') videoTopic: string
+    ) {
+        const data = await this.videoTopicService.findAll(videoTopic);
+        return {
+            message: "전체 강의의 doc_name 조회에 성공하셨습니다",
+            data: data
+        };
+    }
 
-    // @Get(':topicTitle')
-    // async findOne(
-    //   @Param('topicTitle') topicTitle: string
-    // ) {
-    //     const data = await this.docNameService.findOne(topicTitle);
-    //     return {
-    //         message: "특정 강의의 doc_name 조회에 성공하셨습니다",
-    //         data: data
-    //     };
-    // }
+    @Get(':videoTopic')
+    async findOne(
+      @Query('videoTopic') videoTopic: string
+    ) {
+        const data = await this.videoTopicService.findOne(videoTopic);
+        return {
+            message: "특정 강의의 doc_name 조회에 성공하셨습니다",
+            data: data
+        };
+    }
 
-    // @Patch(':topicTitle')
-    // async update(
-    //   @Param('topicTitle') topicTitle: string,
-    //   @Param('id') id: number,
-    //   @Body() updateDocNameDto: UpdateDocNameDto
-    // ) {
-    //   try {
-    //     const data = await this.docNameService.update(topicTitle, id, updateDocNameDto);
-        
-    //     if (!data) {
-    //       throw new NotFoundException('Document not found or update failed.');
-    //     }
-  
-    //     return {
-    //       message: "doc_name 수정에 성공하셨습니다",
-    //       data: data
-    //     };
-    //   } catch (error) {
-    //     console.error('Error updating doc name:', error);
-    //     throw new InternalServerErrorException('Failed to update doc name');
-    //   }
-    // }
-  
+    @Patch(':videoTopic')
+    async update(
+        @Param('courseTitle') courseTitle: string,
+        @Param('videoTopic') videoTopic: string,
+        @Body() updateVideoTopicDto: UpdateVideoTopicDto
+    ) {
+        const updatedData = await this.videoTopicService.update(courseTitle, videoTopic, updateVideoTopicDto);
+        if (!updatedData) {
+            throw new NotFoundException("비디오 주제를 찾을 수 없습니다.");
+        }
+        return {
+            message: "video topic 업데이트에 성공하셨습니다",
+            data: updatedData
+        };
+    }
 
-    // @Delete(':topicTitle')
-    // async remove(
-    //   @Param('topicTitle') topicTitle: string
-    // ) {
-    //     const data = await this.docNameService.remove(topicTitle);
-    //     return {
-    //         message: "doc_name 삭제에 성공하셨습니다",
-    //         data: data
-    //     };
-    // }
+    @Delete(':videoTopic')
+    async remove(
+        @Param('courseTitle') courseTitle: string,
+        @Param('videoTopic') videoTopic: string
+    ) {
+        const deletedData = await this.videoTopicService.remove(courseTitle, videoTopic);
+        if (!deletedData) {
+            throw new NotFoundException("비디오 주제를 찾을 수 없습니다.");
+        }
+        return {
+            message: "video topic 삭제에 성공하셨습니다",
+            data: deletedData
+        };
+    }
 }
