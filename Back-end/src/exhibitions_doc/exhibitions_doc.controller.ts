@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param ,HttpCode, Res,HttpStatus, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param , UseGuards} from '@nestjs/common';
 import { ExhibitionsDocService } from './exhibitions_doc.service';
 import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
@@ -7,11 +7,24 @@ import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('exhibition-docs')
 export class ExhibitionsDocController {
   constructor(private readonly exhibitionDocsService: ExhibitionsDocService) {}
+
+  @Post('register')
+  @UseInterceptors(FileInterceptor('file')) // 'file' 필드에서 파일을 업로드 받음
+  @Roles('admin')
+  async createExhibitionDoc(
+    @Body() createExhibitionDocDto: CreateExhibitionsDocDto,
+    @UploadedFile() file: Express.Multer.File, // 업로드된 파일을 가져옴
+  ): Promise<{ message: string; doc: any }> { // 반환 타입 정의
+    const doc = await this.exhibitionDocsService.createExhibitionDoc(createExhibitionDocDto, file);
+    return { message: '전시 문서가 성공적으로 등록되었습니다.', doc };
+  }
+
 
   @Get()
   async findAll(): Promise<{doc:ExhibitionDoc[];message:string}> {
@@ -25,21 +38,7 @@ export class ExhibitionsDocController {
     return {message:'자료 조회를 완료했습니다.',doc};
   }
 
-  
-  @Post('register')
-  @UseInterceptors(FileInterceptor('file')) // 'file' 필드에서 파일을 업로드 받음
-  @UseGuards(AuthGuard('jwt'),RolesGuard)
-  @Roles('admin')
-  async createExhibitionDoc(
-    @Body() createExhibitionDocDto: CreateExhibitionsDocDto,
-    @UploadedFile() file: Express.Multer.File, // 업로드된 파일을 가져옴
-  ): Promise<{ message: string; doc: any }> { // 반환 타입 정의
-    const doc = await this.exhibitionDocsService.createExhibitionDoc(createExhibitionDocDto, file);
-    return { message: '전시 문서가 성공적으로 등록되었습니다.', doc };
-  }
-
   @Put(':id')
-  @UseGuards(AuthGuard('jwt'),RolesGuard)
   @Roles('admin')
   async update(
     @Param('id') id: number,
@@ -50,7 +49,6 @@ export class ExhibitionsDocController {
   } 
   
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'),RolesGuard)
   @Roles('admin')
   async remove(@Param('id') id: number): Promise<{message:string}> {
     await this.exhibitionDocsService.remove(id);
