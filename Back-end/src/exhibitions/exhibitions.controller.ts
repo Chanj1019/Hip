@@ -8,14 +8,14 @@ import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('exhibitions')
 export class ExhibitionController {
     constructor(private readonly exhibitionService: ExhibitionService) {}
 
     @Post('register')
-    @UseGuards(AuthGuard('jwt'),RolesGuard)
     @Roles('admin')
     @UseInterceptors(FileInterceptor('file')) // 'file'은 전송할 파일의 필드 이름입니다.
     async create(
@@ -63,39 +63,8 @@ export class ExhibitionController {
     ): Promise<Exhibition[]> {
         return this.exhibitionService.getExhibitionsSortedByGeneration(order);
     }
-    
-    @Delete(':exhibition_title')
-    @UseGuards(AuthGuard('jwt'),RolesGuard)
-    @Roles('admin')
-    async remove(@Param('exhibition_title') exhibitionTitle: string): Promise<{ message: string }> {
-        await this.exhibitionService.remove(exhibitionTitle);
-        return { message: '전시가 삭제되었습니다.' };
-    }
 
- 
-    // @Patch(':exhibition_title')
-    // async update(
-    //     @Param('exhibition_title') exhibitionTitle: string,
-    //     @Body() body: UpdateExhibitionDto // DTO 사용
-    // ): Promise<{ message: string }> {
-    //     try {
-    //         await this.exhibitionService.updateExhibition(
-    //             exhibitionTitle,
-    //             body // 두 번째 인자로 DTO를 전달
-    //         );
-    
-    //         return { message: '전시 정보가 성공적으로 업데이트되었습니다.' };
-    //     } catch (error) {
-    //         if (error.message === '전시를 찾을 수 없습니다') {
-    //             throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-    //         } else if (error.message === '전시 제목이 이미 존재합니다') {
-    //             throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    //         }
-    //         throw new HttpException('업데이트 중 오류가 발생했습니다', HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
     @Patch(':exhibition_title')
-    @UseGuards(AuthGuard('jwt'),RolesGuard)
     @Roles('admin')
     async update(
     @Param('exhibition_title') exhibitionTitle: string,
@@ -115,6 +84,13 @@ export class ExhibitionController {
             throw new HttpException(error.message, HttpStatus.CONFLICT);
         }
         throw new HttpException('업데이트 중 오류가 발생했습니다', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-}
+
+    @Delete(':exhibition_title')
+    @Roles('admin')
+    async remove(@Param('exhibition_title') exhibitionTitle: string): Promise<{ message: string }> {
+        await this.exhibitionService.remove(exhibitionTitle);
+        return { message: '전시가 삭제되었습니다.' };
+    }
 }
