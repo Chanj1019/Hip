@@ -1,8 +1,12 @@
-import { Controller, Post, Get, Patch, Delete, Param, Body, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
 import { DocNameService } from './doc_name.service';
 import { CreateDocNameDto } from './dto/create-doc_name.dto'; // CreateDocNameDto 임포트
 import { UpdateDocNameDto } from './dto/update-doc_name.dto'; // UpdateDocNameDto 임포트
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses/:courseTitle/docNames')
 export class DocNameController {
     constructor(private readonly docNameService: DocNameService) {}
@@ -21,6 +25,7 @@ export class DocNameController {
     }
 
     @Get()
+    @Roles('admin')
     async findAll(
       @Param('topicTitle') topicTitle: string
     ) {
