@@ -9,7 +9,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 
-dotenv.config(); // .env 파일 로드
+dotenv.config(); 
 @Injectable()
 export class ExhibitionsDocService {
   private s3: S3Client;
@@ -29,7 +29,6 @@ export class ExhibitionsDocService {
     if (!S3_BUCKET_NAME) {
         throw new InternalServerErrorException('S3 버킷 이름이 설정되지 않았습니다.');
     }
-
     // S3 클라이언트 초기화
     this.s3 = new S3Client({
         region: AWS_REGION,
@@ -39,6 +38,7 @@ export class ExhibitionsDocService {
         },
     });
   }
+
   async createExhibitionDoc(createExhibitionDocDto: CreateExhibitionsDocDto, file: Express.Multer.File): Promise<ExhibitionDoc> {
     const exhibitionId = Number(createExhibitionDocDto.exhibition_id);
     const exhibition = await this.exhibitionRepository.findOne({ where: { exhibition_id: exhibitionId } });
@@ -88,7 +88,7 @@ export class ExhibitionsDocService {
   }
 
   async findOne(id: number): Promise<ExhibitionDoc> {
-    // ID가 유효하지 않은 경우 BadRequestException 던지기
+    
     if (id <= 0) {
       throw new BadRequestException('유효하지 않은 ID입니다.');
     }
