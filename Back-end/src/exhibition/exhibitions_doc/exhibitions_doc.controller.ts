@@ -29,13 +29,13 @@ export class ExhibitionsDocController {
   @Get()
   async findAll(): Promise<{doc:ExhibitionDoc[];message:string}> {
     const doc = await this.exhibitionDocsService.findAll();
-    return {message:'전체 자료 조회를 완료했습니다.',doc};
+    return { message:'전체 자료 조회를 완료했습니다.',doc };
   }
   
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<{doc:ExhibitionDoc; message:string}> {
+  async findOne(@Param('id') id: number): Promise<{ doc:ExhibitionDoc; message:string }> {
     const doc =await this.exhibitionDocsService.findOne(id);
-    return {message:'자료 조회를 완료했습니다.',doc};
+    return { message:'자료 조회를 완료했습니다.',doc };
   }
 
   @Put(':id')
@@ -43,14 +43,14 @@ export class ExhibitionsDocController {
   async update(
     @Param('id') id: number,
     @Body() updateExhibitionsDocDto: UpdateExhibitionsDocDto,
-  ): Promise<{doc:ExhibitionDoc; message:string}> {
+  ): Promise<{ doc:ExhibitionDoc; message:string }> {
     const doc = await this.exhibitionDocsService.update(id, updateExhibitionsDocDto);
-    return {message: '전시 문서가 성공적으로 업데이트 되었습니다.',doc};
+    return { message: '전시 문서가 성공적으로 업데이트 되었습니다.',doc };
   } 
   
   @Delete(':id')
   @Roles('admin')
-  async remove(@Param('id') id: number): Promise<{message:string}> {
+  async remove(@Param('id') id: number): Promise<{ message:string }> {
     await this.exhibitionDocsService.remove(id);
     return ({ message: '성공적으로 삭제되었습니다.' });
   }

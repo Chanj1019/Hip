@@ -4,17 +4,17 @@ import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
 
 
 export class UpdateExhibitionsMemberDto extends PartialType(CreateExhibitionsMemberDto) {
-    @IsOptional() // 선택적 필드
+    @IsOptional() 
     @IsString()
-    @IsNotEmpty() // 비어 있을 수 없음
-    name?: string; // 이름
+    @IsNotEmpty() 
+    name?: string; 
 
-    @IsOptional() // 선택적 필드
+    @IsOptional() 
     @IsString()
-    nick_name?: string; // 닉네임
+    nick_name?: string; 
 
-    @IsOptional() // 선택적 필드
+    @IsOptional() 
     @IsString()
-    @IsNotEmpty() // 비어 있을 수 없음
-    generation?: string; // 기수
+    @IsNotEmpty() 
+    generation?: string; 
 }

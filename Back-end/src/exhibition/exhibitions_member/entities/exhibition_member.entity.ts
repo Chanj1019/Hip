@@ -20,5 +20,5 @@ export class ExhibitionMember {
 
     @ManyToOne(() => Exhibition, exhibition => exhibition.exhibitionMembers, { onDelete: 'CASCADE' }) // Exhibition과의 관계 설정
     @JoinColumn({ name: 'exhibition_id', referencedColumnName: 'exhibition_id'})
-    exhibition: Exhibition; // 전시 정보
+    exhibition: Exhibition;
 }

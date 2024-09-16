@@ -7,8 +7,10 @@ import { Exhibition } from '../exhibitions/exhibition.entity';
 import { UsersModule } from '../../user/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ExhibitionIntro, Exhibition]),
-  UsersModule],
+  imports: [
+  TypeOrmModule.forFeature([ExhibitionIntro, Exhibition]),
+  UsersModule
+  ],
   controllers: [ExhibitionIntroController],
   providers: [ExhibitionIntroService],
 })
