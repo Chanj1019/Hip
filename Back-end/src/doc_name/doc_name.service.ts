@@ -12,10 +12,9 @@ export class DocNameService {
       private docNameRepository: Repository<DocName>,
   ) {}
 
-  async create(courseTitle: string, topicTitle: string, createDocNameDto: CreateDocNameDto): Promise<DocName> {
+  async create(courseTitle: string, createDocNameDto: CreateDocNameDto): Promise<DocName> {
       const docName = this.docNameRepository.create({ 
-          course_title: courseTitle, 
-          topic_title: topicTitle, 
+          course_title: courseTitle,
           ...createDocNameDto 
       });
       return await this.docNameRepository.save(docName);
