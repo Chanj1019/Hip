@@ -1,4 +1,4 @@
-import { Controller , Post , Get , Patch , Delete , Param , Query , Body , NotFoundException , BadRequestException } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Body, NotFoundException } from '@nestjs/common';
 import { VideoTopicService } from './video_topic.service';
 import { CreateVideoTopicDto } from './dto/create-video_topic.dto';
 import { UpdateVideoTopicDto } from './dto/update-video_topic.dto';

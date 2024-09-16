@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DocName } from './entities/doc_name.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

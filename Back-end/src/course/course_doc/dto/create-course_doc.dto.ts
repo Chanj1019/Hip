@@ -1,4 +1,4 @@
-import {IsString, IsNotEmpty, MaxLength, IsOptional, IsDate} from 'class-validator'
+import { IsString, MaxLength, IsOptional, IsDate } from 'class-validator'
 export class CreateCourseDocDto {
     @IsDate()
     @IsOptional()
