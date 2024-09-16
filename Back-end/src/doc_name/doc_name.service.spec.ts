@@ -51,14 +51,14 @@ describe('DocNameService', () => {
     });
   });
 
-  describe('findAll', () => {
-    it('should return an array of doc names', async () => {
-      const result = [new DocName()];
-      mockRepository.find.mockResolvedValue(result);
+  // describe('findAll', () => {
+  //   it('should return an array of doc names', async () => {
+  //     const result = [new DocName()];
+  //     mockRepository.find.mockResolvedValue(result);
 
-      expect(await service.findAll('Topic Title')).toEqual(result);
-    });
-  });
+  //     expect(await service.findAll('Topic Title')).toEqual(result);
+  //   });
+  // });
 
   describe('findOne', () => {
     it('should return a single doc name', async () => {

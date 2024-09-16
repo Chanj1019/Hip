@@ -6,30 +6,30 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses/:courseTitle/docNames')
 export class DocNameController {
     constructor(private readonly docNameService: DocNameService) {}
 
-    @Post('register')
+    @Post('registerDN')
     async create(
         @Param('courseTitle') courseTitle: string,
-        @Param('topicTitle') topicTitle: string,
         @Body() createDocNameDto: CreateDocNameDto
     ) {
-        const data = await this.docNameService.create(courseTitle, topicTitle, createDocNameDto);
+        const data = await this.docNameService.create(courseTitle, createDocNameDto);
         return {
             message: "doc_name 생성에 성공하셨습니다",
             data: data
         };
     }
 
-    @Get()
+
+    @Get('allDN')
     @Roles('admin')
-    async findAll(
-      @Param('topicTitle') topicTitle: string
-    ) {
-        const data = await this.docNameService.findAll(topicTitle);
+    async findAll() {
+        const data = await this.docNameService.findAll();
+
         return {
             message: "전체 강의의 doc_name 조회에 성공하셨습니다",
             data: data

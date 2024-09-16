@@ -6,10 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UCat } from '../ucat/entities/ucat.entity';
 import {DocName} from '../doc_name/entities/doc_name.entity'
 import { UsersModule } from '../users/users.module';
+import { VideoTopic } from 'src/video_topic/entities/video_topic.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Course, UCat, DocName]),
+    TypeOrmModule.forFeature([Course, UCat, DocName, VideoTopic]),
     UsersModule,
   ],
   providers: [CoursesService],
