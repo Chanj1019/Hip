@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException, Inject } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CourseDoc } from './entities/course_doc.entity';
@@ -6,7 +6,7 @@ import { DocName } from '../doc_name/entities/doc_name.entity';
 import { Course } from '../courses/entities/course.entity'
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';
 import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { Readable } from 'stream';

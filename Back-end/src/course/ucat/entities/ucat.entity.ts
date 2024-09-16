@@ -1,6 +1,6 @@
 import { User } from '../../../user/user.entity';
 import { Course } from '../../courses/entities/course.entity';
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class UCat {
@@ -18,5 +18,4 @@ export class UCat {
   @ManyToOne(() => Course, (course) => course.uCats)
   @JoinColumn({ name: 'course_id' })
   course: Course;
-
 }

@@ -1,4 +1,4 @@
-import { Controller , Get , Post , Body , NotFoundException , Param , Delete ,UseGuards , UseInterceptors , UploadedFile , Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, NotFoundException, Param, Delete, UseGuards, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CourseDocService } from './course_doc.service';
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';

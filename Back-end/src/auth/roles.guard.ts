@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException, UnauthorizedException,UseGuards } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../user/users.service';
 import { Role } from 'src/enums/role.enum';
 

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Patch, Delete, Param, Body, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Body } from '@nestjs/common';
 import { DocNameService } from './doc_name.service';
 import { CreateDocNameDto } from './dto/create-doc_name.dto'; // CreateDocNameDto 임포트
 import { UpdateDocNameDto } from './dto/update-doc_name.dto'; // UpdateDocNameDto 임포트
