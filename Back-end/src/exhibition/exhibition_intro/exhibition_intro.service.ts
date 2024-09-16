@@ -43,7 +43,7 @@ export class ExhibitionIntroService {
       relations: ['exhibition'],
     });
     if (!exhibitionIntro) {
-      throw new NotFoundException(`ID가 ${id}인 전시를 찾을 수 없습니다.`);
+      throw new NotFoundException(`ID가 ${ id }인 전시를 찾을 수 없습니다.`);
     }
     return exhibitionIntro;
   }
