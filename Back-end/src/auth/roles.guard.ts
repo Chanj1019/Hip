@@ -1,5 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException, UnauthorizedException,UseGuards } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '../user/users.service';
 import { Role } from 'src/enums/role.enum';
 
 @Injectable()

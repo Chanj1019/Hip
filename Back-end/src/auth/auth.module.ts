@@ -2,11 +2,11 @@ import { Global, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
-import { User } from '../users/user.entity'; 
+import { User } from '../user/user.entity'; 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { RolesGuard } from './roles.guard';
-import { UsersModule } from '../users/users.module';
+import { UsersModule } from '../user/users.module';
 @Global()
 @Module({
     imports: [
