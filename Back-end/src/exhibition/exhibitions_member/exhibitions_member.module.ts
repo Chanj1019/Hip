@@ -5,12 +5,12 @@ import { ExhibitionMember } from './entities/exhibition_member.entity';
 import { Exhibition } from 'src/exhibition/exhibitions/exhibition.entity';
 import { ExhibitionService } from 'src/exhibition/exhibitions/exhibitions.service';
 import { ExhibitionsMemberController } from './exhibitions_member.controller';
-import { UsersModule } from '../../user/users.module'; // UsersModule 임포트 추가
+import { UsersModule } from '../../user/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ExhibitionMember, Exhibition]),
-    UsersModule, // UsersModule 추가
+    UsersModule,
   ],
   providers: [ExhibitionsMemberService,ExhibitionService],
   exports: [ExhibitionsMemberService],

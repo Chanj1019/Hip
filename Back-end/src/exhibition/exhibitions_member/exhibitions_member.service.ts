@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException,ConflictException,InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { CreateExhibitionsMemberDto } from './dto/create-exhibitions_member.dto';
 import { ExhibitionMember } from './entities/exhibition_member.entity';
 import { Exhibition } from '../exhibitions/exhibition.entity';
