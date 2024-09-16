@@ -15,34 +15,35 @@ export class VideoTopicService {
         private readonly courseRepository: Repository<Course>,
     ) {}
 
-    async create(courseTitle: string, videoTopicTitle: string, createVideoTopicDto: CreateVideoTopicDto): Promise<VideoTopic> {
-        const course = await this.courseRepository.findOne({ where: { course_title: courseTitle } });
+    async create(courseTitle: string, createVideoTopicDto: CreateVideoTopicDto): Promise<VideoTopic> {
+        const course = await this.courseRepository.findOne({ 
+            where: { course_title: courseTitle }
+        });
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
 
         const videoTopic = this.videoTopicRepository.create({
             ...createVideoTopicDto,
-            course,
-            video_topic_title: videoTopicTitle,
+            course
         });
 
         return await this.videoTopicRepository.save(videoTopic);
     }
 
-    async findAll(videoTopicTitle?: string): Promise<VideoTopic[]> {
-        const query = this.videoTopicRepository.createQueryBuilder('videoTopic');
-
-        if (videoTopicTitle) {
-            query.where('videoTopic.video_topic_title LIKE :title', { title: `%${videoTopicTitle}%` });
+    async findAll(courseTitle: string): Promise<VideoTopic[]> {
+        const videoTopics = await this.videoTopicRepository.find({
+            where: { course: { course_title: courseTitle } } // courseTitle을 사용하여 필터링
+        });
+        if (!videoTopics.length) {
+            throw new NotFoundException("해당 강의의 비디오 주제가 없습니다.");
         }
-
-        return await query.getMany();
+        return videoTopics;
     }
 
-    async findOne(videoTopicTitle: string): Promise<VideoTopic> {
+    async findOne(courseTitle: string, video_topic_title: string): Promise<VideoTopic> {
         const videoTopic = await this.videoTopicRepository.findOne({
-            where: { video_topic_title: videoTopicTitle },
+            where: { course: { course_title: courseTitle }, video_topic_title: video_topic_title }
         });
 
         if (!videoTopic) {
@@ -52,22 +53,22 @@ export class VideoTopicService {
         return videoTopic;
     }
 
-    async update(courseTitle: string, videoTopicTitle: string, updateVideoTopicDto: UpdateVideoTopicDto): Promise<VideoTopic> {
-        const videoTopic = await this.findOne(videoTopicTitle);
+    async update(courseTitle: string, video_topic_title: string, updateVideoTopicDto: UpdateVideoTopicDto): Promise<VideoTopic> {
+        const videoTopic = await this.findOne(courseTitle, video_topic_title);
 
-        if (courseTitle !== videoTopic.course.course_title) {
-            throw new NotFoundException("해당 강의의 비디오 주제를 찾을 수 없습니다.");
+        if (!videoTopic) {
+            throw new NotFoundException("해당 비디오 주제를 찾을 수 없습니다.");
         }
 
         Object.assign(videoTopic, updateVideoTopicDto);
         return await this.videoTopicRepository.save(videoTopic);
     }
 
-    async remove(courseTitle: string, videoTopicTitle: string): Promise<VideoTopic> {
-        const videoTopic = await this.findOne(videoTopicTitle);
+    async remove(courseTitle: string, video_topic_title: string): Promise<VideoTopic> {
+        const videoTopic = await this.findOne(courseTitle, video_topic_title);
 
-        if (courseTitle !== videoTopic.course.course_title) {
-            throw new NotFoundException("해당 강의의 비디오 주제를 찾을 수 없습니다.");
+        if (!videoTopic) {
+            throw new NotFoundException("해당 비디오 주제를 찾을 수 없습니다.");
         }
 
         await this.videoTopicRepository.remove(videoTopic);
