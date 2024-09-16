@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { UCat} from '../../ucat/entities/ucat.entity';
 import { create } from 'domain';
 import { DocName } from '../../doc_name/entities/doc_name.entity';
+import { VideoTopic } from 'src/video_topic/entities/video_topic.entity';
 
 @Entity()
 export class Course {
@@ -25,5 +26,8 @@ export class Course {
 
     @OneToMany(() => DocName, (docname) => docname.course, { cascade: true })
     docName: DocName[];
+
+    @OneToMany(() => VideoTopic, (videoTopic) => videoTopic.course, { cascade: true })
+    videoTopic: VideoTopic[];
 
 }

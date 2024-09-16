@@ -3,28 +3,25 @@ import { DocNameService } from './doc_name.service';
 import { CreateDocNameDto } from './dto/create-doc_name.dto'; // CreateDocNameDto 임포트
 import { UpdateDocNameDto } from './dto/update-doc_name.dto'; // UpdateDocNameDto 임포트
 
-@Controller('courses/:courseTitle/docNames')
+@Controller('courses/:courseTitle/DodNames')
 export class DocNameController {
     constructor(private readonly docNameService: DocNameService) {}
 
-    @Post('register')
+    @Post('registerDN')
     async create(
         @Param('courseTitle') courseTitle: string,
-        @Param('topicTitle') topicTitle: string,
         @Body() createDocNameDto: CreateDocNameDto
     ) {
-        const data = await this.docNameService.create(courseTitle, topicTitle, createDocNameDto);
+        const data = await this.docNameService.create(courseTitle, createDocNameDto);
         return {
             message: "doc_name 생성에 성공하셨습니다",
             data: data
         };
     }
 
-    @Get()
-    async findAll(
-      @Param('topicTitle') topicTitle: string
-    ) {
-        const data = await this.docNameService.findAll(topicTitle);
+    @Get('allDN')
+    async findAll() {
+        const data = await this.docNameService.findAll();
         return {
             message: "전체 강의의 doc_name 조회에 성공하셨습니다",
             data: data

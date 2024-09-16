@@ -1,4 +1,4 @@
-import {IsString, MaxLength, IsOptional, IsNumber} from 'class-validator'
+import {IsString, MaxLength, IsOptional} from 'class-validator'
 
 
 export class CreateDocNameDto {
