@@ -26,7 +26,7 @@ export class Exhibition {
     file_path: string; // 파일 경로
     
     @Column()
-    team_name: string; // 파일 경로
+    team_name: string; 
 
     @OneToMany(() => ExhibitionDoc, doc => doc.exhibition, { cascade: true }) 
     exhibitionDocs: ExhibitionDoc[];

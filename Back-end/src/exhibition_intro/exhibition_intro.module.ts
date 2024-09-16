@@ -3,10 +3,12 @@ import { ExhibitionIntroService } from './exhibition_intro.service';
 import { ExhibitionIntroController } from './exhibition_intro.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExhibitionIntro } from './entities/exhibition_intro.entity';
-import { Exhibition } from 'src/exhibitions/exhibition.entity';
+import { Exhibition } from '../exhibitions/exhibition.entity';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ExhibitionIntro, Exhibition])],
+  imports: [TypeOrmModule.forFeature([ExhibitionIntro, Exhibition]),
+  UsersModule],
   controllers: [ExhibitionIntroController],
   providers: [ExhibitionIntroService],
 })

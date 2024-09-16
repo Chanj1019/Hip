@@ -1,11 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { ProjectDocService } from './project_doc.service';
 import { CreateProjectDocDto } from './dto/create-project_doc.dto';
 import { UpdateProjectDocDto } from './dto/update-project_doc.dto';
 import { Project_doc } from './entities/project_doc.entity';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('project-docs')
 export class ProjectDocController {
   constructor(private readonly projectDocsService: ProjectDocService) {}
@@ -23,6 +27,7 @@ export class ProjectDocController {
   }
 
   @Post('register')
+  @Roles('instructor','student')
   @UseInterceptors(FileInterceptor('file'))  // 'file' 필드에서 파일을 업로드 받음
   async createProjectDoc(
     @Body() createProjectDocDto: CreateProjectDocDto,  // DTO 이름 수정
@@ -33,6 +38,7 @@ export class ProjectDocController {
   }
 
   @Put(':id')
+  @Roles('instructor','student')
   async update(
     @Param('id') id: number,
     @Body() updateProjectDocDto: UpdateProjectDocDto,  // DTO 이름 수정
@@ -42,6 +48,7 @@ export class ProjectDocController {
   }
 
   @Delete(':id')
+  @Roles('instructor','student')
   async remove(@Param('id') id: number): Promise<{ message: string }> {
     await this.projectDocsService.remove(id);
     return { message: '성공적으로 삭제되었습니다.' };

@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, NotFoundException, Param, Delete, UseInterceptors, UploadedFile, HttpStatus, Res } from '@nestjs/common';
+import { Controller , Get , Post , Body , NotFoundException , Param , Delete ,UseGuards , UseInterceptors , UploadedFile , Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CourseDocService } from './course_doc.service';
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';
-import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
-import { DocName } from 'src/doc_name/entities/doc_name.entity';
 import { Response } from 'express';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses/:courseTitle/docNames/:docNameTitle/courseDocs')
 export class CourseDocController {
   constructor(private readonly courseDocService: CourseDocService) {}
