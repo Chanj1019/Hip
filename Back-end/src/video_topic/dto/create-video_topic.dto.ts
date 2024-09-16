@@ -2,8 +2,9 @@ import {IsString, MaxLength, IsOptional} from 'class-validator'
 
 export class CreateVideoTopicDto {
     @IsString()
+    @IsOptional()
     @MaxLength(255)
-    video_topic_title: string;
+    video_topic_title?: string;
 
     @IsString()
     @IsOptional()
