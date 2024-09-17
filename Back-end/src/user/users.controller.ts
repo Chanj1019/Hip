@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, HttpException,Req,Res, HttpStatus } from '@nestjs/common';//추가
+import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, Req, Res, HttpStatus } from '@nestjs/common';//추가
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -7,7 +7,6 @@ import { Request, Response } from 'express';
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService,
-        
     ) {}
 
     @Post('register')
@@ -37,7 +36,7 @@ export class UsersController {
     @Put(':userid')
     async update(
         @Param('userid') userId: number,
-        @Body() body: { email: string; password?: string; nick_name: string; generation:string; }
+        @Body() body: { email: string; password?: string; nick_name: string; generation: string; }
     ): Promise<{ message: string }> {
         const user = await this.usersService.findOne(userId);
 
@@ -58,6 +57,5 @@ export class UsersController {
       // 로그아웃 성공 메시지 반환
       return response.json({ message: '로그아웃 성공' });
     }
-    
 }
 

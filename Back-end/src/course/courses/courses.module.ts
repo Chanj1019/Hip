@@ -9,11 +9,11 @@ import { UsersModule } from '../../user/users.module';
 import { VideoTopic } from 'src/course/video_topic/entities/video_topic.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Course, UCat, DocName, VideoTopic]),
-    UsersModule,
-  ],
-  providers: [CoursesService],
-  controllers: [CoursesController],
+    imports: [
+        TypeOrmModule.forFeature([Course, UCat, DocName, VideoTopic]),
+        UsersModule,
+    ],
+    providers: [CoursesService],
+    controllers: [CoursesController],
 })
 export class CoursesModule {}

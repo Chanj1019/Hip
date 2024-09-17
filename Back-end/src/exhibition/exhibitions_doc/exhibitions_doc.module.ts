@@ -7,11 +7,11 @@ import { Exhibition } from '../exhibitions/exhibition.entity';
 import { UsersModule } from '../../user/users.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ExhibitionDoc, Exhibition]),
-    UsersModule,
-  ],
-  controllers: [ExhibitionsDocController],
-  providers: [ExhibitionsDocService],
+    imports: [
+        TypeOrmModule.forFeature([ExhibitionDoc, Exhibition]),
+        UsersModule,
+    ],
+    controllers: [ExhibitionsDocController],
+    providers: [ExhibitionsDocService],
 })
 export class ExhibitionsDocModule {}

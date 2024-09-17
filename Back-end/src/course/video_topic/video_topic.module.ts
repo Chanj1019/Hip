@@ -6,11 +6,10 @@ import { VideoTopic } from './entities/video_topic.entity'
 import { Course } from '../courses/entities/course.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([VideoTopic, Course]),
-    
-  ],
-  controllers: [VideoTopicController],
-  providers: [VideoTopicService],
+    imports: [
+        TypeOrmModule.forFeature([VideoTopic, Course]),
+    ],
+    controllers: [VideoTopicController],
+    providers: [VideoTopicService],
 })
 export class VideoTopicModule {}

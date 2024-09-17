@@ -1,7 +1,6 @@
-import { IsString, IsNotEmpty, IsEnum, IsInt } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateProjectDocDto {
-
     @IsString()
     description: string;
 

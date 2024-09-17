@@ -8,38 +8,38 @@ import { Project_doc } from '../project_doc/entities/project_doc.entity'; // pro
 
 @Injectable()
 export class FeedbackService {
-  constructor(
-    @InjectRepository(Feedback)
-    private feedbackRepository: Repository<Feedback>,
-    @InjectRepository(Project_doc)
-    private projectDocRepository: Repository<Project_doc>,
-  ) {}
+    constructor(
+        @InjectRepository(Feedback)
+        private feedbackRepository: Repository<Feedback>,
+        @InjectRepository(Project_doc)
+        private projectDocRepository: Repository<Project_doc>,
+    ) {}
 
-  async create(createFeedbackDto: CreateFeedbackDto): Promise<Feedback> {
-    const projectDoc = await this.projectDocRepository.findOne({ where: { project_doc_id: createFeedbackDto.projectDocId } });
+    async create(createFeedbackDto: CreateFeedbackDto): Promise<Feedback> {
+        const projectDoc = await this.projectDocRepository.findOne({ where: { project_doc_id: createFeedbackDto.projectDocId } });
 
-    if (!projectDoc) {
-        throw new Error('Project document not found'); // 문서가 없으면 오류 발생
+        if (!projectDoc) {
+            throw new Error('Project document not found'); // 문서가 없으면 오류 발생
+        }
+
+        const feedback = this.feedbackRepository.create({ ...createFeedbackDto, projectDoc });
+        return this.feedbackRepository.save(feedback);
     }
 
-    const feedback = this.feedbackRepository.create({ ...createFeedbackDto, projectDoc });
-    return this.feedbackRepository.save(feedback);
-}
+    async update(id: number, updateFeedbackDto: UpdateFeedbackDto): Promise<Feedback> {
+        await this.feedbackRepository.update(id, updateFeedbackDto);
+        return this.feedbackRepository.findOne({ where: { id } });
+    }
 
-  async update(id: number, updateFeedbackDto: UpdateFeedbackDto): Promise<Feedback> {
-    await this.feedbackRepository.update(id, updateFeedbackDto);
-    return this.feedbackRepository.findOne({ where: { id } });
-  }
+    async findAll(): Promise<Feedback[]> {
+        return this.feedbackRepository.find({ relations: ['projectDoc'] });
+    }
 
-  async findAll(): Promise<Feedback[]> {
-    return this.feedbackRepository.find({ relations: ['projectDoc'] });
-  }
+    async findOne(id: number): Promise<Feedback> {
+        return this.feedbackRepository.findOne({ where: { id }, relations: ['projectDoc'] });
+    }
 
-  async findOne(id: number): Promise<Feedback> {
-    return this.feedbackRepository.findOne({ where: { id }, relations: ['projectDoc'] });
-  }
-
-  async remove(id: number): Promise<void> {
-    await this.feedbackRepository.delete(id);
-  }
+    async remove(id: number): Promise<void> {
+        await this.feedbackRepository.delete(id);
+    }
 }

@@ -7,9 +7,9 @@ import { Project_doc } from '../project_doc/entities/project_doc.entity';
 import { UsersModule } from '../../user/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Feedback, Project_doc]),
-  UsersModule],
-  controllers: [FeedbackController],
-  providers: [FeedbackService],
+    imports: [TypeOrmModule.forFeature([Feedback, Project_doc]),
+    UsersModule],
+    controllers: [FeedbackController],
+    providers: [FeedbackService],
 })
 export class FeedbackModule {}

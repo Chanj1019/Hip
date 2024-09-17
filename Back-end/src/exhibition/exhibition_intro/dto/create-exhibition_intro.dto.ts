@@ -1,10 +1,10 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateExhibitionIntroDto {
-  @IsNotEmpty()
-  exhibition_id: number;
+    @IsNotEmpty()
+    exhibition_id: number;
 
-  @IsNotEmpty()
-  @IsString()
-  introduce: string;
+    @IsNotEmpty()
+    @IsString()
+    introduce: string;
 }

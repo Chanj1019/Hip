@@ -10,12 +10,12 @@ import { ConfigService } from '@nestjs/config';
 import { UsersModule } from '../../user/users.module';
 
 @Module({
-  imports: [
-    ConfigModule,
-    TypeOrmModule.forFeature([CourseDoc, DocName, Course]),
-    UsersModule,
-  ],
-  controllers: [CourseDocController],
-  providers: [CourseDocService, ConfigService],
+    imports: [
+        ConfigModule,
+        TypeOrmModule.forFeature([CourseDoc, DocName, Course]),
+        UsersModule,
+    ],
+    controllers: [CourseDocController],
+    providers: [CourseDocService, ConfigService],
 })
 export class CourseDocModule {}

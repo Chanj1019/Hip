@@ -8,5 +8,5 @@ import { User } from '../../user/user.entity';
     imports: [
       TypeOrmModule.forFeature([UCat, Course, User]),
     ],
-  })
+})
 export class UcatModule {}

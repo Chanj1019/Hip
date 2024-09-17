@@ -2,10 +2,8 @@ import { Injectable, NotFoundException, ConflictException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './entities/project.entity';
-import { UsersService } from 'src/user/users.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-
 
 @Injectable()
 export class ProjectsService {
@@ -13,7 +11,6 @@ export class ProjectsService {
         @InjectRepository(Project)
         private readonly projectsRepository: Repository<Project>
     ) {}
-
 
     async create(createProjectDto: CreateProjectDto): Promise<Project> {
         const { team_name, title } = createProjectDto;

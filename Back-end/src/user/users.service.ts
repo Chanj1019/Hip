@@ -4,19 +4,15 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
 import { HashService } from '../auth/hash.service';
 import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
-import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>, private readonly hashService: HashService,
-       
     ) {}
-
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         console.log(createUserDto);
@@ -34,11 +30,11 @@ export class UsersService {
                 errorMessage = '이미 사용 중인 이메일입니다.';
             }
             if (existingUser.nick_name === createUserDto.nick_name) {
-                errorMessage = errorMessage ? errorMessage + ' ' : '';
+                errorMessage = errorMessage ? errorMessage + ' ': '';
                 errorMessage += '이미 사용 중인 닉네임입니다.';
             }
             if (existingUser.id === createUserDto.id) {
-                errorMessage = errorMessage ? errorMessage + ' ' : '';
+                errorMessage = errorMessage ? errorMessage + ' ': '';
                 errorMessage += '이미 사용 중인 사용자 ID입니다.';
             }
             throw new ConflictException(errorMessage.trim());
@@ -59,9 +55,7 @@ export class UsersService {
     }
 
     async findOne(userId: number): Promise<User> {
-        return await this.usersRepository.findOne({where:{user_id: userId} });
-        
-        
+        return await this.usersRepository.findOne({ where: { user_id: userId } });
     }
 
     async remove(id: number): Promise<void> {

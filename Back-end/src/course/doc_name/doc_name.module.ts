@@ -8,11 +8,11 @@ import { DocName } from './entities/doc_name.entity'
 import { UsersModule } from '../../user/users.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Course, CourseDoc, DocName]),
-    UsersModule
-  ],
-  controllers: [DocNameController],
-  providers: [DocNameService],
+    imports: [
+        TypeOrmModule.forFeature([Course, CourseDoc, DocName]),
+        UsersModule
+    ],
+    controllers: [DocNameController],
+    providers: [DocNameService],
 })
 export class DocNameModule {}
