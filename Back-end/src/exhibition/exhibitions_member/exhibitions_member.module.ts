@@ -8,12 +8,12 @@ import { ExhibitionsMemberController } from './exhibitions_member.controller';
 import { UsersModule } from '../../user/users.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ExhibitionMember, Exhibition]),
-    UsersModule,
-  ],
-  providers: [ExhibitionsMemberService,ExhibitionService],
-  exports: [ExhibitionsMemberService],
-  controllers: [ExhibitionsMemberController],
+    imports: [
+        TypeOrmModule.forFeature([ExhibitionMember, Exhibition]),
+        UsersModule,
+    ],
+    providers: [ExhibitionsMemberService,ExhibitionService],
+    exports: [ExhibitionsMemberService],
+    controllers: [ExhibitionsMemberController],
 })
 export class ExhibitionsMemberModule {}

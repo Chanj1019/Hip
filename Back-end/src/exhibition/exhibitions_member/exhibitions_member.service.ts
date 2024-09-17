@@ -13,7 +13,7 @@ import { Readable } from 'stream';
 dotenv.config(); // .env 파일 로드
 @Injectable()
 export class ExhibitionsMemberService {
-     private s3: S3Client;
+    private s3: S3Client;
     constructor(
         @InjectRepository(ExhibitionMember)
         private readonly exhibitionMemberRepository: Repository<ExhibitionMember>,

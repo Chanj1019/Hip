@@ -1,7 +1,6 @@
 import { IsString, IsOptional, IsInt } from 'class-validator';
 
 export class UpdateProjectDocDto {
-
     @IsOptional()
     @IsString()
     project_material?: string;

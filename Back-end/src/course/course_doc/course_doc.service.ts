@@ -29,8 +29,8 @@ export class CourseDocService {
         const AWS_REGION = process.env.AWS_REGION;
 
         this.s3 = new S3Client({
-          region: AWS_REGION,
-          credentials: {
+            region: AWS_REGION,
+            credentials: {
             accessKeyId: AWS_ACCESS_KEY_ID,
             secretAccessKey: AWS_SECRET_ACCESS_KEY,
           },

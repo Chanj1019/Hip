@@ -1,9 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateFeedbackDto {
-  @IsNotEmpty()
-  content: string;
+    @IsNotEmpty()
+    content: string;
 
-  @IsNotEmpty()
-  projectDocId: number; // project_doc의 ID
+    @IsNotEmpty()
+    projectDocId: number; // project_doc의 ID
 }

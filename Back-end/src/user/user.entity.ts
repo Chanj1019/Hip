@@ -1,10 +1,11 @@
 
-import { Entity, Column, PrimaryGeneratedColumn ,OneToMany, ManyToMany, JoinTable} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Registration } from '../project/registration/entities/registration.entity';
 import { Project } from '../project/projects/entities/project.entity';
 import { Role } from '../enums/role.enum';
 import { Exhibition } from '../exhibition/exhibitions/exhibition.entity';
 import { UCat } from '../course/ucat/entities/ucat.entity';
+
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -39,7 +40,7 @@ export class User {
     @OneToMany(() => UCat, (ucat) => ucat.instructor)
     uCatsAsInstructor: UCat[];
 
-    @OneToMany(() => Exhibition, exhibition => exhibition.user,{cascade:true})
+    @OneToMany(() => Exhibition, exhibition => exhibition.user,{ cascade:true })
     exhibition: Exhibition[];
 
      @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
