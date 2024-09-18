@@ -34,6 +34,7 @@ import { Registration } from './project/registration/entities/registration.entit
 import { FeedbackModule } from './project/feedback/feedback.module';
 import { Feedback } from './project/feedback/entities/feedback.entity';
 import { VideoTopic } from './course/video_topic/entities/video_topic.entity';
+import { Video } from './course/video/entities/video.entity';
 
 @Module({
     imports: [
@@ -47,7 +48,7 @@ import { VideoTopic } from './course/video_topic/entities/video_topic.entity';
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
                 entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro,
-                    Project,Project_doc, Registration,Feedback, Course, UCat, DocName, CourseDoc, VideoTopic],
+                    Project,Project_doc, Registration,Feedback, Course, UCat, DocName, CourseDoc, VideoTopic, Video],
                 synchronize: true,
             }),
         }),
