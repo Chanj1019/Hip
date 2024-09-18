@@ -15,5 +15,6 @@ import { VideoTopic } from 'src/course/video_topic/entities/video_topic.entity';
     ],
     providers: [CoursesService],
     controllers: [CoursesController],
+    exports: [TypeOrmModule]
 })
 export class CoursesModule {}
