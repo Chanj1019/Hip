@@ -8,6 +8,7 @@
 * ### Front end Team
   ---
   ##### 김동년 : <https://github.com/jhon829>
+
   ##### 용채영 : <https://github.com/happy7yong>
  
 * ### Back end Team
@@ -19,5 +20,10 @@
 
 # <br/>:star2:Project Introduction
 
-##### This is a platform for sharing and evaluating results for students taking Metaverse Academy 
-##### and providing accessibility to lecture materials.
+  ##### This is a platform for sharing and evaluating results for students taking Metaverse Academy 
+  ##### and providing accessibility to lecture materials.
+
+  
+   ## <br/>    Tech Stack
+   ![화면 캡처 2024-09-19 113204](https://github.com/user-attachments/assets/52b1be1a-7bc7-44b1-9431-cb36ca11ca17)
+   
