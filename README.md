@@ -20,10 +20,20 @@
 
 # <br/>:star2:Project Introduction
 
-  ##### This is a platform for sharing and evaluating results for students taking Metaverse Academy 
-  ##### and providing accessibility to lecture materials.
+  ##### This platform is for Hongik software education and aims to improve the educational environment 
+  ##### through learning materials, topic management, exhibition functions, and community communication.
+
+  ## <br/>Features
+
+- **User Management**: Create and manage student and professor accounts
+- **Resource Sharing**: Upload and download lecture notes and study materials
+- **Assignment Management**: Submit assignments and receive feedback
+- **Exhibition Feature**: Showcase student projects and artworks
+- **Community Forum**: Provide a space for questions, answers, and discussion
+  
+ ## <br/>  Tech Stack
+   ![화면 캡처 2024-09-19 113204](https://github.com/user-attachments/assets/52b1be1a-7bc7-44b1-9431-cb36ca11ca17)
 
   
-   ## <br/>    Tech Stack
-   ![화면 캡처 2024-09-19 113204](https://github.com/user-attachments/assets/52b1be1a-7bc7-44b1-9431-cb36ca11ca17)
-   
+# <br/>:star2:Server Address
+* ##### Server URL: -
