@@ -30,10 +30,18 @@
 - **Assignment Management**: Submit assignments and receive feedback
 - **Exhibition Feature**: Showcase student projects and artworks
 - **Community Forum**: Provide a space for questions, answers, and discussion
-  
+
+
  ## <br/>  Tech Stack
    ![화면 캡처 2024-09-19 113204](https://github.com/user-attachments/assets/52b1be1a-7bc7-44b1-9431-cb36ca11ca17)
 
-  
+# <br/>:star2:UseCase
+![111111111111111111111](https://github.com/user-attachments/assets/20258b68-7edf-45e5-b241-3632c8429327)
+
+![222222222222222](https://github.com/user-attachments/assets/c6ecce51-eb7d-4cb5-928a-8224dd84f5cd)
+
+![33333333333333](https://github.com/user-attachments/assets/99d47b36-99ae-424d-9f73-c2cb9fc85d07)
+
+
 # <br/>:star2:Server Address
 * ##### Server URL: -
