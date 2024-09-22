@@ -12,7 +12,7 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
         }
 
         // 관리자 또는 강사 여부 확인
-        if (user.role === 'admin' || user.role === 'instructor') {
+        if (user.user_role === 'admin' || user.user_role === 'instructor') {
             return true; // 모든 리소스를 삭제할 수 있음
         }
 
