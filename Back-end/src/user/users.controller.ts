@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, Req, Res, HttpStatus } from '@nestjs/common';//추가
+import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, Req, Res, HttpStatus, UseGuards } from '@nestjs/common';//추가
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { Request, Response } from 'express';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { OwnershipGuard } from '../auth/ownership.guard';
 
 @Controller('users')
 export class UsersController {
@@ -21,21 +23,23 @@ export class UsersController {
         return { message: '모든 사용자 조회를 완료했습니다.', users };
     }
 
-    @Get(':userid')
-    async findOne(@Param('userid') userId: number): Promise<{ message: string; user: User }> {
+    @Get(':id')
+    async findOne(@Param('id') userId: number): Promise<{ message: string; user: User }> {
         const user = await this.usersService.findOne(userId);
         return { message: '사용자 조회를 완료했습니다.', user };
     }
 
-    @Delete(':userid')
-    async remove(@Param('userid') id: number): Promise<{ message: string }> {
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard,OwnershipGuard)
+    async remove(@Param('id') id: number): Promise<{ message: string }> {
         await this.usersService.remove(id);
         return { message: '사용자가 삭제되었습니다.' };
     }
 
-    @Put(':userid')
+    @Put(':id')
+    @UseGuards(JwtAuthGuard,OwnershipGuard)
     async update(
-        @Param('userid') userId: number,
+        @Param('id') userId: number,
         @Body() body: { email: string; password?: string; nick_name: string; generation: string; }
     ): Promise<{ message: string }> {
         const user = await this.usersService.findOne(userId);
@@ -50,6 +54,7 @@ export class UsersController {
     }
 
     @Post('logout')
+    @UseGuards(JwtAuthGuard,OwnershipGuard)
     async logout(@Req() request: Request, @Res() response: Response) {
       // JWT 토큰을 담고 있는 쿠키를 삭제
       response.clearCookie('token'); // 'token'은 쿠키의 이름입니다.
