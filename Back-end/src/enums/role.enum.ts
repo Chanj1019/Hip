@@ -4,7 +4,7 @@ export enum Role {
     ADMIN = 'admin',
 }
 
-export enum Status {
+export enum ProjectStatus {
     IN_PROGRESS = 'in_progress',
     COMPLETED = 'completed'
 }

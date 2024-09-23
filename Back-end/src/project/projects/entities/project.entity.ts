@@ -8,18 +8,27 @@ export class Project {
     @PrimaryGeneratedColumn()
     project_id: number;
 
-    @Column({ type: 'varchar', length: 50, nullable: false })
-    team_name: string;
-
     @Column({ type: 'varchar', nullable: false, length: 100, unique: true })
     topic: string;
+
+    @Column({ type: 'varchar', nullable: false, length: 50, unique: true })
+    class: string;
 
     @Column({
         type: 'enum',
         enum: ['in_progress', 'completed'],
         default: 'in_progress',
     })
-    status: 'in_progress' | 'completed';
+    project_status: 'in_progress' | 'completed';
+
+    @Column({ type: 'varchar', length: 50, nullable: false })
+    team_name: string;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    profile: string; // 파일의 경로 또는 URL
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    requirements: string;
 
     // project - user
     @ManyToMany(() => User, (user) => user.projects)
