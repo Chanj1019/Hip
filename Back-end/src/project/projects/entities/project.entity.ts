@@ -12,12 +12,12 @@ export class Project {
     team_name: string;
 
     @Column({ type: 'varchar', nullable: false, length: 100, unique: true })
-    title: string;
+    topic: string;
 
     @Column({
         type: 'enum',
         enum: ['in_progress', 'completed'],
-        default: 'in_progress'
+        default: 'in_progress',
     })
     status: 'in_progress' | 'completed';
 
@@ -26,7 +26,7 @@ export class Project {
     users: User[];
 
     // project - project_registration
-    @OneToMany(() => Project, (project) => project.registrations)
+    @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.project)
     registrations: ProjectRegistration;
 
     // project - project_doc

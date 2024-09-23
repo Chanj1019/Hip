@@ -10,9 +10,9 @@ export class UpdateProjectRegistrationDto {
 
     @IsOptional()
     @IsString()
-    project_role: String;
+    project_role?: string;
     
     @IsOptional()
     @IsEnum(TeamRole)
-    team_role: TeamRole;
+    team_role?: TeamRole;
 }

@@ -9,17 +9,17 @@ export class ProjectRegistration {
     @PrimaryGeneratedColumn()
     registration_id: number;
 
-    @Column()
-    reporting_date: string;
+    @Column({ type: 'timestamp', nullable: false })
+    reporting_date: Date;
 
     @Column({
         type: 'enum',
         enum: Registration,
-        default: Registration.PENDING, // 기본값 설정
+        default: Registration.PENDING,
     })
     registration_status: Registration;
 
-    @Column()
+    @Column({ type: 'varchar', length: 50, nullable: true })
     project_role: string;
 
     @Column({
@@ -29,7 +29,7 @@ export class ProjectRegistration {
     team_role: TeamRole;
 
     // project_registration - user
-    @ManyToOne(() => User, (user) => user.regstrations)
+    @ManyToOne(() => User, (user) => user.registrations)
     user: User;
 
     // project_registration - project

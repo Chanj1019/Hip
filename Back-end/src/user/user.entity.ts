@@ -1,6 +1,6 @@
 
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
-import { Registration } from '../project/registration/entities/registration.entity';
+import { ProjectRegistration } from '../project/project_registration/entities/registration.entity';
 import { Project } from '../project/projects/entities/project.entity';
 import { Role } from '../enums/role.enum';
 import { Exhibition } from '../exhibition/exhibitions/exhibition.entity';
@@ -51,9 +51,9 @@ export class User {
     @JoinTable() 
     projects: Project[];
 
-    // user - registration 연결 추가
-    @OneToMany(() => Registration, (registration) => registration.user)
-    regstrations: Registration[];
+    // user - project_registration 연결 추가
+    @OneToMany(() => ProjectRegistration, (registration) => registration.user)
+    registrations: ProjectRegistration[];
 
 
 }

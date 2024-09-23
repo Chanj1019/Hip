@@ -21,10 +21,10 @@ export class CreateProjectRegistrationDto {
 
     @IsNotEmpty()
     @IsString() // user가 문자열인지 검증
-    userName: String;
+    userName: string;
 
     @IsNotEmpty()
     @IsString()
-    userId: String;
+    userId: string;
 
 }
