@@ -17,14 +17,20 @@ export class CreateProjectRegistrationDto {
     @IsEnum(Registration)
     registration_status: Registration;
 
-    // user 참고 부분
+    // user 정보
 
     @IsNotEmpty()
     @IsString() // user가 문자열인지 검증
-    userName: string;
+    user_name: string;
 
     @IsNotEmpty()
     @IsString()
-    userId: string;
+    user_id: number;
+
+    // project 정보
+
+    @IsNotEmpty()
+    @IsString()
+    project_id: number;
 
 }
