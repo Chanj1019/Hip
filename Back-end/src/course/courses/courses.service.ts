@@ -18,7 +18,7 @@ export class CoursesService {
         const existCourse = await this.coursesRepository.findOne({
             where: { course_title: createCourseDto.course_title },
         });
-  
+
         if (existCourse) {
             throw new HttpException('강의 제목이 이미 존재합니다.', HttpStatus.BAD_REQUEST);
         }
@@ -34,7 +34,10 @@ export class CoursesService {
     }
 
     async findOne(id: string): Promise<Course> {
-        const course = await this.coursesRepository.findOne({ where: { course_title: id }, relations: ['docName'] });
+        const course = await this.coursesRepository.findOne(
+            { where: { course_title: id },
+            relations: ['docName','uCats'] 
+        });
         if (!course) {
             throw new NotFoundException('Course not found'); // 예외 처리 추가
         }
@@ -43,7 +46,10 @@ export class CoursesService {
 
     async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
         // 데이터베이스에서 해당 ID의 강의 조회
-        const course = await this.coursesRepository.findOne({ where: { course_title: id } });
+        const course = await this.coursesRepository.findOne(
+            { where: { course_title: id } 
+        });
+
         if (!course) {
             this.logger.warn(`Course with ID ${id} not found`);
             throw new NotFoundException(`Course with ID ${id} not found`);
@@ -70,7 +76,10 @@ export class CoursesService {
     }
   
     async remove(id: string): Promise<void> {
-        const course = await this.coursesRepository.findOne({ where: { course_title: id }, relations: ['docName'] });
+        const course = await this.coursesRepository.findOne(
+            { where: { course_title: id },
+            relations: ['docName'] 
+        });
         if(course){
             await this.coursesRepository.remove(course);
         }
