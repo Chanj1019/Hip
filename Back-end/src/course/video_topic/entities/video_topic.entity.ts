@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Course } from '../../courses/entities/course.entity';
+import { Video } from 'src/course/video/entities/video.entity';
 
 @Entity()
 export class VideoTopic {
@@ -25,4 +26,7 @@ export class VideoTopic {
     @ManyToOne(() => Course, course => course.videoTopic, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'course_id' })
     course: Course;
+
+    @OneToMany(() => Video, video => video.videoTopic, { cascade: true })
+    videos: Video[];
 }

@@ -94,7 +94,9 @@ export class CourseDocService {
         }
     }
     
-    async downloadFile(url: string): Promise<{ stream: Readable; metadata: any }> {
+    async downloadFile(
+        url: string
+    ): Promise<{ stream: Readable; metadata: any }> {
         const bucketName = this.configService.get<string>('AWS_S3_BUCKET_NAME');
     
         const command = new GetObjectCommand({
