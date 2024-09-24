@@ -8,16 +8,16 @@ export class Course {
     @PrimaryGeneratedColumn()
     course_id: number;
 
-    @Column()
+    @Column({ type: 'varchar', length: 10, unique: true })
     course_title: string;
 
-    @Column()
+    @Column({ type: 'varchar', length: 100 })
     description: string;
     
-    @Column()
+    @Column({ type: 'varchar', length: 40 })
     instructor_name: string;
 
-    @Column({nullable:true})
+    @Column({ type: 'varchar', length: 100, nullable:true })
     course_notice: string;
 
     @ManyToMany(() => User, (user) => user.course)
