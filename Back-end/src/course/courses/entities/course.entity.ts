@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { UCat } from '../../ucat/entities/ucat.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany } from 'typeorm';
 import { DocName } from '../../doc_name/entities/doc_name.entity';
 import { VideoTopic } from 'src/course/video_topic/entities/video_topic.entity';
+import { User } from 'src/user/user.entity';
 
 @Entity()
 export class Course {
@@ -20,8 +20,8 @@ export class Course {
     @Column({nullable:true})
     course_notice: string;
 
-    @OneToMany(() => UCat, (ucat) => ucat.course, { cascade: true })
-    uCats: UCat[];
+    @ManyToMany(() => User, (user) => user.course)
+    user: User[];
 
     @OneToMany(() => DocName, (docname) => docname.course, { cascade: true })
     docName: DocName[];
