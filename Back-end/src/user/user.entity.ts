@@ -4,7 +4,7 @@ import { Registration } from '../project/registration/entities/registration.enti
 import { Project } from '../project/projects/entities/project.entity';
 import { Role } from '../enums/role.enum';
 import { Exhibition } from '../exhibition/exhibitions/exhibition.entity';
-// import { UCat } from '../course/ucat/entities/ucat.entity';
+import { Course } from 'src/course/courses/entities/course.entity';
 
 @Entity()
 export class User {
@@ -34,16 +34,14 @@ export class User {
 
     user_role: Role; // Role 타입으로 변경
 
-    // @OneToMany(() => UCat, (ucat) => ucat.student)
-    // uCatsAsStudent: UCat[];
-  
-    // @OneToMany(() => UCat, (ucat) => ucat.instructor)
-    // uCatsAsInstructor: UCat[];
+    @ManyToMany(() => Course, course => course.user)
+    @JoinTable()
+    course: Course[];
 
-    @OneToMany(() => Exhibition, exhibition => exhibition.user,{ cascade:true })
+    @OneToMany(() => Exhibition, exhibition => exhibition.user,{ cascade: true })
     exhibition: Exhibition[];
 
-     @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
+    @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
     nick_name: string;
     
     // user - project 연결 추가
@@ -54,7 +52,5 @@ export class User {
     // user - registration 연결 추가
     @OneToMany(() => Registration, (registration) => registration.user)
     regstrations: Registration[];
-
-
 }
 
