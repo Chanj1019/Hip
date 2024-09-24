@@ -6,7 +6,7 @@ export class Video {
     @PrimaryGeneratedColumn()
     video_id: number;
 
-    @Column()
+    @Column({ type: 'varchar', length: 100 })
     video_url: string;
 
     @ManyToOne(() => VideoTopic, (videotopic) => videotopic.videos, { onDelete: 'CASCADE' })
