@@ -27,7 +27,6 @@ import { ProjectsModule } from './project/projects/projects.module';
 import { Project } from './project/projects/entities/project.entity';
 import { ProjectDocModule } from './project/project_doc/project_doc.module';
 import { Project_doc } from './project/project_doc/entities/project_doc.entity';
-import { ProjectRegistrationModule } from './project/project_registration/registration.module';
 import { ProjectRegistration } from './project/project_registration/entities/registration.entity';
 import { FeedbackModule } from './project/feedback/feedback.module';
 import { Feedback } from './project/feedback/entities/feedback.entity';
@@ -46,7 +45,7 @@ import { Video } from './course/video/entities/video.entity';
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
                 entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro,
-                    Project,Project_doc, ProjectRegistration, Feedback, Course, UCat, DocName, CourseDoc, VideoTopic, Video],
+                    Project,Project_doc, ProjectRegistration, Feedback, Course, DocName, CourseDoc, VideoTopic, Video],
                 synchronize: true,
             }),
         }),
