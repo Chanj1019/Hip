@@ -1,11 +1,7 @@
-import { IsString, MaxLength } from 'class-validator'
+import { IsString, Length } from 'class-validator'
 
 export class CreateVideoDto {
     @IsString()
-    @MaxLength(255)
+    @Length(0, 100)
     video_url: string;
-
-    @IsString()
-    @MaxLength(255)
-    video_name: string;
 }
