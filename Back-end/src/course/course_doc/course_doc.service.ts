@@ -5,7 +5,6 @@ import { CourseDoc } from './entities/course_doc.entity';
 import { DocName } from '../doc_name/entities/doc_name.entity';
 import { Course } from '../courses/entities/course.entity'
 import { CreateCourseDocDto } from './dto/create-course_doc.dto';
-import { UpdateCourseDocDto } from './dto/update-course_doc.dto';
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
@@ -153,17 +152,17 @@ export class CourseDocService {
         return courseDoc;
     }
 
-    async update(courseTitle: string, docNameTitle: string, id: number, updateCourseDocDto: UpdateCourseDocDto, file?: Express.Multer.File): Promise<CourseDoc> {
-        const courseDoc = await this.findOne(courseTitle, docNameTitle, id);
+    // async update(courseTitle: string, docNameTitle: string, id: number, file?: Express.Multer.File): Promise<CourseDoc> {
+    //     const courseDoc = await this.findOne(courseTitle, docNameTitle, id);
 
-        Object.assign(courseDoc, updateCourseDocDto);
+    //     Object.assign(courseDoc);
 
-        if (file) {
-            courseDoc.file_path = file.path;
-        }
+    //     if (file) {
+    //         courseDoc.file_path = file.path;
+    //     }
 
-        return await this.courseDocRepository.save(courseDoc);
-    }
+    //     return await this.courseDocRepository.save(courseDoc);
+    // }
 
     async remove(courseTitle: string, docNameTitle: string, id: number): Promise<void> {
         const courseDoc = await this.findOne(courseTitle, docNameTitle, id);
