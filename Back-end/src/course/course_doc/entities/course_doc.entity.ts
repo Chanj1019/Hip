@@ -6,10 +6,10 @@ export class CourseDoc {
     @PrimaryGeneratedColumn()
     course_document_id: number;
 
-    @CreateDateColumn({nullable: true})
+    @CreateDateColumn({ nullable: true })
     upload_date: Date; 
     
-    @Column()
+    @Column({ type: 'varchar', length: 100 })
     file_path: string;
 
     @ManyToOne(() => DocName, (docname) => docname.courseDocs, { onDelete: 'CASCADE' })
