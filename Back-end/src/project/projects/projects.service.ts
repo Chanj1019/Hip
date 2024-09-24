@@ -13,7 +13,7 @@ export class ProjectsService {
     ) {}
 
     async create(createProjectDto: CreateProjectDto): Promise<Project> {
-        const { team_name, title } = createProjectDto;
+        const { team_name, topic } = createProjectDto;
 
         // team_name이 중복되는지 확인
         const existingteam = await this.projectsRepository.findOne({ where: { team_name } });
@@ -23,7 +23,7 @@ export class ProjectsService {
         }
 
         // title이 중복되는지 확인
-        const existingtitle = await this.projectsRepository.findOne({ where: { title } });
+        const existingtitle = await this.projectsRepository.findOne({ where: { topic } });
 
         if (existingtitle) {
             throw new ConflictException(`topic은(는) 이미 존재합니다.`);
@@ -46,7 +46,7 @@ export class ProjectsService {
     }
 
     async update(id: number, updateProjectDto: UpdateProjectDto): Promise<Project> {
-        const { team_name, title } = updateProjectDto;
+        const { team_name, topic } = updateProjectDto;
 
         // 업데이트할 프로젝트를 찾습니다.
         const project = await this.findOne(id);
@@ -62,9 +62,9 @@ export class ProjectsService {
         }
 
         // 타이틀 중복 확인 (현재 프로젝트를 제외하고)
-        if (title) {
+        if (topic) {
             const existingTitle = await this.projectsRepository.findOne({
-                where: { title },
+                where: { topic },
             });
             if (existingTitle && existingTitle.project_id !== id) {
                 throw new ConflictException(`프로젝트 topic이(가) 이미 존재합니다.`);
