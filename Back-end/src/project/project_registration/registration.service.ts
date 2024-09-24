@@ -80,6 +80,14 @@ export class ProjectRegistrationService {
         return registration;
     }
 
+    async update(id: number, updateProjectRegistrationDto: CreateProjectRegistrationDto): Promise<ProjectRegistration> {
+        const registration = await this.projectRegistrationRepository.findOne({ where: { registration_id: id } });
+        this.handleNotFound(registration, id);
+
+        Object.assign(registration, updateProjectRegistrationDto);
+        return await this.projectRegistrationRepository.save(registration);
+    }    
+
     async remove(id: number): Promise<void> {
         const registration = await this.projectRegistrationRepository.findOne({ where: { registration_id: id } });
         this.handleNotFound(registration, id);

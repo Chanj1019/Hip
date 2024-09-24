@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
 import { ProjectRegistrationService } from './registration.service';
 import { CreateProjectRegistrationDto } from './dto/create-registration.dto';
+import { UpdateProjectRegistrationDto } from './dto/update-registration.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -40,6 +41,17 @@ export class ProjectRegistrationController {
     //     };
     // }
 
+    @Patch(':id')
+    @Roles('instructor','admin')
+    async update(@Param('id') id: number, @Body() updateRegistrationDto: UpdateProjectRegistrationDto) {
+        const updatedData = await this.registrationService.update(id, updateRegistrationDto);
+        return {
+            message: "프로젝트 신청 정보가 업데이트되었습니다.",
+            data: updatedData,
+        };
+    }
+
+    // 프로젝트 참가 신청을 삭제
     @Delete(':id')
     @Roles('student')
     async remove(@Param('id') id: number) {
