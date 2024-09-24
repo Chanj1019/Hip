@@ -7,8 +7,8 @@ import { ExhibitionModule } from './exhibition/exhibitions/exhibitions.module';
 import { Exhibition } from './exhibition/exhibitions/exhibition.entity';
 import { Course } from './course/courses/entities/course.entity'
 import { CoursesModule } from './course/courses/courses.module';
-import { UCat } from './course/ucat/entities/ucat.entity';
-import { UcatModule } from './course/ucat/ucat.module';
+// import { UCat } from './course/ucat/entities/ucat.entity';
+// import { UcatModule } from './course/ucat/ucat.module';
 import { DocNameModule } from './course/doc_name/doc_name.module';
 import { DocName } from './course/doc_name/entities/doc_name.entity';
 import { CourseDoc } from './course/course_doc/entities/course_doc.entity';
@@ -48,7 +48,7 @@ import { Video } from './course/video/entities/video.entity';
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
                 entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro,
-                    Project,Project_doc, Registration,Feedback, Course, UCat, DocName, CourseDoc, VideoTopic, Video],
+                    Project,Project_doc, Registration,Feedback, Course, DocName, CourseDoc, VideoTopic, Video],
                 synchronize: true,
             }),
         }),
@@ -60,7 +60,6 @@ import { Video } from './course/video/entities/video.entity';
         }),
         UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule, ProjectsModule, ProjectDocModule, RegistrationModule, FeedbackModule,
         CoursesModule,ExhibitionIntroModule,ExhibitionModule,
-        UcatModule,
         DocNameModule,
         CourseDocModule,
         VideoTopicModule,
