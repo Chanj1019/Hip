@@ -21,7 +21,7 @@ export class Project {
     })
     project_status: 'in_progress' | 'completed';
 
-    @Column({ type: 'varchar', length: 50, nullable: false })
+    @Column({ type: 'varchar', length: 50, nullable: true })
     team_name: string;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
@@ -34,12 +34,15 @@ export class Project {
     @ManyToMany(() => User, (user) => user.projects)
     users: User[];
 
+    // user_id를 저장하기 위한 userId 컬럼 추가
+    @Column({ type: 'int', nullable: false })
+    userId: number;
+
     // project - project_registration
     @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.project)
     registrations: ProjectRegistration;
 
     // project - project_doc
     @OneToMany(() => Project_doc, (project_doc) => project_doc.project)
-    @JoinTable()
     project_docs: Project_doc[];
 }
