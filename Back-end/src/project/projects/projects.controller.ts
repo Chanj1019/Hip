@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe, UseGuards, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, UseGuards, Patch, Request } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -30,8 +30,9 @@ export class ProjectsController {
 
     @Patch(':id')
     @Roles('instructor','admin','student')
-    async update(@Param('id') id: number, @Body() updateProjectDto: UpdateProjectDto) {
-        const updatedData = await this.projectsService.update(id, updateProjectDto);
+    async update(@Param('id') id: number, @Body() updateProjectDto: UpdateProjectDto, @Request() req) {
+        const login_user = req.user.user_id;;
+        const updatedData = await this.projectsService.update(id, updateProjectDto, login_user);
         return {
             message: "프로젝트가 수정되었습니다.",
             data: updatedData,
@@ -41,7 +42,7 @@ export class ProjectsController {
     @Delete(':id')
     @Roles('admin', 'instructor')
     async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string; data: any; }> {
-    const data = await this.projectsService.remove(id);
+        const data = await this.projectsService.remove(id);
     return {
         message: "프로젝트가 삭제되었습니다.",
         data: data,
