@@ -7,36 +7,36 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 
-@UseGuards(JwtAuthGuard,RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('feedback')
 export class FeedbackController {
     constructor(private readonly feedbackService: FeedbackService) {}
 
     @Post()
     @Roles('instructor')
-    create(@Body() createFeedbackDto: CreateFeedbackDto): Promise<Feedback> {
-        return this.feedbackService.create(createFeedbackDto);
+    async create(@Body() createFeedbackDto: CreateFeedbackDto): Promise<Feedback> {
+        return await this.feedbackService.create(createFeedbackDto);
     }
 
     @Get()
-    findAll(): Promise<Feedback[]> {
-        return this.feedbackService.findAll();
+    async findAll(): Promise<Feedback[]> {
+        return await this.feedbackService.findAll();
     }
 
     @Get(':id')
-    findOne(@Param('id') id: number): Promise<Feedback> {
-        return this.feedbackService.findOne(id);
+    async findOne(@Param('id') id: number): Promise<Feedback> {
+        return await this.feedbackService.findOne(id);
     }
 
     @Patch(':id')
     @Roles('instructor')
-    update(@Param('id') id: number, @Body() updateFeedbackDto: UpdateFeedbackDto): Promise<Feedback> {
-        return this.feedbackService.update(id, updateFeedbackDto);
+    async update(@Param('id') id: number, @Body() updateFeedbackDto: UpdateFeedbackDto): Promise<Feedback> {
+        return await this.feedbackService.update(id, updateFeedbackDto);
     }
 
     @Delete(':id')
     @Roles('instructor')
-    remove(@Param('id') id: number): Promise<void> {
-        return this.feedbackService.remove(id);
+    async remove(@Param('id') id: number): Promise<void> {
+        return await this.feedbackService.remove(id);
     }
 }
