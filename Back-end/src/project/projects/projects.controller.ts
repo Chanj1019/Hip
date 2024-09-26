@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe, UseGuards, Patch } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -6,6 +6,7 @@ import { Project } from './entities/project.entity';
 import { RolesGuard } from '../../auth/roles.guard'; // 역할 기반 가드 임포트
 import { Roles } from '../../auth/roles.decorator'; // 역할 데코레이터 임포트
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { Role } from 'src/enums/role.enum';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('projects')
@@ -27,13 +28,13 @@ export class ProjectsController {
         return this.projectsService.findAll();
     }
 
-    @Put(':id')
-    @Roles('instructor','student')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() updateProjectDto: Partial<UpdateProjectDto>): Promise<{ message: string; modification: Project }> {
-        const modification = await this.projectsService.update(id, updateProjectDto);
+    @Patch(':id')
+    @Roles('instructor','admin','student')
+    async update(@Param('id') id: number, @Body() updateProjectDto: UpdateProjectDto) {
+        const updatedData = await this.projectsService.update(id, updateProjectDto);
         return {
-            message: "프로젝트가 수정되었습니다",
-            modification: modification,
+            message: "프로젝트가 수정되었습니다.",
+            data: updatedData,
         };
     }
 
