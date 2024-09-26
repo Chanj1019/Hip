@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinTable } from 'typeorm';
 import { User } from '../../../user/user.entity';
-import { Project_doc } from '../../project_doc/entities/project_doc.entity';
+import { ProjectDoc } from '../../project_doc/entities/project_doc.entity';
 import { ProjectRegistration } from 'src/project/project_registration/entities/registration.entity';
 
 @Entity()
@@ -43,6 +43,6 @@ export class Project {
     registrations: ProjectRegistration;
 
     // project - project_doc
-    @OneToMany(() => Project_doc, (project_doc) => project_doc.project)
-    project_docs: Project_doc[];
+    @OneToMany(() => ProjectDoc, (project_doc) => project_doc.project)
+    project_docs: ProjectDoc[];
 }
