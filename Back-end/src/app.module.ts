@@ -57,7 +57,7 @@ import { VideoTopic } from './course/video_topic/entities/video_topic.entity';
         MulterModule.register({
             dest: './uploads',
         }),
-        UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule, ProjectsModule, ProjectDocModule, ProjectRegistration, FeedbackModule,
+        UsersModule,ExhibitionsDocModule,ExhibitionsMemberModule, ProjectsModule, ProjectDocModule, ProjectRegistrationModule, FeedbackModule,
         CoursesModule,ExhibitionIntroModule,ExhibitionModule,
         UcatModule,
         DocNameModule,
