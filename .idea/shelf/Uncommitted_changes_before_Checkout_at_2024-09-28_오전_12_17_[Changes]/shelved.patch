@@ -1,0 +1,18 @@
+Index: Back-end/src/main.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { NestFactory } from '@nestjs/core';\r\nimport { AppModule } from './app.module';\r\n// 유효성 검사 전역 설정\r\nimport { ValidationPipe, BadRequestException } from '@nestjs/common'; // BadRequestException 임포트 추가\r\n\r\n\r\nasync function bootstrap() {\r\n    const app = await NestFactory.create(AppModule);\r\n    // app.enableCors();\r\n    // 유효성 검사 전역 설정\r\n    app.useGlobalPipes(new ValidationPipe({\r\n        exceptionFactory: (errors) => new BadRequestException(errors),\r\n        transform: true,\r\n        whitelist: true,\r\n        forbidNonWhitelisted: true,\r\n    }));\r\n\r\n    app.enableCors()\r\n\r\n    await app.listen(3000);\r\n}\r\nbootstrap();\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Back-end/src/main.ts b/Back-end/src/main.ts
+--- a/Back-end/src/main.ts	(revision f89e7ae4e88c647b28946b910ab86433bdcb8459)
++++ b/Back-end/src/main.ts	(date 1727448140434)
+@@ -17,6 +17,6 @@
+ 
+     app.enableCors()
+ 
+-    await app.listen(3000);
++    await app.listen(3002);
+ }
+ bootstrap();
