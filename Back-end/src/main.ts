@@ -15,8 +15,12 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
     }));
 
-    app.enableCors()
+    // CORS 설정
+    app.enableCors({
+        origin: 'http://localhost:4200',  // 특정 출처를 명시
+        credentials: true,  // 'withCredentials'를 사용하려면 'true'로 설정
+    });
 
-    await app.listen(3002);
+    await app.listen(3000);
 }
 bootstrap();
