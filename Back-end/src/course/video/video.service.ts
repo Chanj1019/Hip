@@ -68,7 +68,7 @@ export class VideoService {
     //     videoTopicId: number, 
     // ): Promise<Video[]> {
     //     await this.validate(courseTitle, videoTopicId);
-    //     return await this.videoRepository.find();;
+    //     return await this.videoRepository.find();
     // }
 
     // async findOne(

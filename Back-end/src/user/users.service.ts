@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { HashService } from '../auth/hash.service';
 import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
@@ -15,6 +16,12 @@ export class UsersService {
     ) {}
 
     async create(createUserDto: CreateUserDto): Promise<User> {
+        const { password, passwordConfirm } = createUserDto;
+
+        if (password !== passwordConfirm) {
+            throw new BadRequestException('Passwords do not match');
+        }
+
         console.log(createUserDto);
         const existingUser = await this.usersRepository.findOne({
             where: [
@@ -64,7 +71,7 @@ export class UsersService {
     }
 
 
-    async update(userId: number, email?: string, password?: string, nick_name?: string, generation?: string): Promise<string> {
+    async update(userId: number, email?: string, password?: string, nick_name?: string ): Promise<string> {
         const user = await this.usersRepository.findOne({ where: { user_id: userId } });
 
         if (!user) {
@@ -88,8 +95,7 @@ export class UsersService {
         // 사용자 정보 업데이트
         user.email = email;
         user.nick_name = nick_name;
-        user.generation = generation;
-    
+
         await this.usersRepository.save(user); // 업데이트된 사용자 정보 저장
     
         return 'User updated successfully'; // 성공 메시지 반환

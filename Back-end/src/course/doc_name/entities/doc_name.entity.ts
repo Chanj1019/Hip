@@ -10,7 +10,7 @@ export class DocName {
     @Column({ nullable: true })
     course_title: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 20 })
     topic_title: string;
 
     @Column({ nullable: true })

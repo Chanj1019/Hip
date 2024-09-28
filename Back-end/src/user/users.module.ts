@@ -6,14 +6,13 @@ import { User } from './user.entity';
 import { HashService } from '../auth/hash.service';
 import { ProjectsModule } from '../project/projects/projects.module'; 
 import * as dotenv from 'dotenv';
-import { UCat } from '../course/ucat/entities/ucat.entity';
 dotenv.config();
 
 // ProjectsModule 임포트
 //손정민 작성
  @Module({
     imports: [
-        TypeOrmModule.forFeature([User, UCat]),
+        TypeOrmModule.forFeature([User]),
         forwardRef(() => ProjectsModule), // ProjectsModule을 forwardRef로 임포트
     ],
     providers: [UsersService,HashService],
