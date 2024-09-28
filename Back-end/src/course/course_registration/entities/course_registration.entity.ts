@@ -1,5 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
 import { Registration } from "src/enums/role.enum";
+import { Course } from "src/course/courses/entities/course.entity";
+import { User } from "src/user/user.entity";
 
 @Entity()
 export class CourseRegistration {
@@ -15,4 +17,20 @@ export class CourseRegistration {
 
     @Column({ type: 'timestamp', nullable: false })
     course_reporting_date: Date;
+
+    // course_registration - user
+    @ManyToOne(() => User, (user) => user.project_registrations)
+    @JoinColumn({ name: 'userId' }) // 외래 키의 이름을 명시
+    user: User;
+
+    @Column({ type: 'int', nullable: false })
+    userId: number;
+
+    // course_registration - course
+    @ManyToOne(() => Course, (course) => course.course_registrations)
+    @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
+    course: Course;
+
+    @Column({ type: 'int', nullable: false })
+    projectId: number;
 }
