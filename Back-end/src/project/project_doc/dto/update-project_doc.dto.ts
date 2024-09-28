@@ -8,7 +8,4 @@ export class UpdateProjectDocDto {
     @IsOptional()
     @IsString()
     description?: string;
-
-    @IsInt()
-    project_id: number;
 }

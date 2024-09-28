@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Project_doc } from '../../../project/project_doc/entities/project_doc.entity';
+import { ProjectDoc } from '../../../project/project_doc/entities/project_doc.entity';
 
 @Entity('feedback')
 export class Feedback {
@@ -10,8 +10,8 @@ export class Feedback {
     content: string;
 
     // feedback - project_doc
-    @ManyToOne(() => Project_doc, (project_doc) => project_doc.feedbacks)
-    projectDoc: Project_doc;
+    @ManyToOne(() => ProjectDoc, (project_doc) => project_doc.feedbacks)
+    projectDoc: ProjectDoc;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;

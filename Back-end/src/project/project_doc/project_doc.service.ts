@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProjectDocDto } from './dto/create-project_doc.dto';
 import { UpdateProjectDocDto } from './dto/update-project_doc.dto';
-import { Project_doc } from './entities/project_doc.entity';
+import { ProjectDoc } from './entities/project_doc.entity';
 import { Project } from '../projects/entities/project.entity';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,8 +15,8 @@ dotenv.config(); // .env 파일 로드
 export class ProjectDocService {
     private s3: S3Client;
     constructor(
-        @InjectRepository(Project_doc)
-        private readonly projectDocRepository: Repository<Project_doc>,
+        @InjectRepository(ProjectDoc)
+        private readonly projectDocRepository: Repository<ProjectDoc>,
         @InjectRepository(Project)
         private readonly projectRepository: Repository<Project>,
     )  {
@@ -40,8 +40,8 @@ export class ProjectDocService {
         });
     }
 
-    async createProjectDoc(createProjectDocDto: CreateProjectDocDto, file: Express.Multer.File): Promise<Project_doc> {
-        const projectId = Number(createProjectDocDto.project_id);
+    async create(createProjectDocDto: CreateProjectDocDto, file: Express.Multer.File): Promise<ProjectDoc> {
+        const projectId = createProjectDocDto.projectId;
         const project = await this.projectRepository.findOne({ where: { project_id: projectId } });
 
         if (!project) {
@@ -82,47 +82,44 @@ export class ProjectDocService {
         return await this.projectDocRepository.save(projectDoc);
     }
 
-    async findAll(): Promise<Project_doc[]> {
+    async findAll(): Promise<ProjectDoc[]> {
         return await this.projectDocRepository.find({
         relations: ['project'],
         });
     }
 
-    async findOne(id: number): Promise<Project_doc> {
-        // ID가 유효하지 않은 경우 BadRequestException 던지기
-        if (id <= 0) {
-        throw new BadRequestException('유효하지 않은 ID입니다.');
-        }
-  
+    async findOne(id: number, project_id: number): Promise<ProjectDoc> {
         const doc = await this.projectDocRepository.findOne({
-        where: { project_doc_id: id },
-        relations: ['project'],
+            where: {
+                project_doc_id: id,
+                projectId: project_id,
+            },
+            relations: ['project'], // 연관된 프로젝트도 함께 가져오기
         });
-  
-        if (!doc) {
-        throw new NotFoundException('자료를 찾을 수 없습니다.');
-        }
-  
+        this.handleNotFound(doc, id);
         return doc;
     }
   
   
-    async update(id: number, updateProjectDocDto: UpdateProjectDocDto): Promise<Project_doc> {
-        const doc = await this.findOne(id);
-  
-        if (updateProjectDocDto.project_id) {
-            const project = await this.projectRepository.findOne({ where: { project_id: updateProjectDocDto.project_id } });
-            if (!project) {
-                throw new NotFoundException(`ID가 ${updateProjectDocDto.project_id}인 프로젝트를 찾을 수 없습니다.`);
-            }
-        }
+    async update(id: number, updateProjectDocDto: UpdateProjectDocDto): Promise<ProjectDoc> {
+        const doc = await this.projectDocRepository.findOne({ where: { project_doc_id: id } });
+        this.handleNotFound(doc, id);
 
         Object.assign(doc, updateProjectDocDto);
         return await this.projectDocRepository.save(doc);
     }
 
     async remove(id: number): Promise<void> {
-        const doc = await this.findOne(id);
+        const doc = await this.projectDocRepository.findOne({ where: { project_doc_id: id } });
+        this.handleNotFound(doc, id);
+
         await this.projectDocRepository.remove(doc);
+    }
+
+    // 예외 처리
+    private handleNotFound(doc: ProjectDoc, id: number): void {
+        if (!doc) {
+            throw new NotFoundException(`Document with ID ${id} not found`);
+        }
     }
 }

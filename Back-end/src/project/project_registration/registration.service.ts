@@ -6,14 +6,16 @@ import { CreateProjectRegistrationDto } from './dto/create-registration.dto';
 import  { User } from '../../user/user.entity';
 import { Project } from '../../project/projects/entities/project.entity';
 import { ConflictException } from '@nestjs/common';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { UpdateProjectRegistrationDto } from './dto/update-registration.dto';
 
 @Injectable()
 export class ProjectRegistrationService {
     constructor(
         @InjectRepository(ProjectRegistration)
         private readonly projectRegistrationRepository: Repository<ProjectRegistration>,
-        private readonly projectRepository: Repository<Project>,
+        @InjectRepository(Project)
+        private readonly projectsRepository: Repository<Project>,
+        @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) {}
 
@@ -33,9 +35,9 @@ export class ProjectRegistrationService {
 
     async create(createProjectRegistrationDto: CreateProjectRegistrationDto): Promise<ProjectRegistration> {
         // 이미 해당 프로젝트에 참가 신청이 되어 있는지 확인
-        const projectId = createProjectRegistrationDto.project_id;
-        const existingProject = await this.projectRepository.findOne({ where: { project_id: projectId } });
-        const userId = createProjectRegistrationDto.user_id;
+        const projectId = createProjectRegistrationDto.projectId;
+        const existingProject = await this.projectsRepository.findOne({ where: { project_id: projectId } });
+        const userId = createProjectRegistrationDto.userId;
         const existingUser = await this.userRepository.findOne({ where: { user_id: userId } });
     
         const existingProjectRegistration = await this.projectRegistrationRepository.findOne({
@@ -55,7 +57,7 @@ export class ProjectRegistrationService {
     }    
     
     // user 참고하여 user_name과 id를 함께 반환
-    async findAll(): Promise<{ registration: ProjectRegistration; userName: string; userId: string }[]> {
+    async findAll(): Promise<{ registration: ProjectRegistration; userName: string; userId: number }[]> {
         const registrations = await this.projectRegistrationRepository
             .createQueryBuilder('registration')
             .leftJoinAndSelect('registration.user', 'user')
@@ -69,7 +71,7 @@ export class ProjectRegistrationService {
         return registrations.map(registration => ({
             registration,
             userName: registration.user.user_name,
-            userId: registration.user.id,
+            userId: registration.userId,
         }));
     }    
     
@@ -79,6 +81,14 @@ export class ProjectRegistrationService {
         this.handleNotFound(registration, id);
         return registration;
     }
+
+    async update(id: number, updateProjectRegistrationDto: UpdateProjectRegistrationDto): Promise<ProjectRegistration> {
+        const registration = await this.projectRegistrationRepository.findOne({ where: { registration_id: id } });
+        this.handleNotFound(registration, id);
+
+        Object.assign(registration, updateProjectRegistrationDto);
+        return await this.projectRegistrationRepository.save(registration);
+    }    
 
     async remove(id: number): Promise<void> {
         const registration = await this.projectRegistrationRepository.findOne({ where: { registration_id: id } });
