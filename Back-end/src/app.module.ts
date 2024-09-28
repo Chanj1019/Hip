@@ -33,6 +33,8 @@ import { FeedbackModule } from './project/feedback/feedback.module';
 import { Feedback } from './project/feedback/entities/feedback.entity';
 import { VideoTopic } from './course/video_topic/entities/video_topic.entity';
 import { Video } from './course/video/entities/video.entity';
+import { CourseRegistrationModule } from './course/course_registration/course_registration.module';
+import { CourseRegistration } from './course/course_registration/entities/course_registration.entity';
 
 @Module({
     imports: [
@@ -46,7 +48,7 @@ import { Video } from './course/video/entities/video.entity';
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
                 entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro,
-                    Project,ProjectDoc, ProjectRegistration, Feedback, Course, UCat, DocName, CourseDoc, VideoTopic],
+                    Project,ProjectDoc, ProjectRegistration, Feedback, Course, UCat, DocName, CourseDoc, VideoTopic, CourseRegistration],
                 synchronize: true,
             }),
         }),
@@ -63,6 +65,7 @@ import { Video } from './course/video/entities/video.entity';
         VideoTopicModule,
         VideoModule,
         AuthModule,
+        CourseRegistrationModule,
     ],
 })
 export class AppModule {}
