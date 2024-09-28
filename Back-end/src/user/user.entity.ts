@@ -23,8 +23,6 @@ export class User {
     @Column()
     email: string;
 
-    @Column({ type: 'varchar', length: 5 })
-    generation: string;
 
     @Column({
         type: 'enum',
