@@ -46,7 +46,7 @@ import { Video } from './course/video/entities/video.entity';
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
                 entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro,
-                    Project,ProjectDoc, ProjectRegistration, Feedback, Course, UCat, DocName, CourseDoc, VideoTopic],
+                    Project,ProjectDoc, ProjectRegistration, Feedback, Course, DocName, CourseDoc, VideoTopic, Video],
                 synchronize: true,
             }),
         }),
