@@ -1,13 +1,12 @@
-import { IsString, MaxLength, IsOptional } from 'class-validator'
-
+import { IsString, IsOptional, Length } from 'class-validator'
 
 export class CreateDocNameDto {
     @IsString()
-    @MaxLength(255)
+    @Length(0, 20)
     topic_title: string;
 
     @IsString()
     @IsOptional()
-    @MaxLength(255)
+    @Length(0, 20)
     pa_topic_title?: string;
 }

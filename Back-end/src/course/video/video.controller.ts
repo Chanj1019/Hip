@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, Res } from '@nestjs/common';
 import { VideoService } from './video.service';
-import { CreateVideoDto } from './dto/create-video.dto';
-import { UpdateVideoDto } from './dto/update-video.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 
 @Controller('courses/:courseTitle/:videoTopicTitle/video')
 export class VideoController {
@@ -52,6 +51,11 @@ export class VideoController {
     // ) {
     //     return await this.videoService.remove(courseTitle, videoTopicId, id);
     // }
+
+    @Get(':video_id/stream')
+    async stream(@Param('video_id') videoId: number, @Res() res: Response): Promise<void> {
+        await this.videoService.streamVideo(videoId, res);
+    }
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))

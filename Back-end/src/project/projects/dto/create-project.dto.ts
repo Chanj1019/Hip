@@ -4,7 +4,7 @@ import { Status } from '../../../enums/role.enum';
 export class CreateProjectDto {
     @IsString()
     @IsNotEmpty()
-    title: string;
+    topic: string;
 
     @IsString()
     @IsNotEmpty()
@@ -12,7 +12,4 @@ export class CreateProjectDto {
 
     @IsEnum(Status)
     status: Status;
-
-    @IsInt()
-    userId: number;
 }
