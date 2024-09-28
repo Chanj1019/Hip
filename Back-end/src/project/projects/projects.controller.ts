@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
-import { UsersService } from '../../user/users.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
@@ -11,10 +10,10 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('projects')
 export class ProjectsController {
-    constructor(private readonly projectsService: ProjectsService, private readonly usersService: UsersService) {}
-
-    @Post()
-    @Roles('admin')
+    constructor(private readonly projectsService: ProjectsService) {}
+ 
+    @Post('register')
+    @Roles('admin','instructor')
     async create(@Body() createProjectDto: CreateProjectDto): Promise<{ message: string; data: Project }> {
         const data = await this.projectsService.create(createProjectDto);
         return {
@@ -29,7 +28,7 @@ export class ProjectsController {
     }
 
     @Put(':id')
-    @Roles('instructor')
+    @Roles('instructor','student')
     async update(@Param('id', ParseIntPipe) id: number, @Body() updateProjectDto: Partial<UpdateProjectDto>): Promise<{ message: string; modification: Project }> {
         const modification = await this.projectsService.update(id, updateProjectDto);
         return {
@@ -39,8 +38,13 @@ export class ProjectsController {
     }
 
     @Delete(':id')
-    @Roles('admin')
-    remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return this.projectsService.remove(id);
-    }
+    @Roles('admin', 'instructor')
+    async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string; data: any; }> {
+    const data = await this.projectsService.remove(id);
+    return {
+        message: "프로젝트가 삭제되었습니다.",
+        data: data,
+    };
+}
+
 }
