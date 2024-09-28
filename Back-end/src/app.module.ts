@@ -34,6 +34,7 @@ import { ProjectRegistration } from './project/project_registration/entities/reg
 import { FeedbackModule } from './project/feedback/feedback.module';
 import { Feedback } from './project/feedback/entities/feedback.entity';
 import { VideoTopic } from './course/video_topic/entities/video_topic.entity';
+import { Video } from './course/video/entities/video.entity';
 
 @Module({
     imports: [
