@@ -24,8 +24,8 @@ export class ProjectsController {
     }
 
     @Get()
-    findAll(): Promise<Project[]> {
-        return this.projectsService.findAll();
+    async findAll(): Promise<Project[]> {
+        return await this.projectsService.findAll();
     }
 
     @Patch(':id')
