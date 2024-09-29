@@ -39,8 +39,11 @@ export class AuthService {
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined');
         }
-    
+        
+        //id값에따른 비밀번호찾기
         const user = await this.userRepository.findOne({ where: { id } });
+        console.log(user);
+        console.log(id);
         
         if (!user) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
