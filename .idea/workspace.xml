@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d577a8b7-9dc8-42b1-8c88-c601e6adb1b9" name="Changes" comment="변경된 파일">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="d577a8b7-9dc8-42b1-8c88-c601e6adb1b9" name="Changes" comment="클래스 생성 컨트롤러 역할 강사추가">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Back-end/src/course/courses/courses.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Back-end/src/course/courses/courses.controller.ts" afterDir="false" />
     </list>
@@ -102,7 +101,7 @@
       <workItem from="1727466594736" duration="26000" />
       <workItem from="1727466633133" duration="1117000" />
       <workItem from="1727467890477" duration="1779000" />
-      <workItem from="1727577770149" duration="5107000" />
+      <workItem from="1727577770149" duration="12308000" />
     </task>
     <task id="LOCAL-00001" summary="추가 : 비밀번호 확인 코드 추가 BadRequest 방지">
       <option name="closed" value="true" />
@@ -120,7 +119,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727466499589</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="클래스 생성 컨트롤러 역할 강사추가">
+      <option name="closed" value="true" />
+      <created>1727595055126</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1727595055126</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -141,6 +148,7 @@
     <MESSAGE value="추가 : 비밀번호 확인 코드 추가 BadRequest 방지" />
     <MESSAGE value="변경된 파일" />
     <MESSAGE value="auth.service 파일 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="auth.service 파일 수정" />
+    <MESSAGE value="클래스 생성 컨트롤러 역할 강사추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="클래스 생성 컨트롤러 역할 강사추가" />
   </component>
 </project>

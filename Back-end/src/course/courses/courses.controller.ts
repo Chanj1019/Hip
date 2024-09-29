@@ -10,7 +10,7 @@ export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @Roles('instructor','admin')
+    @Roles('instructor','admin')//강사추가됨
     async create(
       @Body() CreateCourseDto: any
     ) {
@@ -22,7 +22,7 @@ export class CoursesController {
     }
 
     @Get()
-    @Roles('admin')
+    @Roles('student','instructor','admin')
     async findAll() {
         const data = await this.coursesService.findAll();
         return {
@@ -55,7 +55,7 @@ export class CoursesController {
     }
 
     @Delete(':id')
-    @Roles('admin')
+    @Roles('instructor','admin') //강사추가됨
     async remove(
       @Param('id') id: string
     ) {
