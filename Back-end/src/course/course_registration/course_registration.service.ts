@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCourseRegistrationDto } from './dto/create-course_registration.dto';
 import { UpdateCourseRegistrationDto } from './dto/update-course_registration.dto';
 import { Repository } from 'typeorm';
@@ -48,19 +48,34 @@ export class CourseRegistrationService {
         return await this.courseRegistrationRepository.save(courseRegistration);
     }
 
-    findAll() {
-        return `This action returns all courseRegistration`;
+    async findAll(): Promise<CourseRegistration[]> {
+        return this.courseRegistrationRepository.find();
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} courseRegistration`;
+    async findOne(id: number):Promise<CourseRegistration> {
+        const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
+        this.handleNotFound(courseRegistration, id)
+        return courseRegistration;
     }
 
-    update(id: number, updateCourseRegistrationDto: UpdateCourseRegistrationDto) {
-        return `This action updates a #${id} courseRegistration`;
+    async update(id: number, updateCourseRegistrationDto: UpdateCourseRegistrationDto) {
+        const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
+        this.handleNotFound(courseRegistration, id)
+
+        Object.assign(courseRegistration, updateCourseRegistrationDto);
+        return await this.courseRegistrationRepository.save(courseRegistration);
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} courseRegistration`;
+    async remove(id: number): Promise<void> {
+        const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
+        this.handleNotFound(courseRegistration, id)
+        await this.courseRegistrationRepository.delete(id);
+    }
+
+    // 예외 처리
+    private handleNotFound(courseRegistration: CourseRegistration, id: number): void {
+        if (!courseRegistration) {
+            throw new NotFoundException(`Registration with ID ${id} not found`);
+        }
     }
 }
