@@ -1,11 +1,13 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateProjectDocDto {
+    @IsNotEmpty()
     @IsString()
     description: string;
 
+    @IsNotEmpty()
     @IsString()
-    project_id: number;
+    projectId: number;
 
     // @IsInt()
     // userId: number;

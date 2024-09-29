@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../../user/user.entity';
 import { Project } from '../../projects/entities/project.entity';
 import { Registration } from '../../../enums/role.enum';
@@ -25,15 +25,27 @@ export class ProjectRegistration {
     @Column({
         type: 'enum',
         enum: TeamRole,
+        default: TeamRole.MEMBER,
     })
     team_role: TeamRole;
 
+    // 관계
+
     // project_registration - user
     @ManyToOne(() => User, (user) => user.registrations)
+    @JoinColumn({ name: 'userId' }) // 외래 키의 이름을 명시
     user: User;
+
+    // user_id를 참조한 값을 데이터베이스에 저장하기 위한 컬럼
+    @Column({ type: 'int', nullable: false })
+    userId: number;
 
     // project_registration - project
     @ManyToOne(() => Project, (project) => project.registrations)
+    @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
     project: Project;
 
+    // project_id를 참조한 값을 데이터베이스에 저장하기 위한 컬럼
+    @Column({ type: 'int', nullable: false })
+    projectId: number;
 }

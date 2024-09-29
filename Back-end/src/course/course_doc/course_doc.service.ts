@@ -26,6 +26,11 @@ export class CourseDocService {
         const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
         const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
         const AWS_REGION = process.env.AWS_REGION;
+        const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+
+        if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_REGION || !AWS_S3_BUCKET_NAME) {
+            throw new BadRequestException('AWS 관련 환경 변수가 설정되지 않았습니다. 모든 변수를 확인해주세요.');
+        }
 
         this.s3 = new S3Client({
             region: AWS_REGION,
@@ -36,26 +41,36 @@ export class CourseDocService {
         });
     }
 
+    private async validate(
+        courseTitle: string, 
+        topicTitle: string,
+    ): Promise<void> {
+        const CourseTitle = await this.coursesRepository.findOne({
+            where: { course_title: courseTitle }
+        })
+        if (!CourseTitle) {
+            throw new NotFoundException('강의를 찾을 수 없습니다.')
+        }
+        const DocName = await this.docNameRepository.findOne({
+            where: { topic_title: topicTitle }
+        })
+        if (!DocName) {
+            throw new NotFoundException('자료 주제를 찾을 수 없습니다.')
+        }
+    }
+
     async uploadFile(
         courseTitle: string,
-        docNameTitle: string,
+        topicTitle: string,
         createCourseDocDto: CreateCourseDocDto,
         file: Express.Multer.File
     ): Promise<string> {
-        const docName = await this.docNameRepository.findOne({
-            where: { course_title: courseTitle, topic_title: docNameTitle }
-        });
-        if (!docName) {
-            throw new NotFoundException('docName is not found');
-        }
-
+        await this.validate(courseTitle, topicTitle);
         const fileName = `${uuidv4()}-${file.originalname}`;
         const bucketName = this.configService.get<string>('AWS_S3_BUCKET_NAME');
-
         if (!bucketName) {
             throw new Error('AWS S3 bucket name is not configured');
         }
-
         try {
             const command = new PutObjectCommand({
                 Bucket: bucketName,
@@ -65,8 +80,7 @@ export class CourseDocService {
             });
             await this.s3.send(command);
             const url = `${fileName}`; // 저장할 객체 키 명시적으로 작성
-            
-            await this.saveFile(url, createCourseDocDto, docName);
+            await this.saveFile(url);
             return url;
         } catch (error) {
             console.error('File upload error:', error);
@@ -76,15 +90,11 @@ export class CourseDocService {
       
 
     async saveFile(
-        file_path: string,
-        createCourseDocDto: CreateCourseDocDto,
-        docName: DocName
+        file_path: string
     ): Promise<void> {
         try {
             const fileUpload = this.courseDocRepository.create({
-                file_path,
-                ...createCourseDocDto,
-                docName
+                file_path
             });
             await this.courseDocRepository.save(fileUpload);
         } catch (error) {
@@ -130,26 +140,31 @@ export class CourseDocService {
         }
     }
     
-    
-
     async findAll(courseTitle: string, docNameTitle: string): Promise<CourseDoc[]> {
-        return await this.courseDocRepository.find({ 
-            where: { docName: { topic_title: docNameTitle, course_title: courseTitle } }, 
-            relations: ['docName'],
-        });
+        try {
+            await this.validate(courseTitle, docNameTitle);
+            return await this.courseDocRepository.find();
+        } catch (error) {
+            console.error('파일 다운로드 중 오류 발생:', error);
+            throw new BadRequestException('전체 조회에 실패했습니다.');
+        }
     }
 
     async findOne(courseTitle: string, docNameTitle: string, id: number): Promise<CourseDoc> {
-        const courseDoc = await this.courseDocRepository.findOne({
-            where: { course_document_id: id, docName: { topic_title: docNameTitle, course_title: courseTitle } },
-            relations: ['docName'],
-        });
-
-        if (!courseDoc) {
-            throw new NotFoundException(`Course Document with id ${id} not found`);
+        try {
+            await this.validate(courseTitle, docNameTitle)
+            const courseDoc = await this.courseDocRepository.findOne({
+                where: { course_document_id: id },
+                relations: ['docName'],
+            });
+            if (!courseDoc) {
+                throw new NotFoundException(`Course Document with id ${id} not found`);
+            }
+            return courseDoc;
+        } catch (error) {
+            console.error('파일 다운로드 중 오류 발생:', error);
+            throw new BadRequestException('조회에 실패했습니다.');
         }
-
-        return courseDoc;
     }
 
     // async update(courseTitle: string, docNameTitle: string, id: number, file?: Express.Multer.File): Promise<CourseDoc> {
@@ -165,7 +180,12 @@ export class CourseDocService {
     // }
 
     async remove(courseTitle: string, docNameTitle: string, id: number): Promise<void> {
-        const courseDoc = await this.findOne(courseTitle, docNameTitle, id);
-        await this.courseDocRepository.remove(courseDoc);
+        try {
+            const courseDoc = await this.findOne(courseTitle, docNameTitle, id);
+            await this.courseDocRepository.remove(courseDoc);
+        } catch (error) {
+            console.error('파일 다운로드 중 오류 발생:', error);
+            throw new BadRequestException('삭제에 실패했습니다.');
+        }
     }
 }

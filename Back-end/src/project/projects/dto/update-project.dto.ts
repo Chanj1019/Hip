@@ -1,5 +1,5 @@
 import { IsString, IsOptional, IsEnum } from 'class-validator';
-import { Status } from '../../../enums/role.enum'
+import { ProjectStatus } from '../../../enums/role.enum'
 
 export class UpdateProjectDto {
     @IsOptional()
@@ -8,9 +8,21 @@ export class UpdateProjectDto {
 
     @IsOptional()
     @IsString()
+    class?: string;
+
+    @IsOptional()
+    @IsEnum(ProjectStatus)
+    status?: ProjectStatus;
+
+    @IsOptional()
+    @IsString()
     team_name?: string;
 
     @IsOptional()
-    @IsEnum(Status)
-    status?: Status;
+    @IsString()
+    profile?: string;
+
+    @IsOptional()
+    @IsString()
+    requirements?: string;
 }

@@ -1,11 +1,5 @@
-import { IsNotEmpty, IsEnum, IsDateString, IsString } from 'class-validator';
+import { IsNotEmpty, IsEnum, IsDateString, IsNumber } from 'class-validator';
 import { Registration } from '../../../enums/role.enum';
-
-export enum Status {
-    Pending = 'PENDING',
-    Approved = 'APPROVED',
-    Rejected = 'REJECTED'
-}
 
 export class CreateProjectRegistrationDto {
 
@@ -17,20 +11,16 @@ export class CreateProjectRegistrationDto {
     @IsEnum(Registration)
     registration_status: Registration;
 
-    // user 정보
+    // user 주키
 
     @IsNotEmpty()
-    @IsString() // user가 문자열인지 검증
-    user_name: string;
+    @IsNumber()
+    userId: number;
+
+    // project 주키
 
     @IsNotEmpty()
-    @IsString()
-    user_id: number;
-
-    // project 정보
-
-    @IsNotEmpty()
-    @IsString()
-    project_id: number;
+    @IsNumber()
+    projectId: number;
 
 }

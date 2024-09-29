@@ -6,13 +6,16 @@ import { ProjectsController } from './projects.controller';
 import { User } from '../../user/user.entity';
 import { UsersModule } from '../../user/users.module'; // UsersModule 임포트
 import { UsersService } from '../../user/users.service';
+import { ProjectRegistrationModule } from '../project_registration/registration.module';
+import { ProjectRegistrationService } from '../project_registration/registration.service';
+import { ProjectRegistration } from '../project_registration/entities/registration.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Project, User]), // Project와 User 엔티티를 포함
-        forwardRef(() => UsersModule), // UsersModule을 forwardRef로 임포트
+        TypeOrmModule.forFeature([Project, User, ProjectRegistration]),
+        forwardRef(() => UsersModule), ProjectRegistrationModule,
     ],
-    providers: [ProjectsService, UsersService],
+    providers: [ProjectsService, UsersService, ProjectRegistrationService],
     controllers: [ProjectsController],
     exports: [ProjectsService],
 })

@@ -4,15 +4,15 @@ import { Repository } from 'typeorm';
 import { Feedback } from './entities/feedback.entity';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
-import { Project_doc } from '../project_doc/entities/project_doc.entity'; // project_doc 엔티티 경로에 맞게 수정
+import { ProjectDoc } from '../project_doc/entities/project_doc.entity'; // project_doc 엔티티 경로에 맞게 수정
 
 @Injectable()
 export class FeedbackService {
     constructor(
         @InjectRepository(Feedback)
         private feedbackRepository: Repository<Feedback>,
-        @InjectRepository(Project_doc)
-        private projectDocRepository: Repository<Project_doc>,
+        @InjectRepository(ProjectDoc)
+        private projectDocRepository: Repository<ProjectDoc>,
     ) {}
 
     async create(createFeedbackDto: CreateFeedbackDto): Promise<Feedback> {

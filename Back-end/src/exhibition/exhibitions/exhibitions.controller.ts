@@ -10,13 +10,13 @@ import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard,RolesGuard)
+// @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('exhibitions')
 export class ExhibitionController {
     constructor(private readonly exhibitionService: ExhibitionService) {}
 
     @Post('register')
-    @Roles('admin')
+    // @Roles('admin')
     @UseInterceptors(FileInterceptor('file')) // 'file'은 전송할 파일의 필드 이름입니다.
     async create(
         @Body() createExhibitionDto: CreateExhibitionDto,
@@ -65,7 +65,7 @@ export class ExhibitionController {
     }
 
     @Patch(':exhibition_title')
-    @Roles('admin')
+    // @Roles('admin')
     async update(
     @Param('exhibition_title') exhibitionTitle: string,
     @Body() body: UpdateExhibitionDto // DTO 사용
@@ -88,7 +88,7 @@ export class ExhibitionController {
     }
 
     @Delete(':exhibition_title')
-    @Roles('admin')
+    // @Roles('admin')
     async remove(@Param('exhibition_title') exhibitionTitle: string): Promise<{ message: string }> {
         await this.exhibitionService.remove(exhibitionTitle);
         return { message: '전시가 삭제되었습니다.' };
