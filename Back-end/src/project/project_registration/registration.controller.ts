@@ -7,7 +7,7 @@ import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('projects/:project/projectRegistrations')
+@Controller('projects/:project/projectRegistration')
 export class ProjectRegistrationController {
     constructor(private readonly projectRegistrationService: ProjectRegistrationService) {}
 
