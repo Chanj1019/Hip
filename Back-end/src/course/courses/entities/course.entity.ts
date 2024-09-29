@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany } from 't
 import { DocName } from '../../doc_name/entities/doc_name.entity';
 import { VideoTopic } from 'src/course/video_topic/entities/video_topic.entity';
 import { User } from 'src/user/user.entity';
+import { CourseRegistration } from 'src/course/course_registration/entities/course_registration.entity';
 
 @Entity()
 export class Course {
@@ -28,5 +29,9 @@ export class Course {
 
     @OneToMany(() => VideoTopic, (videoTopic) => videoTopic.course, { cascade: true })
     videoTopic: VideoTopic[];
+
+    // course - course_registration
+    @OneToMany(() => CourseRegistration, (course_registration) => course_registration.course)
+    course_registrations: CourseRegistration[];
 
 }

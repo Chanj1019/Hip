@@ -19,22 +19,8 @@ export class ProjectRegistrationService {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    // async create(createRegistrationDto: CreateProjectRegistrationDto): Promise<ProjectRegistration> {
-    //     // 이미 해당 프로젝트에 참가 신청이 되어 있는지 확인
-    //     const existingRegistration = await this.projectRegistrationRepository.findOne({
-    //         where: { userId: createRegistrationDto.userId, projectTopic: createRegistrationDto.projectTopic }
-    //     });
-    
-    //     if (existingRegistration) {
-    //         throw new ConflictException('이미 신청된 프로젝트입니다.');
-    //     }
-    
-    //     const registration = this.projectRegistrationRepository.create(createRegistrationDto);
-    //     return this.projectRegistrationRepository.save(registration);
-    // }
-
     async create(createProjectRegistrationDto: CreateProjectRegistrationDto): Promise<ProjectRegistration> {
-        // 이미 해당 프로젝트에 참가 신청이 되어 있는지 확인
+        // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
         const projectId = createProjectRegistrationDto.projectId;
         const existingProject = await this.projectsRepository.findOne({ where: { project_id: projectId } });
         const userId = createProjectRegistrationDto.userId;
