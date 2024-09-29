@@ -10,7 +10,7 @@ export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @Roles('amdin','instructor')
+    @Roles('amdin')
     async create(
       @Body() createCourseDto: any
     ) {
@@ -55,7 +55,7 @@ export class CoursesController {
     }
 
     @Delete(':id')
-    @Roles('instructor','admin')
+    @Roles('admin')
     async remove(
       @Param('id') id: string
     ) {
