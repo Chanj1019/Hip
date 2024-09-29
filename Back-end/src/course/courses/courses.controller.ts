@@ -10,11 +10,11 @@ export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @Roles('amdin')
+    @Roles('instructor','admin')
     async create(
-      @Body() createCourseDto: any
+      @Body() CreateCourseDto: any
     ) {
-        const data = await this.coursesService.create(createCourseDto);
+        const data = await this.coursesService.create(CreateCourseDto);
         return {
             message: "생성에 성공하셨습니다",
             data: data
