@@ -19,7 +19,7 @@ export class CourseRegistration {
     course_reporting_date: Date;
 
     // course_registration - user
-    @ManyToOne(() => User, (user) => user.project_registrations)
+    @ManyToOne(() => User, (user) => user.course_registrations)
     @JoinColumn({ name: 'userId' }) // 외래 키의 이름을 명시
     user: User;
 
@@ -28,9 +28,9 @@ export class CourseRegistration {
 
     // course_registration - course
     @ManyToOne(() => Course, (course) => course.course_registrations)
-    @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
+    @JoinColumn({ name: 'coursetId' }) // 외래 키의 이름을 명시
     course: Course;
 
     @Column({ type: 'int', nullable: false })
-    projectId: number;
+    courseId: number;
 }

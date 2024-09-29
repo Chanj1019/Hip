@@ -14,14 +14,14 @@ export class CourseRegistrationService {
         @InjectRepository(CourseRegistration)
         private readonly courseRegistrationRepository: Repository<CourseRegistration>,
         @InjectRepository(Course)
-        private readonly projectsRepository: Repository<Course>,
+        private readonly coursesRepository: Repository<Course>,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ){}
     async create(createCourseRegistrationDto: CreateCourseRegistrationDto) {
         // 이미 해당 강의에 수강 신청이 되어 있을 때
         const courseId = createCourseRegistrationDto.courseId;
-        const existingCourse = await this.courseRegistrationRepository.findOne({ where: { course_id: courseId } });
+        const existingCourse = await this.coursesRepository.findOne({ where: { course_id: courseId } });
         if(!existingCourse){
             throw new ConflictException('강의가 존재하지 않습니다.');
         }
