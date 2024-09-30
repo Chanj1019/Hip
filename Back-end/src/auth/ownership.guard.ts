@@ -2,12 +2,14 @@ import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Unauthor
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CoursesService } from '../course/courses/courses.service'; // 코스 서비스 임포트
 import { ProjectsService } from '../project/projects/projects.service'; // 프로젝트 서비스 임포트
+import { ExhibitionService } from '../exhibition/exhibitions/exhibitions.service';
 
 @Injectable()
 export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
     constructor(
         private readonly courseService: CoursesService,
         private readonly projectService: ProjectsService,
+        private readonly exhibitionService: ExhibitionService
     ) {
         super();
     }
@@ -38,8 +40,7 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
             if (!course) {
                 throw new ForbiddenException('존재하지 않는 코스입니다.');
             }
-        
-            // UCat 배열에서 요청한 사용자 ID와 일치하는 강사 찾기
+
             const owner = course.user.find(user => user.user_id === user.user_id);
             if (!owner) {
                 throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
@@ -59,9 +60,25 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
                 throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
             }
             resourceOwnerId = owner.user_id; // 소유자의 ID 저장
-        } else {
+        }
+
+        else if ( resourceType ==='exhibitions'){
+            const exhibition = await this.exhibitionService.findOne(resourceId);
+            if (!exhibition){
+                throw new ForbiddenException('존재하지 않는 전시회입니다.');
+            }
+
+            const owner = exhibition.user.find(user => user.user_id === user.user_id)
+            if (!owner) {
+                throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
+            }
+            resourceOwnerId = owner.user_id; // 소유자의 ID 저장
+        }
+
+        else {
             throw new ForbiddenException('지원하지 않는 리소스 유형입니다.');
         }
+        
 
         // 소유권 확인
         if (resourceOwnerId !== user.user_id) {
