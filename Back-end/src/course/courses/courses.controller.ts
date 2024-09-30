@@ -43,7 +43,7 @@ export class CoursesController {
         };
     }
 
-    @Patch(':id')
+    @Patch(':type/:id')
     @Roles('instructor','admin')
     @UseGuards(OwnershipGuard)
     async update(
