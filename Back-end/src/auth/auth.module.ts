@@ -10,10 +10,11 @@ import { UsersModule } from '../user/users.module';
 import { OwnershipGuard } from './ownership.guard';
 import { CoursesModule } from '../course/courses/courses.module';
 import { ProjectsModule } from '../project/projects/projects.module';
+import { ExhibitionModule } from '../exhibition/exhibitions/exhibitions.module';
 @Global()
 @Module({
     imports: [
-        UsersModule,CoursesModule,ProjectsModule,
+        UsersModule,CoursesModule,ProjectsModule,ExhibitionModule,
         TypeOrmModule.forFeature([User]),
         JwtModule.register({
             secret: process.env.JWT_SECRET,
@@ -25,7 +26,6 @@ import { ProjectsModule } from '../project/projects/projects.module';
         JwtStrategy,
         RolesGuard,
         OwnershipGuard
-        
     ],
     controllers: [AuthController],
     exports: [AuthService,RolesGuard,OwnershipGuard],
