@@ -6,12 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DocName } from '../doc_name/entities/doc_name.entity'
 import { UsersModule } from '../../user/users.module';
 import { VideoTopic } from 'src/course/video_topic/entities/video_topic.entity';
-import { ProjectsModule } from 'src/project/projects/projects.module';
+import { ProjectsModule } from '../../project/projects/projects.module';
+import { ExhibitionModule } from '../../exhibition/exhibitions/exhibitions.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Course, DocName, VideoTopic]),
-        UsersModule,ProjectsModule
+        UsersModule,ProjectsModule,ExhibitionModule
     ],
     providers: [CoursesService],
     controllers: [CoursesController],
