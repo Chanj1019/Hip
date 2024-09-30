@@ -6,6 +6,7 @@ import { User } from './user.entity';
 import { HashService } from '../auth/hash.service';
 import { ProjectsModule } from '../project/projects/projects.module'; 
 import * as dotenv from 'dotenv';
+import { ExhibitionModule } from 'src/exhibition/exhibitions/exhibitions.module';
 dotenv.config();
 
 // ProjectsModule 임포트
@@ -13,7 +14,9 @@ dotenv.config();
  @Module({
     imports: [
         TypeOrmModule.forFeature([User]),
-        forwardRef(() => ProjectsModule), // ProjectsModule을 forwardRef로 임포트
+        forwardRef(() => ProjectsModule),
+        forwardRef(() => ExhibitionModule), 
+         // ProjectsModule을 forwardRef로 임포트
     ],
     providers: [UsersService,HashService],
     controllers: [UsersController],
