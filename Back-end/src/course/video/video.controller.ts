@@ -3,7 +3,7 @@ import { VideoService } from './video.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 
-@Controller('courses/:courseTitle/:videoTopicTitle/video')
+@Controller('courses/:courseId/:videoTopicId/video')
 export class VideoController {
     constructor(private readonly videoService: VideoService) {}
 
@@ -53,14 +53,17 @@ export class VideoController {
     // }
 
     @Get(':video_id/stream')
-    async stream(@Param('video_id') videoId: number, @Res() res: Response): Promise<void> {
+    async stream(
+        @Param('video_id') videoId: number, 
+        @Res() res: Response
+    ): Promise<void> {
         await this.videoService.streamVideo(videoId, res);
     }
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(
-        @Body('courseTitle') courseTitle: string,
+        @Body('courseId') courseId: number,
         @Body('videoTopicId') videoTopicId: number,
         @UploadedFile() file: Express.Multer.File
     ): Promise< { message: string }> {
@@ -68,11 +71,13 @@ export class VideoController {
             throw new BadRequestException('파일이 전송되지 않았습니다.');
         }
         
-        return this.videoService.uploadFile(courseTitle, videoTopicId, file);
+        return this.videoService.uploadFile(courseId, videoTopicId, file);
     }
 
     @Delete(':videoId')
-    async removeFile(@Param('videoId') videoId: number): Promise<void> {
+    async removeFile(
+        @Param('videoId') videoId: number
+    ): Promise<void> {
         return this.videoService.removeFile(videoId);
     }
 }
