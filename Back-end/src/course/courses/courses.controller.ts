@@ -10,7 +10,7 @@ export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @Roles('amdin')
+    @Roles('instructor','amdin')
     async create(
       @Body() createCourseDto: any
     ) {
@@ -22,7 +22,7 @@ export class CoursesController {
     }
 
     @Get()
-    @Roles('admin')
+    @Roles('instructor','admin')
     async findAll() {
         const data = await this.coursesService.findAll();
         return {
@@ -45,7 +45,7 @@ export class CoursesController {
     @Patch(':id')
     @Roles('instructor','admin')
     async update(
-      @Param('id') id: string, @Body() updateCourseDto: any
+      @Param('id') id: number, @Body() updateCourseDto: any
     ) {
         const data = await this.coursesService.update(id, updateCourseDto);
         return {
@@ -55,9 +55,9 @@ export class CoursesController {
     }
 
     @Delete(':id')
-    @Roles('admin')
+    @Roles('instructor','admin')
     async remove(
-      @Param('id') id: string
+      @Param('id') id: number
     ) {
         const data = await this.coursesService.remove(id);
         return {

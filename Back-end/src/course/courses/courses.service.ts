@@ -44,10 +44,10 @@ export class CoursesService {
         return course;
     }
 
-    async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
+    async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
         // 데이터베이스에서 해당 ID의 강의 조회
         const course = await this.coursesRepository.findOne(
-            { where: { course_title: id } 
+            { where: { course_id: id } 
         });
 
         if (!course) {
@@ -75,9 +75,9 @@ export class CoursesService {
         return course;
     }
   
-    async remove(id: string): Promise<void> {
+    async remove(id: number): Promise<void> {
         const course = await this.coursesRepository.findOne(
-            { where: { course_title: id },
+            { where: { course_id: id },
             relations: ['docName'] 
         });
         if(course){
