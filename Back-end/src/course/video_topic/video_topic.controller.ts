@@ -3,33 +3,33 @@ import { VideoTopicService } from './video_topic.service';
 import { CreateVideoTopicDto } from './dto/create-video_topic.dto';
 import { UpdateVideoTopicDto } from './dto/update-video_topic.dto';
 
-@Controller('courses/:courseTitle/videoTopics')
+@Controller('courses/:courseId/videoTopics')
 export class VideoTopicController {
     constructor(private readonly videoTopicService: VideoTopicService) {}
 
     @Post('registerVT')
     async create(
-        @Param('courseTitle') courseTitle: string,
+        @Param('courseId') courseId: number,
         @Body() createVideoTopicDto: CreateVideoTopicDto
     ) {
-        const data = await this.videoTopicService.create(courseTitle, createVideoTopicDto);
+        const data = await this.videoTopicService.create(courseId, createVideoTopicDto);
         return { message: "video topic 생성에 성공하셨습니다", data };
     }
 
     @Get('allVT')
     async findAll(
-        @Param('courseTitle') courseTitle: string
+        @Param('courseId') courseId: number
     ) {
-        const data = await this.videoTopicService.findAll(courseTitle);
+        const data = await this.videoTopicService.findAll(courseId);
         return { message: "전체 video topic 조회에 성공하셨습니다", data };
     }
 
     @Get(':title')
     async findOne(
-        @Param('courseTitle') courseTitle: string,
+        @Param('courseId') courseId: number,
         @Param('title') video_topic_title: string
     ) {
-        const data = await this.videoTopicService.findOne(courseTitle, video_topic_title);
+        const data = await this.videoTopicService.findOne(courseId, video_topic_title);
         if (!data) {
             throw new NotFoundException('VideoTopic not found');
         }
@@ -38,20 +38,20 @@ export class VideoTopicController {
 
     @Patch(':title')
     async update(
-        @Param('courseTitle') courseTitle: string,
+        @Param('courseId') courseId: number,
         @Param('title') video_topic_title: string,
         @Body() updateVideoTopicDto: UpdateVideoTopicDto
     ) {
-        const data = await this.videoTopicService.update(courseTitle, video_topic_title, updateVideoTopicDto);
+        const data = await this.videoTopicService.update(courseId, video_topic_title, updateVideoTopicDto);
         return { message: "video topic 업데이트에 성공하셨습니다", data };
     }
 
     @Delete(':title')
     async remove(
-        @Param('courseTitle') courseTitle: string,
+        @Param('courseId') courseId: number,
         @Param('title') video_topic_title: string
     ) {
-        const data = await this.videoTopicService.remove(courseTitle, video_topic_title);
+        const data = await this.videoTopicService.remove(courseId, video_topic_title);
         if (!data) {
             throw new NotFoundException('VideoTopic not found');
         }

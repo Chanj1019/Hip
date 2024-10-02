@@ -16,11 +16,11 @@ export class VideoTopicService {
     ) {}
 
     async create(
-        courseTitle: string, 
+        courseId: number, 
         createVideoTopicDto: CreateVideoTopicDto
     ): Promise<VideoTopic> {
         const course = await this.courseRepository.findOne({ 
-            where: { course_title: courseTitle }
+            where: { course_id: courseId }
         });
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
@@ -33,10 +33,10 @@ export class VideoTopicService {
     }
 
     async findAll(
-        courseTitle: string
+        courseId:  number
     ): Promise<VideoTopic[]> {
         const videoTopics = await this.videoTopicRepository.find({
-            where: { course: { course_title: courseTitle } } // courseTitle을 사용하여 필터링
+            where: { course: { course_id: courseId } } // courseTitle을 사용하여 필터링
         });
         if (!videoTopics.length) {
             throw new NotFoundException("해당 강의의 비디오 주제가 없습니다.");
@@ -45,12 +45,12 @@ export class VideoTopicService {
     }
 
     async findOne(
-        courseTitle: string, 
+        courseId: number, 
         video_topic_title: string
     ): Promise<VideoTopic> {
         const videoTopic = await this.videoTopicRepository.findOne({
             where: { 
-                course: { course_title: courseTitle }, 
+                course: { course_id: courseId }, 
                 video_topic_title: video_topic_title 
             }
         });
@@ -61,11 +61,11 @@ export class VideoTopicService {
     }
 
     async update(
-        courseTitle: string, 
+        courseId: number, 
         video_topic_title: string, 
         updateVideoTopicDto: UpdateVideoTopicDto
     ): Promise<VideoTopic> {
-        const videoTopic = await this.findOne(courseTitle, video_topic_title);
+        const videoTopic = await this.findOne(courseId, video_topic_title);
         if (!videoTopic) {
             throw new NotFoundException("해당 비디오 주제를 찾을 수 없습니다.");
         }
@@ -74,10 +74,10 @@ export class VideoTopicService {
     }
 
     async remove(
-        courseTitle: string, 
+        courseId: number, 
         video_topic_title: string)
         : Promise<VideoTopic> {
-        const videoTopic = await this.findOne(courseTitle, video_topic_title);
+        const videoTopic = await this.findOne(courseId, video_topic_title);
         if (!videoTopic) {
             throw new NotFoundException("해당 비디오 주제를 찾을 수 없습니다.");
         }
