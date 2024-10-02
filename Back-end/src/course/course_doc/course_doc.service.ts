@@ -45,10 +45,10 @@ export class CourseDocService {
         courseId: number, 
         topicId: number,
     ): Promise<void> {
-        const CourseTitle = await this.coursesRepository.findOne({
+        const CourseId = await this.coursesRepository.findOne({
             where: { course_id: courseId }
         })
-        if (!CourseTitle) {
+        if (!CourseId) {
             throw new NotFoundException('강의를 찾을 수 없습니다.')
         }
         const DocName = await this.docNameRepository.findOne({
