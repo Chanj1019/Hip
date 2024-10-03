@@ -24,10 +24,10 @@ export class VideoTopicController {
         return { message: "전체 video topic 조회에 성공하셨습니다", data };
     }
 
-    @Get(':title')
+    @Get(':id')
     async findOne(
         @Param('courseId') courseId: number,
-        @Param('title') video_topic_id: number
+        @Param('id') video_topic_id: number
     ) {
         const data = await this.videoTopicService.findOne(courseId, video_topic_id);
         if (!data) {
@@ -36,20 +36,20 @@ export class VideoTopicController {
         return { message: "특정 video topic 조회에 성공하셨습니다", data };
     }
 
-    @Patch(':title')
+    @Patch(':id')
     async update(
         @Param('courseId') courseId: number,
-        @Param('title') video_topic_id: number,
+        @Param('id') video_topic_id: number,
         @Body() updateVideoTopicDto: UpdateVideoTopicDto
     ) {
         const data = await this.videoTopicService.update(courseId, video_topic_id, updateVideoTopicDto);
         return { message: "video topic 업데이트에 성공하셨습니다", data };
     }
 
-    @Delete(':title')
+    @Delete(':id')
     async remove(
         @Param('courseId') courseId: number,
-        @Param('title') video_topic_id: number
+        @Param('id') video_topic_id: number
     ) {
         const data = await this.videoTopicService.remove(courseId, video_topic_id);
         if (!data) {

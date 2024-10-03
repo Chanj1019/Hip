@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
-@Controller('courses/:courseId/docNames/:docNameId/courseDocs')
+@Controller('courses/:courseId/docNames/:topicId/courseDocs')
 export class CourseDocController {
     constructor(private readonly courseDocService: CourseDocService) {}
 
@@ -39,17 +39,17 @@ export class CourseDocController {
         };
     }
 
-    @Get('download/:fileName')
+    @Get('download/:fileUrl')
     async downloadFile(
-        @Param('fileName') fileName: string, 
+        @Param('fileUrl') fileUrl: string, 
         @Res() res: Response
     ) {
         try {
-            const { stream, metadata } = await this.courseDocService.downloadFile(fileName);
+            const { stream, metadata } = await this.courseDocService.downloadFile(fileUrl);
 
             res.set({
                 'Content-Type': metadata.ContentType || 'application/octet-stream',
-                'Content-Disposition': `attachment; filename="${fileName}"`,
+                'Content-Disposition': `attachment; fileurl="${fileUrl}"`,
                 'Content-Length': metadata.ContentLength,
             });
 
@@ -74,7 +74,7 @@ export class CourseDocController {
     //     };
     // }
 
-    @Delete(':type/:id')
+    @Delete(':id')
     async remove(
         @Param('courseId') courseId: number,
         @Param('topicId') topicId: number,

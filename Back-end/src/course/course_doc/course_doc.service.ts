@@ -211,7 +211,7 @@ export class CourseDocService {
             const courseDoc = await this.findOne(courseId, topicId, id);
             await this.courseDocRepository.remove(courseDoc);
         } catch (error) {
-            console.error('파일 다운로드 중 오류 발생:', error);
+            console.error('삭제 중 오류 발생:', error);
             throw new BadRequestException('삭제에 실패했습니다.');
         }
     }
