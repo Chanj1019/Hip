@@ -27,9 +27,9 @@ export class VideoTopicController {
     @Get(':title')
     async findOne(
         @Param('courseId') courseId: number,
-        @Param('title') video_topic_title: string
+        @Param('title') video_topic_id: number
     ) {
-        const data = await this.videoTopicService.findOne(courseId, video_topic_title);
+        const data = await this.videoTopicService.findOne(courseId, video_topic_id);
         if (!data) {
             throw new NotFoundException('VideoTopic not found');
         }
@@ -39,19 +39,19 @@ export class VideoTopicController {
     @Patch(':title')
     async update(
         @Param('courseId') courseId: number,
-        @Param('title') video_topic_title: string,
+        @Param('title') video_topic_id: number,
         @Body() updateVideoTopicDto: UpdateVideoTopicDto
     ) {
-        const data = await this.videoTopicService.update(courseId, video_topic_title, updateVideoTopicDto);
+        const data = await this.videoTopicService.update(courseId, video_topic_id, updateVideoTopicDto);
         return { message: "video topic 업데이트에 성공하셨습니다", data };
     }
 
     @Delete(':title')
     async remove(
         @Param('courseId') courseId: number,
-        @Param('title') video_topic_title: string
+        @Param('title') video_topic_id: number
     ) {
-        const data = await this.videoTopicService.remove(courseId, video_topic_title);
+        const data = await this.videoTopicService.remove(courseId, video_topic_id);
         if (!data) {
             throw new NotFoundException('VideoTopic not found');
         }

@@ -46,12 +46,12 @@ export class VideoTopicService {
 
     async findOne(
         courseId: number, 
-        video_topic_title: string
+        video_topic_id: number
     ): Promise<VideoTopic> {
         const videoTopic = await this.videoTopicRepository.findOne({
             where: { 
                 course: { course_id: courseId }, 
-                video_topic_title: video_topic_title 
+                video_topic_id: video_topic_id
             }
         });
         if (!videoTopic) {
@@ -62,10 +62,10 @@ export class VideoTopicService {
 
     async update(
         courseId: number, 
-        video_topic_title: string, 
+        video_topic_id: number, 
         updateVideoTopicDto: UpdateVideoTopicDto
     ): Promise<VideoTopic> {
-        const videoTopic = await this.findOne(courseId, video_topic_title);
+        const videoTopic = await this.findOne(courseId, video_topic_id);
         if (!videoTopic) {
             throw new NotFoundException("해당 비디오 주제를 찾을 수 없습니다.");
         }
@@ -75,9 +75,9 @@ export class VideoTopicService {
 
     async remove(
         courseId: number, 
-        video_topic_title: string)
-        : Promise<VideoTopic> {
-        const videoTopic = await this.findOne(courseId, video_topic_title);
+        video_topic_id: number
+    ): Promise<VideoTopic> {
+        const videoTopic = await this.findOne(courseId, video_topic_id);
         if (!videoTopic) {
             throw new NotFoundException("해당 비디오 주제를 찾을 수 없습니다.");
         }

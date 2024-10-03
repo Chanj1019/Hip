@@ -11,14 +11,14 @@ export class DocName {
     topic_title: string;
 
     @Column({ nullable: true })
-    pa_topic_title: string;
+    pa_topic_id: number;
     
-    // @ManyToOne(() => DocName, docName => docName.subTopics, { nullable: true })
-    // @JoinColumn({ name: 'pa_topic_id' })
-    // pa_topic: DocName;
+    @ManyToOne(() => DocName, docName => docName.subTopics, { nullable: true })
+    @JoinColumn({ name: 'pa_topic_id' })
+    pa_topic: DocName;
 
-    // @OneToMany(() => DocName, docName => docName.pa_topic)
-    // subTopics: DocName[];
+    @OneToMany(() => DocName, docName => docName.pa_topic, { cascade: ['remove'] })
+    subTopics: DocName[];
 
     @ManyToOne(() => Course, course => course.docName, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'course_id' })
