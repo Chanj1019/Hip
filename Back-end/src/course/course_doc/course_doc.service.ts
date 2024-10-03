@@ -174,6 +174,22 @@ export class CourseDocService {
         }
     }
 
+    async findById(id: number): Promise<CourseDoc> {
+        if (id <= 0) {
+            throw new BadRequestException('유효하지 않은 ID입니다.');
+        }
+  
+        const doc = await this.courseDocRepository.findOne({
+        where: { course_document_id: id },
+        relations: ['course'],
+        });
+  
+        if (!doc) {
+            throw new NotFoundException('자료를 찾을 수 없습니다.');
+        }
+  
+        return doc;
+    }
     // async update(courseTitle: string, docNameTitle: string, id: number, file?: Express.Multer.File): Promise<CourseDoc> {
     //     const courseDoc = await this.findOne(courseTitle, docNameTitle, id);
 
