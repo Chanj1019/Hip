@@ -3,6 +3,7 @@ import { CoursesService } from './courses.service';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { OwnershipGuard } from '../../auth/ownership.guard';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')
@@ -33,7 +34,7 @@ export class CoursesController {
 
     @Get(':id')
     async findOne(
-      @Param('id') id: string
+      @Param('id') id: number
     ) {
         const data = await this.coursesService.findOne(id);
         return {
@@ -42,8 +43,9 @@ export class CoursesController {
         };
     }
 
-    @Patch(':id')
+    @Patch(':type/:id')
     @Roles('instructor','admin')
+    @UseGuards(OwnershipGuard)
     async update(
       @Param('id') id: number, @Body() updateCourseDto: any
     ) {
@@ -54,8 +56,9 @@ export class CoursesController {
         };
     }
 
-    @Delete(':id')
-    @Roles('instructor','admin') //강사추가됨
+    @Delete(':type/:id')
+    @UseGuards(OwnershipGuard)
+    @Roles('instructor','admin')
     async remove(
       @Param('id') id: number
     ) {

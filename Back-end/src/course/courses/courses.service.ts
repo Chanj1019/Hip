@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { Course } from './entities/course.entity';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -33,10 +33,10 @@ export class CoursesService {
         return this.coursesRepository.find();
     }
 
-    async findOne(id: string): Promise<Course> {
+    async findOne(id: number): Promise<Course> {
         const course = await this.coursesRepository.findOne(
-            { where: { course_title: id },
-            relations: ['docName','uCats'] 
+            { where: { course_id: id },
+            relations: ['docName','user'] 
         });
         if (!course) {
             throw new NotFoundException('Course not found'); // 예외 처리 추가
@@ -80,13 +80,14 @@ export class CoursesService {
             { where: { course_id: id },
             relations: ['docName'] 
         });
-        if(course){
-            await this.coursesRepository.remove(course);
+    
+        if (!course) {
+            throw new NotFoundException(`Course with ID ${courseId} not found for deletion`);
         }
-        // if (course.affected === 0) {
-        //     this.logger.warn(`Attempt to delete non-existent course with ID ${id}`);
-        //     throw new NotFoundException(`Course with ID ${id} not found for deletion`);
-        // }
-        // this.logger.log(`Course with ID ${id} deleted`);
+    
+        await this.coursesRepository.remove(course);
+        this.logger.log(`Course with ID ${courseId} deleted`);
     }
+    
+    
 }

@@ -41,5 +41,5 @@ export class Exhibition {
         onDelete: 'CASCADE', // 사용자가 삭제될 때 전시도 삭제
     })
     @JoinColumn({ name: 'user_id' }) // 외래 키 설정
-    user: User; // 사용자 정보
+    user: User[]; // 사용자 정보
 }

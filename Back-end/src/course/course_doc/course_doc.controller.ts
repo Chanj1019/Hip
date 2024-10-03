@@ -74,7 +74,7 @@ export class CourseDocController {
     //     };
     // }
 
-    @Delete(':id')
+    @Delete(':type/:id')
     async remove(
         @Param('courseId') courseId: number,
         @Param('docNameId') docNameId: number,
