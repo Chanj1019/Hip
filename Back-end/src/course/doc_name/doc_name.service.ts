@@ -21,13 +21,11 @@ export class DocNameService {
     ): Promise<DocName> {
         const course = await this.courseRepository.findOne({ 
             where: { course_id: courseId }
-        });
+        })
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
-        const docName = this.docNameRepository.create({
-            ...createDocNameDto 
-        });
+        const docName = this.docNameRepository.create({...createDocNameDto});
         return await this.docNameRepository.save(docName);
     }
 
