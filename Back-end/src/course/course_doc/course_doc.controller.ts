@@ -60,8 +60,6 @@ export class CourseDocController {
             throw new NotFoundException('파일 다운로드에 실패했습니다.');
         }
     }
-
-
   
     // @Get(':id')
     // async findOne(
