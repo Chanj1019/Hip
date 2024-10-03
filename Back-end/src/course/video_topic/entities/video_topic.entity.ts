@@ -7,14 +7,11 @@ export class VideoTopic {
     @PrimaryGeneratedColumn()
     video_topic_id: number;
 
-    @Column({ nullable: true })
-    course_title: string;
-
     @Column({ type: 'varchar', length: 20 })
     video_topic_title: string;
 
     @Column({ nullable: true })
-    video_pa_topic_title: string;
+    video_pa_topic_id: number;
     
     // @ManyToOne(() => VideoTopic, videoTopic => VideoTopic.subTopics, { nullable: true })
     // @JoinColumn({ name: 'pa_topic_id' })

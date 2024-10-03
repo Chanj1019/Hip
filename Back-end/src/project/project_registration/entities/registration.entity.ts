@@ -32,7 +32,7 @@ export class ProjectRegistration {
     // 관계
 
     // project_registration - user
-    @ManyToOne(() => User, (user) => user.registrations)
+    @ManyToOne(() => User, (user) => user.project_registrations)
     @JoinColumn({ name: 'userId' }) // 외래 키의 이름을 명시
     user: User;
 
@@ -41,7 +41,7 @@ export class ProjectRegistration {
     userId: number;
 
     // project_registration - project
-    @ManyToOne(() => Project, (project) => project.registrations)
+    @ManyToOne(() => Project, (project) => project.project_registrations)
     @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
     project: Project;
 

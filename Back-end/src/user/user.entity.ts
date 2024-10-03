@@ -5,6 +5,7 @@ import { Project } from '../project/projects/entities/project.entity';
 import { Role } from '../enums/role.enum';
 import { Exhibition } from '../exhibition/exhibitions/exhibition.entity';
 import { Course } from 'src/course/courses/entities/course.entity';
+import { CourseRegistration } from 'src/course/course_registration/entities/course_registration.entity';
 
 @Entity()
 export class User {
@@ -48,7 +49,11 @@ export class User {
     projects: Project[];
 
     // user - project_registration 연결 추가
-    @OneToMany(() => ProjectRegistration, (registration) => registration.user)
-    registrations: ProjectRegistration[];
+    @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.user)
+    project_registrations: ProjectRegistration[];
+
+    // user - course_registration  연결 추가
+    @OneToMany(() => CourseRegistration, (course_registration) => course_registration.user)
+    course_registrations: CourseRegistration[];
 }
 

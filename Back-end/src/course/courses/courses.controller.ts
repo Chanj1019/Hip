@@ -11,11 +11,11 @@ export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @Roles('amdin','instructor')
+    @Roles('instructor','admin')//강사추가됨
     async create(
-      @Body() createCourseDto: any
+      @Body() CreateCourseDto: any
     ) {
-        const data = await this.coursesService.create(createCourseDto);
+        const data = await this.coursesService.create(CreateCourseDto);
         return {
             message: "생성에 성공하셨습니다",
             data: data
@@ -23,7 +23,7 @@ export class CoursesController {
     }
 
     @Get()
-    @Roles('admin')
+    @Roles('student','instructor','admin')
     async findAll() {
         const data = await this.coursesService.findAll();
         return {
@@ -47,7 +47,7 @@ export class CoursesController {
     @Roles('instructor','admin')
     @UseGuards(OwnershipGuard)
     async update(
-      @Param('id') id: string, @Body() updateCourseDto: any
+      @Param('id') id: number, @Body() updateCourseDto: any
     ) {
         const data = await this.coursesService.update(id, updateCourseDto);
         return {
@@ -57,8 +57,8 @@ export class CoursesController {
     }
 
     @Delete(':type/:id')
-    @Roles('instructor','admin')
     @UseGuards(OwnershipGuard)
+    @Roles('instructor','admin')
     async remove(
       @Param('id') id: number
     ) {

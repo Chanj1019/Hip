@@ -3,16 +3,16 @@ import { DocNameService } from './doc_name.service';
 import { CreateDocNameDto } from './dto/create-doc_name.dto'; // CreateDocNameDto 임포트
 import { UpdateDocNameDto } from './dto/update-doc_name.dto'; // UpdateDocNameDto 임포트
 
-@Controller('courses/:courseTitle/docNames')
+@Controller('courses/:courseId/docNames')
 export class DocNameController {
     constructor(private readonly docNameService: DocNameService) {}
 
     @Post('registerDN')
     async create(
-        @Param('courseTitle') courseTitle: string,
+        @Param('courseId') courseId: number, 
         @Body() createDocNameDto: CreateDocNameDto
     ) {
-        const data = await this.docNameService.create(courseTitle, createDocNameDto);
+        const data = await this.docNameService.create(courseId, createDocNameDto);
         return {
             message: "doc_name 생성에 성공하셨습니다",
             data: data
@@ -21,9 +21,9 @@ export class DocNameController {
 
     @Get('allDN')
     async findAll(
-        @Param('courseTitle') courseTitle: string
+        @Param('courseTitle') courseId: number, 
     ) {
-        const data = await this.docNameService.findAll(courseTitle);
+        const data = await this.docNameService.findAll(courseId);
         return {
             message: "전체 강의의 doc_name 조회에 성공하셨습니다",
             data: data
@@ -32,10 +32,10 @@ export class DocNameController {
 
     @Get(':topicTitle')
     async findOne(
-        @Param('courseTitle') courseTitle: string,
+        @Param('courseTitle') courseId: number, 
         @Param('topicTitle') topicTitle: string
     ) {
-        const data = await this.docNameService.findOne(courseTitle, topicTitle);
+        const data = await this.docNameService.findOne(courseId, topicTitle);
         return {
             message: "특정 강의의 doc_name 조회에 성공하셨습니다",
             data: data
@@ -44,11 +44,11 @@ export class DocNameController {
 
     @Patch(':topicTitle')
     async update(
-        @Param('courseTitle') courseTitle: string,
+        @Param('courseTitle') courseId: number, 
         @Param('topicTitle') topicTitle: string,
         @Body() updateDocNameDto: UpdateDocNameDto
     ) {
-        const data = await this.docNameService.update(courseTitle, topicTitle, updateDocNameDto);
+        const data = await this.docNameService.update(courseId, topicTitle, updateDocNameDto);
         return {
           message: "doc_name 수정에 성공하셨습니다",
           data: data
@@ -58,10 +58,10 @@ export class DocNameController {
 
     @Delete(':topicTitle')
     async remove(
-        @Param('courseTitle') courseTitle: string,
+        @Param('courseTitle') courseId: number, 
         @Param('topicTitle') topicTitle: string
     ) {
-        const data = await this.docNameService.remove(courseTitle, topicTitle);
+        const data = await this.docNameService.remove(courseId, topicTitle);
         return {
             message: "doc_name 삭제에 성공하셨습니다",
             data: data

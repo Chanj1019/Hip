@@ -16,26 +16,24 @@ export class DocNameService {
     ) {}
 
     async create(
-        courseTitle: string, 
+        courseId: number, 
         createDocNameDto: CreateDocNameDto
     ): Promise<DocName> {
         const course = await this.courseRepository.findOne({ 
-            where: { course_title: courseTitle }
-        });
+            where: { course_id: courseId }
+        })
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
-        const docName = this.docNameRepository.create({
-            ...createDocNameDto 
-        });
+        const docName = this.docNameRepository.create({...createDocNameDto});
         return await this.docNameRepository.save(docName);
     }
 
     async findAll(
-        courseTitle: string, 
+        courseId: number, 
     ): Promise<DocName[]> {
         const course = await this.courseRepository.findOne({ 
-            where: { course_title: courseTitle }
+            where: { course_id: courseId }
         });
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
@@ -44,30 +42,30 @@ export class DocNameService {
     }
 
     async update(
-        courseTitle: string,
+        courseId: number, 
         topicTitle: string, 
         updateDocNameDto: UpdateDocNameDto
     ): Promise<DocName> {
-        const docName = await this.findOne(courseTitle, topicTitle);
+        const docName = await this.findOne(courseId, topicTitle);
         await this.docNameRepository.update(docName.topic_id, updateDocNameDto);
         const newTopicTitle = updateDocNameDto.topic_title || topicTitle
-        return this.findOne(courseTitle, newTopicTitle);
+        return this.findOne(courseId, newTopicTitle);
     }
 
     async remove(
-        courseTitle: string,
+        courseId: number, 
         topicTitle: string
     ): Promise<void> {
-        const docName = await this.findOne(courseTitle, topicTitle);
+        const docName = await this.findOne(courseId, topicTitle);
         await this.docNameRepository.remove(docName);
     }
 
     async findOne(
-        courseTitle: string,
+        courseId: number, 
         topicTitle: string
     ): Promise<DocName> {
         const course = await this.courseRepository.findOne({
-            where: { course_title: courseTitle }
+            where: { course_id: courseId }
         });
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");

@@ -34,13 +34,13 @@ export class VideoService {
     }
 
     private async validate(
-        courseTitle: string, 
+        courseId: number, 
         videoTopicId: number,
     ): Promise<void> {
-        const CourseTitle = await this.coursesRepository.findOne({
-            where: { course_title: courseTitle }
+        const CourseId = await this.coursesRepository.findOne({
+            where: { course_id: courseId }
         })
-        if (!CourseTitle) {
+        if (!CourseId) {
             throw new NotFoundException('강의를 찾을 수 없습니다.')
         }
         const VideoTopic = await this.videoTopicRepository.findOne({
@@ -146,11 +146,11 @@ export class VideoService {
     }
     
     async uploadFile(
-        courseTitle: string,
+        courseId: number,
         videoTopicId: number,
         file: Express.Multer.File
     ): Promise<{ message: string }> {
-        await this.validate(courseTitle, videoTopicId);
+        await this.validate(courseId, videoTopicId);
 
         const fileName = `${uuidv4()}-${file.originalname}`;
         const bucketName = process.env.AWS_S3_BUCKET_NAME; // 한 줄 수정

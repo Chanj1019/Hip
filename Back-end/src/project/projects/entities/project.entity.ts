@@ -40,7 +40,7 @@ export class Project {
 
     // project - project_registration
     @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.project)
-    registrations: ProjectRegistration;
+    project_registrations: ProjectRegistration;
 
     // project - project_doc
     @OneToMany(() => ProjectDoc, (project_doc) => project_doc.project)
