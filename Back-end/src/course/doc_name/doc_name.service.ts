@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DocName } from './entities/doc_name.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -80,5 +80,22 @@ export class DocNameService {
             throw new NotFoundException(`DocName with title ${topicTitle} not found`);
         }
         return docName;
+    }
+
+    async findById(id: number): Promise<DocName> {
+        if (id <= 0) {
+            throw new BadRequestException('유효하지 않은 ID입니다.');
+        }
+  
+        const doc = await this.docNameRepository.findOne({
+        where: { topic_id: id },
+        relations: ['course'],
+        });
+  
+        if (!doc) {
+            throw new NotFoundException('자료를 찾을 수 없습니다.');
+        }
+  
+        return doc;
     }
 }
