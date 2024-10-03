@@ -35,6 +35,7 @@ import { VideoTopic } from './course/video_topic/entities/video_topic.entity';
 import { Video } from './course/video/entities/video.entity';
 import { CourseRegistrationModule } from './course/course_registration/course_registration.module';
 import { CourseRegistration } from './course/course_registration/entities/course_registration.entity';
+import { AttendanceModule } from './attendance/attendance.module';
 
 @Module({
     imports: [
@@ -66,6 +67,7 @@ import { CourseRegistration } from './course/course_registration/entities/course
         VideoModule,
         AuthModule,
         CourseRegistrationModule,
+        AttendanceModule,
     ],
 })
 export class AppModule {}
