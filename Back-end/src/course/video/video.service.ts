@@ -106,9 +106,13 @@ export class VideoService {
     // }
 
     async streamVideo(
+        courseId: number, 
+        videoTopicId: number,
         video_id: number,
         res: Response
     ): Promise<void> {
+        await this.validate(courseId, videoTopicId);
+
         const video = await this.videoRepository.findOne({
             where: { video_id }
         });
@@ -196,8 +200,11 @@ export class VideoService {
     }
 
     async removeFile(
+        courseId: number,
+        videoTopicId: number,
         video_id: number
     ): Promise<void> {
+        await this.validate(courseId, videoTopicId);
         const video = await this.videoRepository.findOne({
             where: { video_id }
         });
