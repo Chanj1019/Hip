@@ -43,26 +43,26 @@ export class DocNameService {
 
     async update(
         courseId: number, 
-        topicTitle: string, 
+        topicId: number, 
         updateDocNameDto: UpdateDocNameDto
     ): Promise<DocName> {
-        const docName = await this.findOne(courseId, topicTitle);
+        const docName = await this.findOne(courseId, topicId);
         await this.docNameRepository.update(docName.topic_id, updateDocNameDto);
-        const newTopicTitle = updateDocNameDto.topic_title || topicTitle
-        return this.findOne(courseId, newTopicTitle);
+        const newTopicId = topicId
+        return this.findOne(courseId, newTopicId);
     }
 
     async remove(
         courseId: number, 
-        topicTitle: string
+        topicId: number
     ): Promise<void> {
-        const docName = await this.findOne(courseId, topicTitle);
+        const docName = await this.findOne(courseId, topicId);
         await this.docNameRepository.remove(docName);
     }
 
     async findOne(
         courseId: number, 
-        topicTitle: string
+        topicId: number
     ): Promise<DocName> {
         const course = await this.courseRepository.findOne({
             where: { course_id: courseId }
@@ -71,12 +71,17 @@ export class DocNameService {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
         const docName = await this.docNameRepository.findOne({ 
-            where: { topic_title: topicTitle },
+            where: { topic_id: topicId },
             relations: ['courseDocs']
         });
         if (!docName) {
-            throw new NotFoundException(`DocName with title ${topicTitle} not found`);
+            throw new NotFoundException(`DocName with title ${topicId} not found`);
         }
         return docName;
     }
+
+    // pa_topic_id이 null인 topic 조회 메서드 추가 작성 필요
+
+    
+    // 특정 pa_topic_id를 갖는 topic 조회 메서드 추가 작성 필요 
 }
