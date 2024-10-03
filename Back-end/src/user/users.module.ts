@@ -7,6 +7,9 @@ import { HashService } from '../auth/hash.service';
 import { ProjectsModule } from '../project/projects/projects.module'; 
 import * as dotenv from 'dotenv';
 import { ExhibitionModule } from 'src/exhibition/exhibitions/exhibitions.module';
+import { ExhibitionsDocModule } from 'src/exhibition/exhibitions_doc/exhibitions_doc.module';
+import { CourseDocModule } from 'src/course/course_doc/course_doc.module';
+import { DocNameModule } from 'src/course/doc_name/doc_name.module';
 dotenv.config();
 
 // ProjectsModule 임포트
@@ -15,7 +18,10 @@ dotenv.config();
     imports: [
         TypeOrmModule.forFeature([User]),
         forwardRef(() => ProjectsModule),
-        forwardRef(() => ExhibitionModule), 
+        forwardRef(() => ExhibitionModule),
+        forwardRef(() => ExhibitionsDocModule),
+        forwardRef(() => CourseDocModule),
+        forwardRef(() => DocNameModule),
          // ProjectsModule을 forwardRef로 임포트
     ],
     providers: [UsersService,HashService],
