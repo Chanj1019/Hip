@@ -1,8 +1,11 @@
 import { IsEnum, IsNumber } from 'class-validator';
 
-export class UpdateAttendanceDto {
+export class UpdateStudentAttendanceDto {
     @IsNumber()
-    attendanceId: number;
+    courseId: number;
+
+    @IsNumber()
+    studentId: number;
 
     @IsEnum(['present', 'absent', 'late'])
     newField: 'present' | 'absent' | 'late';
