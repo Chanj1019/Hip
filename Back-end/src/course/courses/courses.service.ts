@@ -82,11 +82,11 @@ export class CoursesService {
         });
     
         if (!course) {
-            throw new NotFoundException(`Course with ID ${courseId} not found for deletion`);
+            throw new NotFoundException(`Course with ID ${id} not found for deletion`);
         }
     
         await this.coursesRepository.remove(course);
-        this.logger.log(`Course with ID ${courseId} deleted`);
+        this.logger.log(`Course with ID ${id} deleted`);
     }
     
     
