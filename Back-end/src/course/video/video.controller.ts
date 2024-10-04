@@ -76,7 +76,7 @@ export class VideoController {
         return this.videoService.uploadFile(courseId, videoTopicId, file);
     }
 
-    @Delete(':videoId')
+    @Delete(':videoId/delete')
     async removeFile(
         @Body('courseId') courseId: number,
         @Param('videoTopicId') videoTopicId: number,
