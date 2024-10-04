@@ -16,7 +16,10 @@ export class AttendanceController {
     async generateAttendanceCode(@Body() body: CreateAttendanceDto, @Req() request): Promise<Attendance> {
         const userId = request.userId; // 강사의 ID
         const randomCode = AttendanceController.generateRandomCode(); // 난수 생성
-        return this.attendanceService.createAttendance(body, userId, randomCode);
+
+    // DTO를 생성할 때 기본값이 설정됨
+        const attendanceDto = new CreateAttendanceDto(body); 
+        return this.attendanceService.createAttendance(body, userId, randomCode, attendanceDto.field);
     }
 
     // 학생이 난수를 입력하여 출석 상태를 기록하는 메서드
@@ -45,7 +48,7 @@ export class AttendanceController {
         @Body() body: UpdateStudentAttendanceDto,
         @Req() request
     ): Promise<Attendance> {
-        const userId = request.userId; // 강사의 ID
+        // const userId = request.userId; // 강사의 ID
         // 권한 확인 로직을 추가할 수 있습니다.
         return this.attendanceService.updateAttendanceByStudentId(body);
     }

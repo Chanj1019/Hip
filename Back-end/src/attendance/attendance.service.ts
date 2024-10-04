@@ -18,7 +18,7 @@ export class AttendanceService {
         private courseRepository: Repository<Course>,
     ) {}
 
-    async createAttendance(dto: CreateAttendanceDto, userId: number, randomCode: string): Promise<Attendance> {
+    async createAttendance(dto: CreateAttendanceDto, userId: number, randomCode: string, field: string): Promise<Attendance> {
         const user = await this.userRepository.findOne({ where: { user_id: userId } });
         const course = await this.courseRepository.findOne({ where: { course_id: dto.courseId } });
 
