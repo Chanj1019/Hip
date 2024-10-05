@@ -80,7 +80,6 @@ export class CoursesService {
             { where: { course_id: id },
             relations: ['docName'] 
         });
-    
         if (!course) {
             throw new NotFoundException(`클래스를 찾지 못했습니다.`);
         }

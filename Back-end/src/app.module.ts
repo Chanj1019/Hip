@@ -35,6 +35,8 @@ import { VideoTopic } from './course/video_topic/entities/video_topic.entity';
 import { Video } from './course/video/entities/video.entity';
 import { CourseRegistrationModule } from './course/course_registration/course_registration.module';
 import { CourseRegistration } from './course/course_registration/entities/course_registration.entity';
+import { AttendanceModule } from './attendance/attendance.module';
+import { Attendance } from './attendance/entities/attendance.entity';
 
 @Module({
     imports: [
@@ -48,7 +50,7 @@ import { CourseRegistration } from './course/course_registration/entities/course
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
                 entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro,
-                    Project,ProjectDoc, ProjectRegistration, Feedback, Course, DocName, CourseDoc, VideoTopic, CourseRegistration, Video],
+                    Project,ProjectDoc, ProjectRegistration, Feedback, Course, DocName, CourseDoc, VideoTopic, CourseRegistration, Video, Attendance],
                 synchronize: true,
             }),
         }),
@@ -66,6 +68,7 @@ import { CourseRegistration } from './course/course_registration/entities/course
         VideoModule,
         AuthModule,
         CourseRegistrationModule,
+        AttendanceModule,
     ],
 })
 export class AppModule {}
