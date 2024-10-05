@@ -21,13 +21,17 @@ export class CourseRegistrationService {
     async create(createCourseRegistrationDto: CreateCourseRegistrationDto) {
         // 이미 해당 강의에 수강 신청이 되어 있을 때
         const courseId = createCourseRegistrationDto.courseId;
-        const existingCourse = await this.coursesRepository.findOne({ where: { course_id: courseId } });
+        const existingCourse = await this.coursesRepository.findOne({ 
+            where: { course_id: courseId } 
+        });
         if(!existingCourse){
             throw new ConflictException('강의가 존재하지 않습니다.');
         }
 
         const userId = createCourseRegistrationDto.userId;
-        const existingUser = await this.userRepository.findOne({ where: { user_id: userId }});
+        const existingUser = await this.userRepository.findOne({
+             where: { user_id: userId }
+            });
         if(!existingUser){
             throw new ConflictException('사용자가 일치하지 않습니다.');
         }
@@ -59,7 +63,9 @@ export class CourseRegistrationService {
     }
 
     async update(id: number, updateCourseRegistrationDto: UpdateCourseRegistrationDto) {
-        const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
+        const courseRegistration = await this.courseRegistrationRepository.findOne({ 
+            where: { course_registration_id: id }
+        });
         this.handleNotFound(courseRegistration, id)
 
         Object.assign(courseRegistration, updateCourseRegistrationDto);

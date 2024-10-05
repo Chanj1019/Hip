@@ -24,7 +24,7 @@ export class VideoTopicController {
         return { message: "전체 video topic 조회에 성공하셨습니다", data };
     }
 
-    @Get(':id')
+    @Get(':id/read')
     async findOne(
         @Param('courseId') courseId: number,
         @Param('id') video_topic_id: number
@@ -36,7 +36,7 @@ export class VideoTopicController {
         return { message: "특정 video topic 조회에 성공하셨습니다", data };
     }
 
-    @Patch(':id')
+    @Patch(':id/update')
     async update(
         @Param('courseId') courseId: number,
         @Param('id') video_topic_id: number,
@@ -46,7 +46,7 @@ export class VideoTopicController {
         return { message: "video topic 업데이트에 성공하셨습니다", data };
     }
 
-    @Delete(':id')
+    @Delete(':id/delete')
     async remove(
         @Param('courseId') courseId: number,
         @Param('id') video_topic_id: number
