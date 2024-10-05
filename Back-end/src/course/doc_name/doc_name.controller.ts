@@ -30,6 +30,17 @@ export class DocNameController {
         };
     }
 
+    @Get('first')
+    async findRootDocName(
+        @Param('courseId') courseId: number, 
+    ) {
+        const data = await this.docNameService.findRootDocName(courseId);
+        return {
+            message: "특정 강의의 pa_topic_id의 값을 null로 갖는 doc_name 조회에 성공하셨습니다",
+            data: data
+        };
+    }
+
     @Get(':topicId')
     async findOne(
         @Param('courseId') courseId: number, 

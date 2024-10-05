@@ -79,7 +79,22 @@ export class DocNameService {
         }
         return docName;
     }
-    // pa_topic_id이 null인 topic 조회 메서드 추가 작성 필요
+
+    // pa_topic_id이 null인 topic 조회 메서드
+    async findRootDocName(
+        courseId: number
+    ): Promise<DocName> {
+        const course = await this.courseRepository.findOne({
+            where: { course_id: courseId }
+        });
+        if (!course) {
+            throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
+        }
+        const docnames = await this.docNameRepository.findOne({
+            where : { pa_topic_id: null }
+        });
+        return docnames
+    }
     // 특정 pa_topic_id를 갖는 topic 조회 메서드 추가 작성 필요 
 
   
