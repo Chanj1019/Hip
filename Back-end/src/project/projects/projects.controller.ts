@@ -31,8 +31,8 @@ export class ProjectsController {
     @Patch(':id')
     @Roles('instructor','admin','student')
     async update(@Param('id') id: number, @Body() updateProjectDto: UpdateProjectDto, @Request() req) {
-        const login_user = req.user.user_id;
-        const updatedData = await this.projectsService.update(id, updateProjectDto, login_user);
+        const loginedUser = req.user.user_id;
+        const updatedData = await this.projectsService.update(id, updateProjectDto, loginedUser);
         return {
             message: "프로젝트가 수정되었습니다.",
             data: updatedData,

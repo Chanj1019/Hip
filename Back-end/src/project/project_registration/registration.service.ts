@@ -31,7 +31,7 @@ export class ProjectRegistrationService {
         return !!existingEnrollment; // 이미 존재하면 true, 없으면 false
     }
 
-
+    // 참가 신청 하기
     async create(createProjectRegistrationDto: CreateProjectRegistrationDto, projectId: number, loginedUser: number): Promise<ProjectRegistration> {
         // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
         const isAlreadyEnrolled = await this.isEnrolled(projectId, loginedUser);
