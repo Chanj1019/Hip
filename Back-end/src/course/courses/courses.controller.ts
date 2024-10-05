@@ -47,7 +47,8 @@ export class CoursesController {
     @Roles('instructor','admin')
     @UseGuards(OwnershipGuard)
     async update(
-      @Param('id') id: number, @Body() updateCourseDto: any
+      @Param('id') id: number, 
+      @Body() updateCourseDto: any
     ) {
         const data = await this.coursesService.update(id, updateCourseDto);
         return {
