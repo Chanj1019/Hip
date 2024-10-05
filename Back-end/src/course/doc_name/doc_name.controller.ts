@@ -30,7 +30,7 @@ export class DocNameController {
         };
     }
 
-    @Get('first')
+    @Get('root')
     async findRootDocName(
         @Param('courseId') courseId: number, 
     ) {
