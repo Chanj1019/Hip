@@ -21,7 +21,7 @@ export class DocNameController {
 
     @Get('allDN')
     async findAll(
-        @Param('courseTitle') courseId: number, 
+        @Param('courseId') courseId: number, 
     ) {
         const data = await this.docNameService.findAll(courseId);
         return {
@@ -30,25 +30,25 @@ export class DocNameController {
         };
     }
 
-    @Get(':topicTitle')
+    @Get(':topicId')
     async findOne(
-        @Param('courseTitle') courseId: number, 
-        @Param('topicTitle') topicTitle: string
+        @Param('courseId') courseId: number, 
+        @Param('topicId') topicId: number
     ) {
-        const data = await this.docNameService.findOne(courseId, topicTitle);
+        const data = await this.docNameService.findOne(courseId, topicId);
         return {
             message: "특정 강의의 doc_name 조회에 성공하셨습니다",
             data: data
         };
     }
 
-    @Patch(':topicTitle')
+    @Patch(':topicId')
     async update(
-        @Param('courseTitle') courseId: number, 
-        @Param('topicTitle') topicTitle: string,
+        @Param('courseId') courseId: number, 
+        @Param('topicId') topicId: number,
         @Body() updateDocNameDto: UpdateDocNameDto
     ) {
-        const data = await this.docNameService.update(courseId, topicTitle, updateDocNameDto);
+        const data = await this.docNameService.update(courseId, topicId, updateDocNameDto);
         return {
           message: "doc_name 수정에 성공하셨습니다",
           data: data
@@ -56,12 +56,12 @@ export class DocNameController {
     }
   
 
-    @Delete(':topicTitle')
+    @Delete(':topicId')
     async remove(
-        @Param('courseTitle') courseId: number, 
-        @Param('topicTitle') topicTitle: string
+        @Param('courseId') courseId: number, 
+        @Param('topicId') topicId: number
     ) {
-        const data = await this.docNameService.remove(courseId, topicTitle);
+        const data = await this.docNameService.remove(courseId, topicId);
         return {
             message: "doc_name 삭제에 성공하셨습니다",
             data: data

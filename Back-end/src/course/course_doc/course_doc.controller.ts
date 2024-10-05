@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
-@Controller('courses/:courseId/docNames/:docNameId/courseDocs')
+@Controller('courses/:courseId/docNames/:topicId/courseDocs')
 export class CourseDocController {
     constructor(private readonly courseDocService: CourseDocService) {}
 
@@ -15,12 +15,12 @@ export class CourseDocController {
     @UseInterceptors(FileInterceptor('file'))
     async create(
         @Param('courseId') courseId: number,
-        @Param('docNameId') docNameId: number,
+        @Param('topicId') topicId: number,
         @Body() createCourseDocDto: CreateCourseDocDto,
         @UploadedFile() file: Express.Multer.File
     ) {
         // const sanitizedDocNameTitle = docNameTitle.replace(/ /g, '');
-        const data = await this.courseDocService.uploadFile(courseId, docNameId, createCourseDocDto, file);
+        const data = await this.courseDocService.uploadFile(courseId, topicId, createCourseDocDto, file);
         return {
             message: "File을 성공적으로 업로드 하셨습니다.",
             data: data,
@@ -30,26 +30,26 @@ export class CourseDocController {
     @Get()
     async findAll(
         @Param('courseId') courseId: number,
-        @Param('docNameId') docNameId: number,
+        @Param('topicId') topicId: number,
     ) {
-        const data = await this.courseDocService.findAll(courseId, docNameId);
+        const data = await this.courseDocService.findAll(courseId, topicId);
         return {
             message: "Course Documents 조회에 성공하셨습니다.",
             data: data,
         };
     }
 
-    @Get('download/:fileName')
+    @Get('download/:fileUrl')
     async downloadFile(
-        @Param('fileName') fileName: string, 
+        @Param('fileUrl') fileUrl: string, 
         @Res() res: Response
     ) {
         try {
-            const { stream, metadata } = await this.courseDocService.downloadFile(fileName);
+            const { stream, metadata } = await this.courseDocService.downloadFile(fileUrl);
 
             res.set({
                 'Content-Type': metadata.ContentType || 'application/octet-stream',
-                'Content-Disposition': `attachment; filename="${fileName}"`,
+                'Content-Disposition': `attachment; fileurl="${fileUrl}"`,
                 'Content-Length': metadata.ContentLength,
             });
 
@@ -74,13 +74,13 @@ export class CourseDocController {
     //     };
     // }
 
-    @Delete(':type/:id')
+    @Delete(':id')
     async remove(
         @Param('courseId') courseId: number,
-        @Param('docNameId') docNameId: number,
+        @Param('topicId') topicId: number,
         @Param('id') id: number
     ) {
-        await this.courseDocService.remove(courseId, docNameId, id);
+        await this.courseDocService.remove(courseId, topicId, id);
         return {
             message: "Course Document가 성공적으로 삭제되었습니다.",
         };

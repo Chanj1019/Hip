@@ -142,10 +142,10 @@ export class CourseDocService {
     
     async findAll(
         courseId: number,
-        docNameId: number
+        topicId: number,
     ): Promise<CourseDoc[]> {
         try {
-            await this.validate(courseId, docNameId);
+            await this.validate(courseId, topicId);
             return await this.courseDocRepository.find();
         } catch (error) {
             console.error('파일 다운로드 중 오류 발생:', error);
@@ -155,11 +155,11 @@ export class CourseDocService {
 
     async findOne(
         courseId: number, 
-        docNameId: number, 
+        topicId: number,
         id: number
     ): Promise<CourseDoc> {
         try {
-            await this.validate(courseId, docNameId)
+            await this.validate(courseId, topicId)
             const courseDoc = await this.courseDocRepository.findOne({
                 where: { course_document_id: id },
                 relations: ['docName'],
@@ -204,14 +204,14 @@ export class CourseDocService {
 
     async remove(
         courseId: number, 
-        docNameId: number, 
+        topicId: number,
         id: number
     ): Promise<void> {
         try {
-            const courseDoc = await this.findOne(courseId, docNameId, id);
+            const courseDoc = await this.findOne(courseId, topicId, id);
             await this.courseDocRepository.remove(courseDoc);
         } catch (error) {
-            console.error('파일 다운로드 중 오류 발생:', error);
+            console.error('삭제 중 오류 발생:', error);
             throw new BadRequestException('삭제에 실패했습니다.');
         }
     }

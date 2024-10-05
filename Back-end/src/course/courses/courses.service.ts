@@ -25,7 +25,7 @@ export class CoursesService {
   
         const course = this.coursesRepository.create(createCourseDto);
         await this.coursesRepository.save(course);
-        this.logger.log(`Course created: ${course.course_title}`);
+        this.logger.log(`강의가 생성되었습니다: ${course.course_title}`);
         return course;
     }
 
@@ -39,7 +39,7 @@ export class CoursesService {
             relations: ['docName','user'] 
         });
         if (!course) {
-            throw new NotFoundException('Course not found'); // 예외 처리 추가
+            throw new NotFoundException('클래스를 찾지 못했습니다.'); // 예외 처리 추가
         }
         return course;
     }
@@ -51,8 +51,8 @@ export class CoursesService {
         });
 
         if (!course) {
-            this.logger.warn(`Course with ID ${id} not found`);
-            throw new NotFoundException(`Course with ID ${id} not found`);
+            this.logger.warn(`클래스를 찾지 못했습니다.`);
+            throw new NotFoundException(`클래스를 찾지 못했습니다.`);
         }
   
         // UpdateCourseDto에 포함된 필드만 업데이트
@@ -80,13 +80,12 @@ export class CoursesService {
             { where: { course_id: id },
             relations: ['docName'] 
         });
-    
         if (!course) {
-            throw new NotFoundException(`Course with ID ${id} not found for deletion`);
+            throw new NotFoundException(`클래스를 찾지 못했습니다.`);
         }
     
         await this.coursesRepository.remove(course);
-        this.logger.log(`Course with ID ${id} deleted`);
+        this.logger.log(`클래스가 삭제되었습니다.`);
     }
     
     

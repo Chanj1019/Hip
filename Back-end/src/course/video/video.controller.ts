@@ -54,10 +54,12 @@ export class VideoController {
 
     @Get(':video_id/stream')
     async stream(
+        @Body('courseId') courseId: number,
+        @Param('videoTopicId') videoTopicId: number,
         @Param('video_id') videoId: number, 
         @Res() res: Response
     ): Promise<void> {
-        await this.videoService.streamVideo(videoId, res);
+        await this.videoService.streamVideo(courseId, videoTopicId, videoId, res);
     }
 
     @Post('upload')
@@ -76,8 +78,10 @@ export class VideoController {
 
     @Delete(':videoId')
     async removeFile(
+        @Body('courseId') courseId: number,
+        @Param('videoTopicId') videoTopicId: number,
         @Param('videoId') videoId: number
     ): Promise<void> {
-        return this.videoService.removeFile(videoId);
+        return this.videoService.removeFile(courseId, videoTopicId, videoId);
     }
 }
