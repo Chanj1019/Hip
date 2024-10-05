@@ -41,7 +41,7 @@ export class DocNameController {
         };
     }
 
-    @Get(':topicId')
+    @Get(':topicId/read')
     async findOne(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number
@@ -53,7 +53,7 @@ export class DocNameController {
         };
     }
 
-    @Patch(':topicId')
+    @Patch(':topicId/update')
     async update(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number,
@@ -67,7 +67,7 @@ export class DocNameController {
     }
   
 
-    @Delete(':topicId')
+    @Delete(':topicId/delete')
     async remove(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number

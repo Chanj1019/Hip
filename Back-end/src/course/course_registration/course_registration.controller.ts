@@ -48,7 +48,7 @@ export class CourseRegistrationController {
     //     return this.courseRegistrationService.findOne(+id);
     // }
 
-    @Patch(':id')
+    @Patch(':id/update')
     @Roles('admin')
     async update(
         @Param('id') id: number, 
@@ -61,7 +61,7 @@ export class CourseRegistrationController {
         }
     }
 
-    @Delete(':id')
+    @Delete(':id/delete')
     @Roles('instructor', 'student')
     remove(
         @Param('id') id: number

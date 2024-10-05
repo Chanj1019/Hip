@@ -32,7 +32,7 @@ export class CoursesController {
         };
     }
 
-    @Get(':id')
+    @Get(':id/read')
     async findOne(
       @Param('id') id: number
     ) {
@@ -43,7 +43,7 @@ export class CoursesController {
         };
     }
 
-    @Patch(':type/:id')
+    @Patch(':type/:id/update')
     @Roles('instructor','admin')
     @UseGuards(OwnershipGuard)
     async update(
@@ -57,7 +57,7 @@ export class CoursesController {
         };
     }
 
-    @Delete(':type/:id')
+    @Delete(':type/:id/delete')
     @UseGuards(OwnershipGuard)
     @Roles('instructor','admin')
     async remove(
