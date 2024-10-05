@@ -39,48 +39,88 @@ export class ExhibitionsDocService {
         });
     }
 
-    async createExhibitionDoc(createExhibitionDocDto: CreateExhibitionsDocDto, file: Express.Multer.File): Promise<ExhibitionDoc> {
-        const exhibitionId = Number(createExhibitionDocDto.exhibition_id);
-        const exhibition = await this.exhibitionRepository.findOne({ where: { exhibition_id: exhibitionId } });
+    // async createExhibitionDoc(createExhibitionDocDto: CreateExhibitionsDocDto, file: Express.Multer.File): Promise<ExhibitionDoc> {
+    //     const exhibitionId = Number(createExhibitionDocDto.exhibition_id);
+    //     const exhibition = await this.exhibitionRepository.findOne({ where: { exhibition_id: exhibitionId } });
 
+    //     if (!exhibition) {
+    //         throw new NotFoundException(`ID가 ${exhibitionId}인 전시를 찾을 수 없습니다.`);
+    //     }
+
+    //     // S3에 파일 업로드
+    //     const uniqueFileName = `${uuidv4()}_${file.originalname}`;
+    //     let uploadResult;
+
+    //     try {
+    //         const command = new PutObjectCommand({
+    //             Bucket: process.env.S3_BUCKET_NAME,
+    //             Key: `exhibitions/${uniqueFileName}`,
+    //             Body: file.buffer,
+    //             ContentType: file.mimetype,
+    //         });
+    //         uploadResult = await this.s3.send(command); // S3에 파일 업로드
+    //     } catch (error) {
+    //         console.error(error); // logger로 변경 가능
+    //         throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
+    //     }
+
+    //     // S3에서 반환된 URL을 file_path에 저장
+    //     const filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/${uniqueFileName}`;
+
+    //     // filePath가 비어있지 않은지 확인
+    //     if (!filePath) {
+    //         throw new InternalServerErrorException('파일 경로가 비어 있습니다.');
+    //     }
+
+    //     const exhibitionDoc = this.exhibitionsDocRepository.create({
+    //         ...createExhibitionDocDto,
+    //         exhibition,
+    //         file_path: filePath,
+    //     });
+
+    //     return await this.exhibitionsDocRepository.save(exhibitionDoc);
+    // }
+
+    async createExhibitionDocs(exhibitionId: number, files: Express.Multer.File[]): Promise<ExhibitionDoc[]> {
+        const exhibition = await this.exhibitionRepository.findOne({ where: { exhibition_id: exhibitionId } });
+    
         if (!exhibition) {
             throw new NotFoundException(`ID가 ${exhibitionId}인 전시를 찾을 수 없습니다.`);
         }
-
-        // S3에 파일 업로드
-        const uniqueFileName = `${uuidv4()}_${file.originalname}`;
-        let uploadResult;
-
-        try {
-            const command = new PutObjectCommand({
-                Bucket: process.env.S3_BUCKET_NAME,
-                Key: `exhibitions/${uniqueFileName}`,
-                Body: file.buffer,
-                ContentType: file.mimetype,
+    
+        const exhibitionDocs: ExhibitionDoc[] = [];
+    
+        // 이미지 처리
+        for (const file of files) {
+            const uniqueFileName = `${uuidv4()}_${file.originalname}`;
+            let uploadResult;
+    
+            try {
+                const command = new PutObjectCommand({
+                    Bucket: process.env.AWS_S3_BUCKET_NAME,
+                    Key: `exhibitions/images/${uniqueFileName}`,
+                    Body: file.buffer,
+                    ContentType: file.mimetype,
+                });
+                uploadResult = await this.s3.send(command);
+            } catch (error) {
+                console.error(error);
+                throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
+            }
+    
+            const filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/images/${uniqueFileName}`;
+    
+            const exhibitionDoc = this.exhibitionsDocRepository.create({
+                exhibition,
+                file_path: filePath,
             });
-            uploadResult = await this.s3.send(command); // S3에 파일 업로드
-        } catch (error) {
-            console.error(error); // logger로 변경 가능
-            throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
+    
+            exhibitionDocs.push(await this.exhibitionsDocRepository.save(exhibitionDoc));
         }
-
-        // S3에서 반환된 URL을 file_path에 저장
-        const filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/${uniqueFileName}`;
-
-        // filePath가 비어있지 않은지 확인
-        if (!filePath) {
-            throw new InternalServerErrorException('파일 경로가 비어 있습니다.');
-        }
-
-        const exhibitionDoc = this.exhibitionsDocRepository.create({
-            ...createExhibitionDocDto,
-            exhibition,
-            file_path: filePath,
-        });
-
-        return await this.exhibitionsDocRepository.save(exhibitionDoc);
+    
+        return exhibitionDocs; // 저장된 모든 전시 문서 반환
     }
-
+    
     async findAll(): Promise<ExhibitionDoc[]> {
         return await this.exhibitionsDocRepository.find({
             relations: ['exhibition'],
