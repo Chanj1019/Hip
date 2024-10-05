@@ -10,17 +10,4 @@ export class CreateProjectRegistrationDto {
     @IsNotEmpty()
     @IsEnum(Registration)
     registration_status: Registration;
-
-    // user 주키
-
-    @IsNotEmpty()
-    @IsNumber()
-    userId: number;
-
-    // project 주키
-
-    @IsNotEmpty()
-    @IsNumber()
-    projectId: number;
-
 }
