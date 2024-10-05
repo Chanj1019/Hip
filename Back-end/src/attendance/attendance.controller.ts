@@ -11,36 +11,63 @@ import { Attendance } from './entities/attendance.entity';
 export class AttendanceController {
     constructor(private readonly attendanceService: AttendanceService) {}
 
-    // 강사가 난수를 생성하고 출석 기록을 저장하는 메서드
     @Post('generate-code')
     async generateAttendanceCode(@Body() body: CreateAttendanceDto, @Req() request): Promise<Attendance> {
         const userId = request.userId; // 강사의 ID
         const randomCode = AttendanceController.generateRandomCode(); // 난수 생성
-
-    // DTO를 생성할 때 기본값이 설정됨
-        const attendanceDto = new CreateAttendanceDto(body); 
-        return this.attendanceService.createAttendance(body, userId, randomCode, attendanceDto.field);
+    
+        return this.attendanceService.createAttendance(body.courseId, userId, 'absent', randomCode); 
     }
+    
 
-    // 학생이 난수를 입력하여 출석 상태를 기록하는 메서드
+    // // 학생이 난수를 입력하여 출석 상태를 기록하는 메서드
+    // @Post('check')
+    // async checkAttendance(@Body() body: CheckAttendanceDto, @Req() request): Promise<boolean> {
+    //     const userId = request.userId; // 학생의 ID
+    //     const attendance = await this.attendanceService.findAttendance(body.courseId, userId);
+
+    //     if (!attendance) {
+    //         throw new NotFoundException('Attendance record not found');
+    //     }
+
+    //     // 입력한 난수와 저장된 난수 비교
+    //     if (attendance.random_code === body.inputCode) {
+    //         attendance.field = 'present'; // 출석 상태 변경
+    //         await this.attendanceService.updateAttendanceStatus(attendance.attendance_id, attendance.field);
+    //         return true; // 출석 성공
+    //     } else {
+    //         return false; // 출석 실패
+    //     }
+    // }
+
     @Post('check')
     async checkAttendance(@Body() body: CheckAttendanceDto, @Req() request): Promise<boolean> {
-        const userId = request.userId; // 학생의 ID
-        const attendance = await this.attendanceService.findAttendance(body.courseId, userId);
+    const userId = request.userId; // 학생의 ID
+    const courseId = body.courseId; // 요청된 수업 ID
 
-        if (!attendance) {
-            throw new NotFoundException('Attendance record not found');
-        }
+    // 수업에 등록된 사용자 목록 가져오기
+    const usersInCourse = await this.attendanceService.getUsersInCourse(courseId);
+    const userInCourse = usersInCourse.find(user => user.id === userId);
 
-        // 입력한 난수와 저장된 난수 비교
-        if (attendance.random_code === body.inputCode) {
-            attendance.field = 'present'; // 출석 상태 변경
-            await this.attendanceService.updateAttendanceStatus(attendance.attendance_id, attendance.field);
-            return true; // 출석 성공
-        } else {
-            return false; // 출석 실패
-        }
+    if (!userInCourse) {
+        throw new NotFoundException('User is not enrolled in this course');
     }
+
+    const attendance = await this.attendanceService.findAttendance(courseId, userId);
+
+    if (!attendance) {
+        throw new NotFoundException('Attendance record not found');
+    }
+
+    // 입력한 난수와 저장된 난수 비교
+    if (attendance.random_code === body.inputCode) {
+        attendance.field = 'present'; // 출석 상태 변경
+        await this.attendanceService.updateAttendanceStatus(attendance.attendance_id, attendance.field);
+        return true; // 출석 성공
+    } else {
+        return false; // 출석 실패
+    }
+}
 
     // 강사가 특정 학생의 출석 상태를 임의로 변경하는 메서드
     @Patch('update-status/student')

@@ -18,25 +18,44 @@ export class AttendanceService {
         private courseRepository: Repository<Course>,
     ) {}
 
-    async createAttendance(dto: CreateAttendanceDto, userId: number, randomCode: string, field: string): Promise<Attendance> {
-        const user = await this.userRepository.findOne({ where: { user_id: userId } });
-        const course = await this.courseRepository.findOne({ where: { course_id: dto.courseId } });
+    // async createAttendance(dto: CreateAttendanceDto, userId: number, randomCode: string, field: string): Promise<Attendance> {
+    //     const user = await this.userRepository.findOne({ where: { user_id: userId } });
+    //     const course = await this.courseRepository.findOne({ where: { course_id: dto.courseId } });
 
+    //     if (!user || !course) {
+    //         throw new NotFoundException('User or Course not found');
+    //     }
+
+    //     const attendance = this.attendanceRepository.create({
+    //         course,
+    //         user,
+    //         attendance_date: new Date(),
+    //         field: dto.field,
+    //         random_code: randomCode,
+    //     });
+
+    //     return this.attendanceRepository.save(attendance);
+    // }
+
+    async createAttendance(courseId: number, userId: number, field: 'present' | 'absent' | 'late', randomCode: string): Promise<Attendance> {
+        const user = await this.userRepository.findOne({ where: { user_id: userId } });
+        const course = await this.courseRepository.findOne({ where: { course_id: courseId } });
+    
         if (!user || !course) {
             throw new NotFoundException('User or Course not found');
         }
-
+    
         const attendance = this.attendanceRepository.create({
             course,
             user,
             attendance_date: new Date(),
-            field: dto.field,
+            field, // 출석 상태를 'absent'로 기본 설정
             random_code: randomCode,
         });
-
+    
         return this.attendanceRepository.save(attendance);
     }
-
+    
     async findAttendance(courseId: number, userId: number): Promise<Attendance> {
         const attendance = await this.attendanceRepository.findOne({
             where: { course: { course_id: courseId }, user: { user_id: userId } },
@@ -72,4 +91,14 @@ export class AttendanceService {
         attendance.field = dto.newField; // 새로운 출석 상태로 변경
         return this.attendanceRepository.save(attendance);
     }
+
+    async getUsersInCourse(courseId: number): Promise<User[]> {
+        const course = await this.courseRepository.findOne({
+            where: { course_id: courseId },
+            relations: ['users'], // 자동 생성된 미들 테이블을 통해 사용자 목록을 가져옵니다.
+        });
+    
+        return course ? course.user : []; // 수업에 등록된 사용자 목록 반환
+    }
+    
 }
