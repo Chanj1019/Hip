@@ -11,7 +11,7 @@ export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @Roles('instructor','admin')//강사추가됨
+    @Roles('admin')
     async create(
       @Body() CreateCourseDto: any
     ) {
@@ -44,7 +44,7 @@ export class CoursesController {
     }
 
     @Patch(':type/:id/update')
-    @Roles('instructor','admin')
+    @Roles('admin')
     @UseGuards(OwnershipGuard)
     async update(
       @Param('id') id: number, 
@@ -59,7 +59,7 @@ export class CoursesController {
 
     @Delete(':type/:id/delete')
     @UseGuards(OwnershipGuard)
-    @Roles('instructor','admin')
+    @Roles('admin')
     async remove(
       @Param('id') id: number
     ) {
