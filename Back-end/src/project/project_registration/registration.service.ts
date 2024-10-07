@@ -19,7 +19,7 @@ export class ProjectRegistrationService {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    // 이미 수강신청이 되어 있는지 확인하는 함수
+    // 이미 참가 신청이 되어 있는지 확인하는 함수
     async isEnrolled(projectId: number, userId: number): Promise<boolean> {
         const existingEnrollment = await this.projectRegistrationRepository.findOne({
             where: {

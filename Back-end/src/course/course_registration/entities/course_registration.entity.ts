@@ -25,6 +25,6 @@ export class CourseRegistration {
 
     // course_registration - course
     @ManyToOne(() => Course, (course) => course.course_registrations)
-    @JoinColumn({ name: 'coursetId' }) // 외래 키의 이름을 명시
+    @JoinColumn({ name: 'courseId' }) // 외래 키의 이름을 명시
     course: Course;
 }
