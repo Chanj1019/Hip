@@ -1,18 +1,22 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsArray, ValidateNested, IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
-export class CreateExhibitionsMemberDto {
+export class CreateExhibitionsMembersDto {
     @IsNotEmpty()
-    exhibitions_id: number; // 외래 키
+    exhibitions_id: number; // exhibitions_id는 필수
 
-    @IsString()
-    @IsNotEmpty() // 이름은 필수
-    name: string; // 이름
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CreateExhibitionMemberDto)
+    members: CreateExhibitionMemberDto[]; // members는 CreateExhibitionMemberDto 배열
+}
 
-    @IsOptional() // 닉네임은 선택적
+export class CreateExhibitionMemberDto {
+    @IsNotEmpty()
     @IsString()
-    nick_name?: string; // 닉네임
+    name: string; // name은 단일 문자열
 
+    @IsNotEmpty()
     @IsString()
-    @IsNotEmpty() // 기수는 필수
-    generation: string; // 기수
+    generation: string; // generation은 단일 문자열
 }

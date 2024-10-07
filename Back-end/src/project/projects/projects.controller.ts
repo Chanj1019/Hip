@@ -27,7 +27,7 @@ export class ProjectsController {
         return await this.projectsService.findAll();
     }
 
-    @Patch(':id')
+    @Patch(':id/update')
     @Roles('instructor','admin','student')
     @UseGuards(ApprovedStudentGuard)
     async update(@Param('id',ParseIntPipe) id: number, @Body() updateProjectDto: UpdateProjectDto, @Request() req) {
@@ -39,7 +39,7 @@ export class ProjectsController {
         };
     }
 
-    @Delete(':id')
+    @Delete(':id/delete')
     @Roles('admin', 'instructor')
     async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string; data: any; }> {
         const data = await this.projectsService.remove(id);

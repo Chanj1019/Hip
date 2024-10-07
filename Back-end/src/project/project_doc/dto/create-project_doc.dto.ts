@@ -8,7 +8,4 @@ export class CreateProjectDocDto {
     @IsNotEmpty()
     @IsString()
     projectId: number;
-
-    // @IsInt()
-    // userId: number;
 }

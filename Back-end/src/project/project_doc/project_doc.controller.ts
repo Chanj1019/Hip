@@ -10,8 +10,13 @@ import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { ApprovedStudentGuard } from '../../auth/project.approved.guard';
 
+<<<<<<< HEAD
 @UseGuards(JwtAuthGuard, RolesGuard, ApprovedStudentGuard)
 @Controller('projects/:project/projectDocs')
+=======
+@UseGuards(JwtAuthGuard,RolesGuard)
+@Controller('projects/:projectId/projectDocs')
+>>>>>>> b4d9d0579f1cedd2c324252a4c3a807a943c0755
 export class ProjectDocController {
     constructor(private readonly projectDocsService: ProjectDocService) {}
 
@@ -21,7 +26,7 @@ export class ProjectDocController {
     async create(
         @Body() createProjectDocDto: CreateProjectDocDto, 
         @UploadedFile() file: Express.Multer.File,// 업로드된 파일을 가져옴
-        @Param('project') project_id: number,
+        @Param('projectId') project_id: number,
     ): Promise<{ message: string; doc: any }> {
 
         createProjectDocDto.projectId = project_id;
@@ -35,22 +40,30 @@ export class ProjectDocController {
         return { message: '전체 프로젝트 자료 조회를 완료했습니다.', doc };
     }
 
-    @Get(':id')
-    async findOne(@Param('id') id: number, @Param('project') project_id: number): Promise<{ doc: ProjectDoc; message: string }> {
-        const doc = await this.projectDocsService.findOne(id,project_id);
+    @Get(':id/read')
+    async findOne(
+        @Param('id') id: number, 
+        @Param('projectId') project_id: number
+    ): Promise<{ doc: ProjectDoc; message: string }> {
+        const doc = await this.projectDocsService.findOne(id, project_id);
         return { message: '프로젝트 자료 조회를 완료했습니다.', doc };
     }
     
-    @Put(':id')
+    @Put(':id/update')
     @Roles('instructor','student','admin')
-    async update(@Param('id') id: number, @Body() updateProjectDocDto: UpdateProjectDocDto): Promise<{ doc: ProjectDoc; message: string }> {
+    async update(
+        @Param('id') id: number, 
+        @Body() updateProjectDocDto: UpdateProjectDocDto
+    ): Promise<{ doc: ProjectDoc; message: string }> {
         const doc = await this.projectDocsService.update(id, updateProjectDocDto);
         return { message: '프로젝트 문서가 성공적으로 업데이트 되었습니다.', doc };
     }
 
-    @Delete(':id')
+    @Delete(':id/delete')
     @Roles('instructor','student','admin')
-    async remove(@Param('id') id: number): Promise<{ message: string }> {
+    async remove(
+        @Param('id') id: number
+    ): Promise<{ message: string }> {
         await this.projectDocsService.remove(id);
         return { message: '성공적으로 삭제되었습니다.' };
     }

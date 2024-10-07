@@ -13,6 +13,7 @@ export class CourseRegistrationController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('register')
     @Roles('instructor', 'student')
+  
     async create(@Body() createCourseRegistrationDto: CreateCourseRegistrationDto, @Request() req, @Param('course') course_id: number) {
         // 로그인된 user 저장
         const loginedUser = req.user.user_id;
@@ -40,9 +41,12 @@ export class CourseRegistrationController {
     //     return this.courseRegistrationService.findOne(+id);
     // }
 
-    @Patch(':id')
+    @Patch(':id/update')
     @Roles('admin')
-    async update(@Param('id') id: number, @Body() updateCourseRegistrationDto: UpdateCourseRegistrationDto) {
+    async update(
+        @Param('id') id: number, 
+        @Body() updateCourseRegistrationDto: UpdateCourseRegistrationDto
+    ) {
         const data = this.courseRegistrationService.update(id, updateCourseRegistrationDto);
         return {
             message: "수강 신청이 정보가 업데이트되었습니다.",
@@ -50,9 +54,11 @@ export class CourseRegistrationController {
         }
     }
 
-    @Delete(':id')
+    @Delete(':id/delete')
     @Roles('instructor', 'student')
-    remove(@Param('id') id: number) {
+    remove(
+        @Param('id') id: number
+    ) {
         const data = this.courseRegistrationService.remove(id);
         return {
             message: "수강 신청이 취소되었습니다.",

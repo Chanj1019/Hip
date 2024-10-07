@@ -42,6 +42,7 @@ export class ProjectDocService {
 
     async create(createProjectDocDto: CreateProjectDocDto, file: Express.Multer.File): Promise<ProjectDoc> {
         const projectId = createProjectDocDto.projectId;
+        
         const project = await this.projectRepository.findOne({ where: { project_id: projectId } });
 
         if (!project) {

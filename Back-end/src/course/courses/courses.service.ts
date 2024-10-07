@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Injectable, NotFoundException, Logger, HttpException, HttpStatus, ConflictException } from '@nestjs/common';
+=======
+import { Injectable, NotFoundException, Logger, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+>>>>>>> b4d9d0579f1cedd2c324252a4c3a807a943c0755
 import { Course } from './entities/course.entity';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -29,7 +33,7 @@ export class CoursesService {
   
         const course = this.coursesRepository.create(createCourseDto);
         await this.coursesRepository.save(course);
-        this.logger.log(`Course created: ${course.course_title}`);
+        this.logger.log(`강의가 생성되었습니다: ${course.course_title}`);
         return course;
     }
 
@@ -37,17 +41,18 @@ export class CoursesService {
         return this.coursesRepository.find();
     }
 
-    async findOne(id: string): Promise<Course> {
+    async findOne(id: number): Promise<Course> {
         const course = await this.coursesRepository.findOne(
-            { where: { course_title: id },
-            relations: ['docName','uCats'] 
+            { where: { course_id: id },
+            relations: ['docName','user'] 
         });
         if (!course) {
-            throw new NotFoundException('Course not found'); // 예외 처리 추가
+            throw new NotFoundException('클래스를 찾지 못했습니다.'); // 예외 처리 추가
         }
         return course;
     }
 
+<<<<<<< HEAD
     async isApprovedInstructor(loginedUserId: number, courseId: number): Promise<boolean> {
         const registration = await this.courseRegistrationRepository.findOne({
             where: {
@@ -60,14 +65,17 @@ export class CoursesService {
     } 
 
     async update(id: string, updateCourseDto: UpdateCourseDto, loginedUser: number): Promise<Course> {
+=======
+    async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
+>>>>>>> b4d9d0579f1cedd2c324252a4c3a807a943c0755
         // 데이터베이스에서 해당 ID의 강의 조회
         const course = await this.coursesRepository.findOne(
-            { where: { course_title: id } 
+            { where: { course_id: id } 
         });
 
         if (!course) {
-            this.logger.warn(`Course with ID ${id} not found`);
-            throw new NotFoundException(`Course with ID ${id} not found`);
+            this.logger.warn(`클래스를 찾지 못했습니다.`);
+            throw new NotFoundException(`클래스를 찾지 못했습니다.`);
         }
 
         // 해당 프로젝트에 대한 승인된 학생인지
@@ -97,18 +105,18 @@ export class CoursesService {
         return course;
     }
   
-    async remove(id: string): Promise<void> {
+    async remove(id: number): Promise<void> {
         const course = await this.coursesRepository.findOne(
-            { where: { course_title: id },
+            { where: { course_id: id },
             relations: ['docName'] 
         });
-        if(course){
-            await this.coursesRepository.remove(course);
+        if (!course) {
+            throw new NotFoundException(`클래스를 찾지 못했습니다.`);
         }
-        // if (course.affected === 0) {
-        //     this.logger.warn(`Attempt to delete non-existent course with ID ${id}`);
-        //     throw new NotFoundException(`Course with ID ${id} not found for deletion`);
-        // }
-        // this.logger.log(`Course with ID ${id} deleted`);
+    
+        await this.coursesRepository.remove(course);
+        this.logger.log(`클래스가 삭제되었습니다.`);
     }
+    
+    
 }
