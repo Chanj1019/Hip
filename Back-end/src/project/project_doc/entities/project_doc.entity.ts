@@ -18,9 +18,6 @@ export class ProjectDoc {
     @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
     project: Project;
 
-    @Column({ type: 'int', nullable: false })
-    projectId: number;
-
     // project_Doc - feedback
     @OneToMany(() => Feedback, (feedback) => feedback.projectDoc)
     feedbacks: Feedback[];

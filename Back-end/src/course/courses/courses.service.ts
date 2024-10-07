@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException, Logger, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, HttpException, HttpStatus, BadRequestException, ConflictException } from '@nestjs/common';
 import { Course } from './entities/course.entity';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CourseRegistration } from '../course_registration/entities/course_registration.entity';
+import { Registration } from '../../enums/role.enum';
 
 @Injectable()
 export class CoursesService {
@@ -12,6 +14,8 @@ export class CoursesService {
     constructor(
         @InjectRepository(Course)
         private coursesRepository: Repository<Course>,
+        @InjectRepository(CourseRegistration)
+        private readonly courseRegistrationRepository: Repository<CourseRegistration>,
     ) {}
 
     async create(createCourseDto: CreateCourseDto): Promise<Course> {
@@ -44,7 +48,18 @@ export class CoursesService {
         return course;
     }
 
-    async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
+    async isApprovedInstructor(loginedUserId: number, courseId: number): Promise<boolean> {
+        const registration = await this.courseRegistrationRepository.findOne({
+            where: {
+                user: { user_id: loginedUserId }, // 현재 로그인한 사용자 ID
+                course: { course_id: courseId }, // 현재 프로젝트 ID
+                course_registration_status: Registration.APPROVED, // 승인된 상태 확인
+            },
+        });
+        return !!registration;
+    } 
+
+    async update(id: number, updateCourseDto: UpdateCourseDto, loginedUser: number): Promise<Course> {
         // 데이터베이스에서 해당 ID의 강의 조회
         const course = await this.coursesRepository.findOne(
             { where: { course_id: id } 
@@ -53,6 +68,13 @@ export class CoursesService {
         if (!course) {
             this.logger.warn(`클래스를 찾지 못했습니다.`);
             throw new NotFoundException(`클래스를 찾지 못했습니다.`);
+        }
+
+        // 해당 프로젝트에 대한 승인된 학생인지
+        const approvedInstructor = await this.isApprovedInstructor(loginedUser, id);
+
+        if (!approvedInstructor) {
+            throw new ConflictException(`수정 권한이 없습니다.`);
         }
   
         // UpdateCourseDto에 포함된 필드만 업데이트

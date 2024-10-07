@@ -6,10 +6,11 @@ import { ProjectDocController } from './project_doc.controller';
 import { Project } from '../projects/entities/project.entity';
 import { Feedback } from '../feedback/entities/feedback.entity';
 import { UsersModule } from '../../user/users.module';
+import { ProjectsModule } from '../projects/projects.module';
 
 @Module({
     imports: [TypeOrmModule.forFeature([ProjectDoc,Project,Feedback]),
-    UsersModule],
+    UsersModule, ProjectsModule],
     providers: [ProjectDocService],
     controllers: [ProjectDocController],
     exports: [ProjectDocService],
