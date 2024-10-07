@@ -42,6 +42,7 @@ export class ProjectDocService {
 
     async create(createProjectDocDto: CreateProjectDocDto, file: Express.Multer.File): Promise<ProjectDoc> {
         const projectId = createProjectDocDto.projectId;
+        
         const project = await this.projectRepository.findOne({ where: { project_id: projectId } });
 
         if (!project) {
@@ -89,10 +90,14 @@ export class ProjectDocService {
     }
 
     async findOne(id: number, project_id: number): Promise<ProjectDoc> {
+        const project = await this.projectRepository.findOne({ where: { project_id: project_id }});
+        if (!project) {
+            throw new NotFoundException(`ID가 ${project_id}인 프로젝트를 찾을 수 없습니다.`);
+        }
+
         const doc = await this.projectDocRepository.findOne({
             where: {
                 project_doc_id: id,
-                projectId: project_id,
             },
             relations: ['project'], // 연관된 프로젝트도 함께 가져오기
         });

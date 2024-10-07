@@ -6,8 +6,9 @@ import { Feedback } from './entities/feedback.entity';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
+import { ApprovedStudentGuard } from '../../auth/project.approved.guard';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, ApprovedStudentGuard)
 @Controller('projects/:projectId/projectDocs/:projectDocs/feedback')
 export class FeedbackController {
     constructor(private readonly feedbackService: FeedbackService) {}

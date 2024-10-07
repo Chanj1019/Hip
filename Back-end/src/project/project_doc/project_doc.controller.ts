@@ -8,8 +8,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
-
-@UseGuards(JwtAuthGuard,RolesGuard)
+import { ApprovedStudentGuard } from '../../auth/project.approved.guard';
+@UseGuards(JwtAuthGuard, RolesGuard, ApprovedStudentGuard)
 @Controller('projects/:projectId/projectDocs')
 export class ProjectDocController {
     constructor(private readonly projectDocsService: ProjectDocService) {}

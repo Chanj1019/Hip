@@ -1,8 +1,9 @@
-import { Controller, Post, Get, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Body, UseGuards, Request } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { ApprovedInstructorGuard } from '../../auth/course.approved.guard';
 import { OwnershipGuard } from '../../auth/ownership.guard';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
@@ -11,7 +12,7 @@ export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @Roles('instructor','admin')//강사추가됨
+    @Roles('admin')
     async create(
       @Body() CreateCourseDto: any
     ) {
@@ -44,13 +45,15 @@ export class CoursesController {
     }
 
     @Patch(':type/:id/update')
-    @Roles('instructor','admin')
-    @UseGuards(OwnershipGuard)
+    @Roles('admin','instructor')
+    @UseGuards(OwnershipGuard, ApprovedInstructorGuard)
     async update(
       @Param('id') id: number, 
-      @Body() updateCourseDto: any
+      @Body() updateCourseDto: any,
+      @Request() req
     ) {
-        const data = await this.coursesService.update(id, updateCourseDto);
+        const loginedUser = req.user.user_id;
+        const data = await this.coursesService.update(id, updateCourseDto, loginedUser);
         return {
             message: "강의 수정에 성공하셨습니다",
             data: data
@@ -59,7 +62,7 @@ export class CoursesController {
 
     @Delete(':type/:id/delete')
     @UseGuards(OwnershipGuard)
-    @Roles('instructor','admin')
+    @Roles('admin')
     async remove(
       @Param('id') id: number
     ) {

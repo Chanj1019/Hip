@@ -18,37 +18,31 @@ export class CourseRegistrationService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ){}
-    async create(createCourseRegistrationDto: CreateCourseRegistrationDto) {
-        // 이미 해당 강의에 수강 신청이 되어 있을 때
-        const courseId = createCourseRegistrationDto.courseId;
-        const existingCourse = await this.coursesRepository.findOne({ 
-            where: { course_id: courseId } 
-        });
-        if(!existingCourse){
-            throw new ConflictException('강의가 존재하지 않습니다.');
-        }
 
-        const userId = createCourseRegistrationDto.userId;
-        const existingUser = await this.userRepository.findOne({
-             where: { user_id: userId }
-            });
-        if(!existingUser){
-            throw new ConflictException('사용자가 일치하지 않습니다.');
-        }
-
-        const existingCourseRegistration = await this.courseRegistrationRepository.findOne({
+    // 이미 수강신청이 되어 있는지 확인하는 함수
+    async isEnrolled(courseId: number, userId: number): Promise<boolean> {
+        const existingEnrollment = await this.courseRegistrationRepository.findOne({
             where: {
-                user: existingUser,
-                course: existingCourse,
+                course: { course_id: courseId }, // 프로젝트 ID로 필터링
+                user: { user_id: userId }, // 사용자 ID로 필터링
             },
         });
 
-        if(existingCourseRegistration){
-            throw new ConflictException('이미 신청된 강의입니다.');
+        return !!existingEnrollment; // 이미 존재하면 true, 없으면 false
+    }
+
+    async create(createCourseRegistrationDto: CreateCourseRegistrationDto, courseId: number, loginedUser: number) {
+        // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
+        const isAlreadyEnrolled = await this.isEnrolled(courseId, loginedUser);
+
+        if(isAlreadyEnrolled){
+            throw new ConflictException('신청된 강의입니다.');
         }
 
         // 처음 참가 신청
         const courseRegistration = this.courseRegistrationRepository.create(createCourseRegistrationDto);
+        courseRegistration.user = await this.userRepository.findOneBy({ user_id: loginedUser });  // 특정 사용자와 연결된 정보
+        courseRegistration.course = await this.coursesRepository.findOneBy({ course_id: courseId });  // 특정 프로젝트와 연결된 정보
         return await this.courseRegistrationRepository.save(courseRegistration);
     }
 

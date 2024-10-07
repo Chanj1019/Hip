@@ -23,14 +23,8 @@ export class CourseRegistration {
     @JoinColumn({ name: 'userId' }) // 외래 키의 이름을 명시
     user: User;
 
-    @Column({ type: 'int', nullable: false })
-    userId: number;
-
     // course_registration - course
     @ManyToOne(() => Course, (course) => course.course_registrations)
-    @JoinColumn({ name: 'coursetId' }) // 외래 키의 이름을 명시
+    @JoinColumn({ name: 'courseId' }) // 외래 키의 이름을 명시
     course: Course;
-
-    @Column({ type: 'int', nullable: false })
-    courseId: number;
 }

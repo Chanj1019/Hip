@@ -11,9 +11,9 @@ export class ExhibitionIntroController {
 
     @Post('register')
     @UseGuards(JwtAuthGuard)
-    async create(@Body() createExhibitionIntroDto: CreateExhibitionIntroDto): Promise<{ message: string; intro: ExhibitionIntro; }> {
-        const intro = await this.exhibitionIntroService.create(createExhibitionIntroDto);
-        return { message:'intro 생성이 완료되었습니다.', intro };
+    async create(@Body() createExhibitionIntroDto: CreateExhibitionIntroDto): Promise<{ message: string; intros: ExhibitionIntro[]; }> {
+        const intros = await this.exhibitionIntroService.create(createExhibitionIntroDto);
+        return { message: 'intro 생성이 완료되었습니다.', intros };
     }
 
     @Get()
@@ -28,16 +28,18 @@ export class ExhibitionIntroController {
         return { message:'intro 조회를 완료했습니다', intro };
     }
 
-    @Patch(':id')
+    @Patch()
     @UseGuards(JwtAuthGuard)
     async update(
-        @Param('id') id: string,
+        // @Param('id') id: string, Number(id),  // URL에서 전달받은 ID
         @Body() updateExhibitionIntroDto: UpdateExhibitionIntroDto,
-    ): Promise<{ message: string; intro: ExhibitionIntro }> {
-        const intro = await this.exhibitionIntroService.update(+id, updateExhibitionIntroDto);
-        return { message:'intro가 성공적으로 업데이트되었습니다.', intro };
+    ): Promise<{ message: string; intros: ExhibitionIntro[] }> {
+        const intros = await this.exhibitionIntroService.update(updateExhibitionIntroDto); // id를 Number로 변환하여 전달
+        return { message: 'intro가 성공적으로 업데이트되었습니다.', intros };
     }
-
+    
+    
+    
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
     async remove(@Param('id') id: string): Promise<{ message:string }> {

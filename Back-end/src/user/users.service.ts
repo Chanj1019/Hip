@@ -7,6 +7,10 @@ import { BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { HashService } from '../auth/hash.service';
 import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 http 409번
+import { ProjectDto } from './dto/user-courses-projects.response.dto/project.dto';
+import { CourseDto } from './dto/user-courses-projects.response.dto/course.dto';
+import { Registration } from '../enums/role.enum';
+import { UserCoursesProjectsResponseDto } from './dto/user-courses-projects.response.dto';
 
 @Injectable()
 export class UsersService {
@@ -101,8 +105,67 @@ export class UsersService {
         return 'User updated successfully'; // 성공 메시지 반환
     }
 
+    async findUserCourses(userId: number): Promise<CourseDto[]> {
+        const user = await this.usersRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.course_registrations', 'registration') // 강의 등록과 조인
+            .leftJoinAndSelect('registration.course', 'course') // 강의와 조인
+            .where('user.user_id = :userId', { userId })
+            .andWhere('registration.course_registration_status = :status', { status: Registration.APPROVED }) // 상태가 approved인 것만 가져오기
+            .getOne(); // 단일 사용자 결과를 가져옴
+    
+        if (!user || !user.course_registrations || user.course_registrations.length === 0) {
+            throw new HttpException('사용자의 강의를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+        }
+    
+        // 각 강의 정보 매핑
+        return user.course_registrations.map(registration => ({
+            course_id: registration.course.course_id,
+            course_title: registration.course.course_title,
+            description: registration.course.description,
+            instructor_name: registration.course.instructor_name,
+            course_notice: registration.course.course_notice,
+        }));
+    }
+    
+    
+    
+    async findUserProjects(userId: number): Promise<ProjectDto[]> {
+        const user = await this.usersRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.project_registrations', 'registration') // 프로젝트 등록과 조인
+            .leftJoinAndSelect('registration.project', 'project') // 프로젝트와 조인
+            .where('user.user_id = :userId', { userId })
+            .andWhere('registration.project_registration_status = :status', { status: Registration.APPROVED }) // 상태가 approved인 것만 가져오기
+            .getOne();
+    
+        if (!user || !user.project_registrations || user.project_registrations.length === 0) {
+            throw new HttpException('사용자의 프로젝트를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+        }
+    
+        // 각 프로젝트 정보 매핑
+        return user.project_registrations.map(registration => ({
+            project_id: registration.project.project_id,
+            topic: registration.project.topic,
+            class: registration.project.class,
+            project_status: registration.project.project_status,
+            team_name: registration.project.team_name,
+            profile: registration.project.profile,
+            requirements: registration.project.requirements,
+        }));
+    }
+    
+    async getUserCoursesAndProjects(userId: number): Promise<UserCoursesProjectsResponseDto> {
+        const courses = await this.findUserCourses(userId);
+        const projects = await this.findUserProjects(userId);
 
-
+        return {
+            message: '사용자의 강의와 프로젝트를 성공적으로 가져왔습니다.',
+            courses,
+            projects,
+        };
+    }
+    
 
 }
     
