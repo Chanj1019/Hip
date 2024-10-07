@@ -6,6 +6,8 @@ import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateStudentAttendanceDto } from './dto/update-student-attendance.dto';
 import { User } from '../user/user.entity'; // User 엔티티 임포트
 import { Course } from '../course/courses/entities/course.entity'; // Course 엔티티 임포트
+import { CourseRegistration } from '../course/course_registration/entities/course_registration.entity'; // CourseRegistration 엔티티 임포트
+import { Registration } from 'src/enums/role.enum';
 
 @Injectable()
 export class AttendanceService {
@@ -16,46 +18,34 @@ export class AttendanceService {
         private userRepository: Repository<User>,
         @InjectRepository(Course)
         private courseRepository: Repository<Course>,
+        @InjectRepository(CourseRegistration)
+        private courseRegistrationRepository: Repository<CourseRegistration>, // CourseRegistration 리포지토리 추가
     ) {}
 
-    // async createAttendance(dto: CreateAttendanceDto, userId: number, randomCode: string, field: string): Promise<Attendance> {
-    //     const user = await this.userRepository.findOne({ where: { user_id: userId } });
-    //     const course = await this.courseRepository.findOne({ where: { course_id: dto.courseId } });
-
-    //     if (!user || !course) {
-    //         throw new NotFoundException('User or Course not found');
-    //     }
-
-    //     const attendance = this.attendanceRepository.create({
-    //         course,
-    //         user,
-    //         attendance_date: new Date(),
-    //         field: dto.field,
-    //         random_code: randomCode,
-    //     });
-
-    //     return this.attendanceRepository.save(attendance);
-    // }
-
+    // 출석 기록 생성
     async createAttendance(courseId: number, userId: number, field: 'present' | 'absent' | 'late', randomCode: string): Promise<Attendance> {
         const user = await this.userRepository.findOne({ where: { user_id: userId } });
         const course = await this.courseRepository.findOne({ where: { course_id: courseId } });
-    
+        
+        // 사용자 또는 수업이 존재하지 않으면 예외 처리
         if (!user || !course) {
             throw new NotFoundException('User or Course not found');
         }
-    
+
+        // 출석 기록 생성
         const attendance = this.attendanceRepository.create({
             course,
             user,
             attendance_date: new Date(),
-            field, // 출석 상태를 'absent'로 기본 설정
+            field,
             random_code: randomCode,
         });
-    
+
+        // 출석 기록 저장
         return this.attendanceRepository.save(attendance);
     }
-    
+
+    // 출석 기록 조회
     async findAttendance(courseId: number, userId: number): Promise<Attendance> {
         const attendance = await this.attendanceRepository.findOne({
             where: { course: { course_id: courseId }, user: { user_id: userId } },
@@ -68,6 +58,7 @@ export class AttendanceService {
         return attendance;
     }
 
+    // 출석 상태 업데이트
     async updateAttendanceStatus(attendanceId: number, newField: 'present' | 'absent' | 'late'): Promise<Attendance> {
         const attendance = await this.attendanceRepository.findOne({ where: { attendance_id: attendanceId } });
 
@@ -79,6 +70,7 @@ export class AttendanceService {
         return this.attendanceRepository.save(attendance);
     }
 
+    // 특정 학생의 출석 상태 업데이트
     async updateAttendanceByStudentId(dto: UpdateStudentAttendanceDto): Promise<Attendance> {
         const attendance = await this.attendanceRepository.findOne({
             where: { course: { course_id: dto.courseId }, user: { user_id: dto.studentId } },
@@ -93,12 +85,15 @@ export class AttendanceService {
     }
 
     async getUsersInCourse(courseId: number): Promise<User[]> {
-        const course = await this.courseRepository.findOne({
-            where: { course_id: courseId },
-            relations: ['users'], // 자동 생성된 미들 테이블을 통해 사용자 목록을 가져옵니다.
+        const registrations = await this.courseRegistrationRepository.find({
+            where: { 
+                course: { course_id: courseId }, 
+                course_registration_status: Registration.APPROVED // 'approved' 상태의 학생만 가져오기
+            },
+            relations: ['user'], // 사용자 정보를 가져옵니다.
         });
     
-        return course ? course.user : []; // 수업에 등록된 사용자 목록 반환
+        return registrations.map(registration => registration.user); // 등록된 사용자 목록 반환
     }
     
 }
