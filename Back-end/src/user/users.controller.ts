@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, Req, Res, HttpStatus, UseGuards } from '@nestjs/common';//추가
+import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, Req, Res, HttpStatus, UseGuards, Request } from '@nestjs/common';//추가
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { OwnershipGuard } from '../auth/ownership.guard';
+import { CourseDto } from './dto/user-courses-projects.response.dto/course.dto';
+import { ProjectDto } from './dto/user-courses-projects.response.dto/project.dto';
+import { UserCoursesProjectsResponseDto } from './dto/user-courses-projects.response.dto/user-courses-projects.response.dto';
 
 @Controller('users')
 export class UsersController {
@@ -61,6 +64,31 @@ export class UsersController {
       
       // 로그아웃 성공 메시지 반환
       return response.json({ message: '로그아웃 성공' });
+    }
+
+    @UseGuards(JwtAuthGuard) // JWT 인증 가드 사용
+    @Get('courses')
+    async findUserCourses(@Request() req): Promise<{ message: string; courses: CourseDto[] }> {
+        const userId = req.user.user_id; // JWT에서 사용자 ID 가져오기
+        const courses = await this.usersService.findUserCourses(userId);
+        return { message: '유저의 강의 조회를 완료했습니다.', courses };
+    }
+
+
+    @UseGuards(JwtAuthGuard) // JWT 인증 가드 사용
+    @Get('projects') // URL에서 사용자 ID를 제거하고 JWT에서 가져옴
+    async findUserProjects(@Request() req): Promise<{ message: string; projects: ProjectDto[] }> {
+        const userId = req.user.id; // JWT에서 사용자 ID 가져오기
+        const projects = await this.usersService.findUserProjects(userId);
+        return { message: '유저의 프로젝트 조회를 완료했습니다.', projects };
+    }
+
+    @Get(':userId/courses-projects')
+    async getUserCoursesAndProjects(@Param('userId') userId: number): Promise<UserCoursesProjectsResponseDto> {
+        const courses = await this.usersService.findUserCourses(userId);
+        const projects = await this.usersService.findUserProjects(userId);
+        
+        return { message: '사용자의 강의와 프로젝트를 성공적으로 가져왔습니다.', courses, projects };
     }
 }
 
