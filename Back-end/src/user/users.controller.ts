@@ -5,6 +5,8 @@ import { User } from './user.entity';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { OwnershipGuard } from '../auth/ownership.guard';
+import { CourseDto } from './dto/user-courses-projects.response.dto/course.dto';
+import { ProjectDto } from './dto/user-courses-projects.response.dto/project.dto';
 
 @Controller('users')
 export class UsersController {
@@ -61,6 +63,20 @@ export class UsersController {
       
       // 로그아웃 성공 메시지 반환
       return response.json({ message: '로그아웃 성공' });
+    }
+
+    //유저의 강의 조회
+    @Get(':id/courses')
+    async findUserCourses(@Param('id') userId: number): Promise<{ message: string; courses: CourseDto[] }> {
+        const courses = await this.usersService.findUserCourses(userId);
+        return { message: '유저의 강의 조회를 완료했습니다.', courses };
+    }
+
+    // 유저의 프로젝트 조회
+    @Get(':id/projects')
+    async findUserProjects(@Param('id') userId: number): Promise<{ message: string; projects: ProjectDto[] }> {
+        const projects = await this.usersService.findUserProjects(userId);
+        return { message: '유저의 프로젝트 조회를 완료했습니다.', projects };
     }
 }
 
