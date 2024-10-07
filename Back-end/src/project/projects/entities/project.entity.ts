@@ -34,10 +34,6 @@ export class Project {
     @ManyToMany(() => User, (user) => user.projects)
     users: User[];
 
-    // user_id를 저장하기 위한 userId 컬럼 추가
-    @Column({ type: 'int', nullable: false })
-    userId: number;
-
     // project - project_registration
     @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.project)
     project_registrations: ProjectRegistration;

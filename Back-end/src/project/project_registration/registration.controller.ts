@@ -14,14 +14,10 @@ export class ProjectRegistrationController {
     @Post('register')
     @Roles('student')
     async create(@Body() createProjectRegistrationDto: CreateProjectRegistrationDto, @Request() req, @Param('project') project_id: number) {
-        // createDto의 userId 필드
-        const user_id = req.user.user_id;
-        createProjectRegistrationDto.userId = user_id;
+        const loginedUser = req.user.user_id;
+        const projectId = project_id;
 
-        // createDto의 projectId 필드
-        createProjectRegistrationDto.projectId = project_id;
-
-        const data = await this.projectRegistrationService.create(createProjectRegistrationDto);
+        const data = await this.projectRegistrationService.create(createProjectRegistrationDto, projectId, loginedUser);
         return {
             message: "프로젝트 신청이 완료되었습니다.",
             data: data,

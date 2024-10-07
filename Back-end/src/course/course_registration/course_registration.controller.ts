@@ -13,19 +13,12 @@ export class CourseRegistrationController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('register')
     @Roles('instructor', 'student')
-    async create(
-        @Body() createCourseRegistrationDto: CreateCourseRegistrationDto, 
-        @Request() req, 
-        @Param('course') course_id: number
-    ) {
-        // 로그인된 user_id 저장
-        const user_id = req.user.user_id;
-        createCourseRegistrationDto.userId = user_id;
+  
+    async create(@Body() createCourseRegistrationDto: CreateCourseRegistrationDto, @Request() req, @Param('course') course_id: number) {
+        // 로그인된 user 저장
+        const loginedUser = req.user.user_id;
 
-        // 어떤 강의 인지 저장
-        createCourseRegistrationDto.courseId = course_id;
-
-        const data = await this.courseRegistrationService.create(createCourseRegistrationDto);
+        const data = await this.courseRegistrationService.create(createCourseRegistrationDto, loginedUser, course_id);
 
         return { 
             message: "수강 신청이 완료되었습니다.",
