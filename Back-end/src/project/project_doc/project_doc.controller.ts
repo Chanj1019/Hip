@@ -9,14 +9,8 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { ApprovedStudentGuard } from '../../auth/project.approved.guard';
-
-<<<<<<< HEAD
 @UseGuards(JwtAuthGuard, RolesGuard, ApprovedStudentGuard)
-@Controller('projects/:project/projectDocs')
-=======
-@UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('projects/:projectId/projectDocs')
->>>>>>> b4d9d0579f1cedd2c324252a4c3a807a943c0755
 export class ProjectDocController {
     constructor(private readonly projectDocsService: ProjectDocService) {}
 

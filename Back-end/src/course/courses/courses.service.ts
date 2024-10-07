@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Injectable, NotFoundException, Logger, HttpException, HttpStatus, ConflictException } from '@nestjs/common';
-=======
-import { Injectable, NotFoundException, Logger, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
->>>>>>> b4d9d0579f1cedd2c324252a4c3a807a943c0755
+import { Injectable, NotFoundException, Logger, HttpException, HttpStatus, BadRequestException, ConflictException } from '@nestjs/common';
 import { Course } from './entities/course.entity';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -52,7 +48,6 @@ export class CoursesService {
         return course;
     }
 
-<<<<<<< HEAD
     async isApprovedInstructor(loginedUserId: number, courseId: number): Promise<boolean> {
         const registration = await this.courseRegistrationRepository.findOne({
             where: {
@@ -64,10 +59,7 @@ export class CoursesService {
         return !!registration;
     } 
 
-    async update(id: string, updateCourseDto: UpdateCourseDto, loginedUser: number): Promise<Course> {
-=======
-    async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
->>>>>>> b4d9d0579f1cedd2c324252a4c3a807a943c0755
+    async update(id: number, updateCourseDto: UpdateCourseDto, loginedUser: number): Promise<Course> {
         // 데이터베이스에서 해당 ID의 강의 조회
         const course = await this.coursesRepository.findOne(
             { where: { course_id: id } 

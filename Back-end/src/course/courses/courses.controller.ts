@@ -3,11 +3,8 @@ import { CoursesService } from './courses.service';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-<<<<<<< HEAD
 import { ApprovedInstructorGuard } from '../../auth/course.approved.guard';
-=======
 import { OwnershipGuard } from '../../auth/ownership.guard';
->>>>>>> b4d9d0579f1cedd2c324252a4c3a807a943c0755
 
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')
@@ -47,21 +44,13 @@ export class CoursesController {
         };
     }
 
-<<<<<<< HEAD
-    @Patch(':id')
-    @Roles('instructor','admin')
-    @UseGuards(ApprovedInstructorGuard)
-    async update(
-      @Param('id') id: string, @Body() updateCourseDto: any,
-      @Request() req
-=======
     @Patch(':type/:id/update')
-    @Roles('admin')
-    @UseGuards(OwnershipGuard)
+    @Roles('admin','instructor')
+    @UseGuards(OwnershipGuard, ApprovedInstructorGuard)
     async update(
       @Param('id') id: number, 
-      @Body() updateCourseDto: any
->>>>>>> b4d9d0579f1cedd2c324252a4c3a807a943c0755
+      @Body() updateCourseDto: any,
+      @Request() req
     ) {
         const loginedUser = req.user.user_id;
         const data = await this.coursesService.update(id, updateCourseDto, loginedUser);
