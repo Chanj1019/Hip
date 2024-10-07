@@ -6,8 +6,7 @@ import { Project } from './entities/project.entity';
 import { RolesGuard } from '../../auth/roles.guard'; // 역할 기반 가드 임포트
 import { Roles } from '../../auth/roles.decorator'; // 역할 데코레이터 임포트
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { Role } from 'src/enums/role.enum';
-
+import { ApprovedStudentGuard } from '../../auth/project.approved.guard';
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('projects')
 export class ProjectsController {
@@ -30,7 +29,8 @@ export class ProjectsController {
 
     @Patch(':id')
     @Roles('instructor','admin','student')
-    async update(@Param('id') id: number, @Body() updateProjectDto: UpdateProjectDto, @Request() req) {
+    @UseGuards(ApprovedStudentGuard)
+    async update(@Param('id',ParseIntPipe) id: number, @Body() updateProjectDto: UpdateProjectDto, @Request() req) {
         const loginedUser = req.user.user_id;
         const updatedData = await this.projectsService.update(id, updateProjectDto, loginedUser);
         return {
