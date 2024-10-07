@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Response } from 'express';
 import { Readable } from 'stream';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class VideoService {
@@ -32,6 +33,37 @@ export class VideoService {
           },
         });
     }
+
+    // private bucketName = 'your-bucket-name';
+
+    // async getUploadUrl(fileName: string, fileType: string): Promise<string> {
+    //     const params = {
+    //       Bucket: this.bucketName,
+    //       Key: fileName,
+    //       ContentType: fileType,
+    //     };
+    //     const command = new PutObjectCommand(params);
+    //     return getSignedUrl(this.s3, command, { expiresIn: 60 }); // URL expiration time in seconds
+    // }
+
+    // async deleteFile(fileKey: string) {
+    //     const params = {
+    //       Bucket: this.bucketName,
+    //       Key: fileKey,
+    //     };
+    //     const command = new DeleteObjectCommand(params);
+    //     return this.s3.send(command);
+    //   }
+    
+    //   async generatePresignedStreamUrl(fileKey: string) {
+    //     const params = {
+    //       Bucket: this.bucketName,
+    //       Key: fileKey,
+    //     };
+    //     const command = new GetObjectCommand(params);
+    //     return getSignedUrl(this.s3, command, { expiresIn: 60 });
+    //   }
+
 
     private async validate(
         courseId: number, 
