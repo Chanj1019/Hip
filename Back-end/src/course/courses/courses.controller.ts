@@ -3,6 +3,7 @@ import { CoursesService } from './courses.service';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { OwnershipGuard } from '../../auth/ownership.guard';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')
@@ -10,11 +11,11 @@ export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 
     @Post('register')
-    @Roles('amdin')
+    @Roles('admin')
     async create(
-      @Body() createCourseDto: any
+      @Body() CreateCourseDto: any
     ) {
-        const data = await this.coursesService.create(createCourseDto);
+        const data = await this.coursesService.create(CreateCourseDto);
         return {
             message: "생성에 성공하셨습니다",
             data: data
@@ -22,7 +23,7 @@ export class CoursesController {
     }
 
     @Get()
-    @Roles('admin')
+    @Roles('student','instructor','admin')
     async findAll() {
         const data = await this.coursesService.findAll();
         return {
@@ -31,9 +32,9 @@ export class CoursesController {
         };
     }
 
-    @Get(':id')
+    @Get(':id/read')
     async findOne(
-      @Param('id') id: string
+      @Param('id') id: number
     ) {
         const data = await this.coursesService.findOne(id);
         return {
@@ -42,10 +43,12 @@ export class CoursesController {
         };
     }
 
-    @Patch(':id')
-    @Roles('instructor','admin')
+    @Patch(':type/:id/update')
+    @Roles('admin')
+    @UseGuards(OwnershipGuard)
     async update(
-      @Param('id') id: string, @Body() updateCourseDto: any
+      @Param('id') id: number, 
+      @Body() updateCourseDto: any
     ) {
         const data = await this.coursesService.update(id, updateCourseDto);
         return {
@@ -54,10 +57,11 @@ export class CoursesController {
         };
     }
 
-    @Delete(':id')
+    @Delete(':type/:id/delete')
+    @UseGuards(OwnershipGuard)
     @Roles('admin')
     async remove(
-      @Param('id') id: string
+      @Param('id') id: number
     ) {
         const data = await this.coursesService.remove(id);
         return {

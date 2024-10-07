@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DocName } from './entities/doc_name.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,26 +16,24 @@ export class DocNameService {
     ) {}
 
     async create(
-        courseTitle: string, 
+        courseId: number, 
         createDocNameDto: CreateDocNameDto
     ): Promise<DocName> {
         const course = await this.courseRepository.findOne({ 
-            where: { course_title: courseTitle }
-        });
+            where: { course_id: courseId }
+        })
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
-        const docName = this.docNameRepository.create({
-            ...createDocNameDto 
-        });
+        const docName = this.docNameRepository.create({...createDocNameDto});
         return await this.docNameRepository.save(docName);
     }
 
     async findAll(
-        courseTitle: string, 
+        courseId: number, 
     ): Promise<DocName[]> {
         const course = await this.courseRepository.findOne({ 
-            where: { course_title: courseTitle }
+            where: { course_id: courseId }
         });
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
@@ -44,41 +42,77 @@ export class DocNameService {
     }
 
     async update(
-        courseTitle: string,
-        topicTitle: string, 
+        courseId: number, 
+        topicId: number, 
         updateDocNameDto: UpdateDocNameDto
     ): Promise<DocName> {
-        const docName = await this.findOne(courseTitle, topicTitle);
+        const docName = await this.findOne(courseId, topicId);
         await this.docNameRepository.update(docName.topic_id, updateDocNameDto);
-        const newTopicTitle = updateDocNameDto.topic_title || topicTitle
-        return this.findOne(courseTitle, newTopicTitle);
+        const newTopicId = topicId
+        return this.findOne(courseId, newTopicId);
     }
 
     async remove(
-        courseTitle: string,
-        topicTitle: string
+        courseId: number, 
+        topicId: number
     ): Promise<void> {
-        const docName = await this.findOne(courseTitle, topicTitle);
+        const docName = await this.findOne(courseId, topicId);
         await this.docNameRepository.remove(docName);
     }
 
     async findOne(
-        courseTitle: string,
-        topicTitle: string
+        courseId: number, 
+        topicId: number
     ): Promise<DocName> {
         const course = await this.courseRepository.findOne({
-            where: { course_title: courseTitle }
+            where: { course_id: courseId }
         });
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
         const docName = await this.docNameRepository.findOne({ 
-            where: { topic_title: topicTitle },
+            where: { topic_id: topicId },
             relations: ['courseDocs']
         });
         if (!docName) {
-            throw new NotFoundException(`DocName with title ${topicTitle} not found`);
+            throw new NotFoundException(`DocName with title ${topicId} not found`);
         }
         return docName;
     }
+
+    // pa_topic_id이 null인 topic 조회 메서드
+    async findRootDocName(
+        courseId: number
+    ): Promise<DocName> {
+        const course = await this.courseRepository.findOne({
+            where: { course_id: courseId }
+        });
+        if (!course) {
+            throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
+        }
+        const docnames = await this.docNameRepository.findOne({
+            where : { pa_topic_id: null }
+        });
+        return docnames
+    }
+    // 특정 pa_topic_id를 갖는 topic 조회 메서드 추가 작성 필요 
+
+  
+    async findById(id: number): Promise<DocName> {
+        if (id <= 0) {
+            throw new BadRequestException('유효하지 않은 ID입니다.');
+        }
+  
+        const doc = await this.docNameRepository.findOne({
+        where: { topic_id: id },
+        relations: ['course'],
+        });
+  
+        if (!doc) {
+            throw new NotFoundException('자료를 찾을 수 없습니다.');
+        }
+  
+        return doc;
+    }
+
 }

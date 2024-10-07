@@ -57,7 +57,9 @@ export class CourseRegistrationService {
     }
 
     async update(id: number, updateCourseRegistrationDto: UpdateCourseRegistrationDto) {
-        const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
+        const courseRegistration = await this.courseRegistrationRepository.findOne({ 
+            where: { course_registration_id: id }
+        });
         this.handleNotFound(courseRegistration, id)
 
         Object.assign(courseRegistration, updateCourseRegistrationDto);
