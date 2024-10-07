@@ -10,6 +10,7 @@ import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 ht
 import { ProjectDto } from './dto/user-courses-projects.response.dto/project.dto';
 import { CourseDto } from './dto/user-courses-projects.response.dto/course.dto';
 import { Registration } from '../enums/role.enum';
+import { UserCoursesProjectsResponseDto } from './dto/user-courses-projects.response.dto';
 
 @Injectable()
 export class UsersService {
@@ -154,6 +155,16 @@ export class UsersService {
         }));
     }
     
+    async getUserCoursesAndProjects(userId: number): Promise<UserCoursesProjectsResponseDto> {
+        const courses = await this.findUserCourses(userId);
+        const projects = await this.findUserProjects(userId);
+
+        return {
+            message: '사용자의 강의와 프로젝트를 성공적으로 가져왔습니다.',
+            courses,
+            projects,
+        };
+    }
     
 
 }

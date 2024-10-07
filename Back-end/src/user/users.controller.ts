@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { OwnershipGuard } from '../auth/ownership.guard';
 import { CourseDto } from './dto/user-courses-projects.response.dto/course.dto';
 import { ProjectDto } from './dto/user-courses-projects.response.dto/project.dto';
+import { UserCoursesProjectsResponseDto } from './dto/user-courses-projects.response.dto/user-courses-projects.response.dto';
 
 @Controller('users')
 export class UsersController {
@@ -77,6 +78,14 @@ export class UsersController {
     async findUserProjects(@Param('id') userId: number): Promise<{ message: string; projects: ProjectDto[] }> {
         const projects = await this.usersService.findUserProjects(userId);
         return { message: '유저의 프로젝트 조회를 완료했습니다.', projects };
+    }
+
+    @Get(':userId/courses-projects')
+    async getUserCoursesAndProjects(@Param('userId') userId: number): Promise<UserCoursesProjectsResponseDto> {
+        const courses = await this.usersService.findUserCourses(userId);
+        const projects = await this.usersService.findUserProjects(userId);
+        
+        return { message: '사용자의 강의와 프로젝트를 성공적으로 가져왔습니다.', courses, projects };
     }
 }
 
