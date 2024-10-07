@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './entities/project.entity';
@@ -10,6 +10,7 @@ import { Registration } from '../../enums/role.enum';
 
 @Injectable()
 export class ProjectsService {
+    private readonly logger = new Logger(ProjectsService.name);
     constructor(
         @InjectRepository(Project)
         private readonly projectsRepository: Repository<Project>,
@@ -58,6 +59,11 @@ export class ProjectsService {
     
     async update(id: number, updateProjectDto: UpdateProjectDto, loginedUser:number): Promise<Project> {
         const project = await this.projectsRepository.findOne({ where: { project_id: id } });
+
+        if (!project) {
+            this.logger.warn(`Project with ID ${id} not found`);
+            throw new NotFoundException(`Project with ID ${id} not found`);
+        }
 
         // 해당 프로젝트에 대한 승인된 학생인지
         const approvedStudent = await this.isApprovedStudent(loginedUser, id);
