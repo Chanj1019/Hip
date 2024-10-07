@@ -52,9 +52,22 @@ export class VideoController {
     //     return await this.videoService.remove(courseTitle, videoTopicId, id);
     // }
 
+
+    // @Get('upload-url')
+    // async getUploadUrl(
+    //     @Query('fileName') fileName: string, 
+    //     @Query('fileType') fileType: string
+    // ) {
+    //   const uploadUrl = await this.videosService.getUploadUrl(fileName, fileType);
+    //   return { uploadUrl };
+    // }
+      
+
+
+
     @Get(':video_id/stream')
     async stream(
-        @Body('courseId') courseId: number,
+        @Param('courseId') courseId: number,
         @Param('videoTopicId') videoTopicId: number,
         @Param('video_id') videoId: number, 
         @Res() res: Response
@@ -65,8 +78,8 @@ export class VideoController {
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(
-        @Body('courseId') courseId: number,
-        @Body('videoTopicId') videoTopicId: number,
+        @Param('courseId') courseId: number,
+        @Param('videoTopicId') videoTopicId: number,
         @UploadedFile() file: Express.Multer.File
     ): Promise< { message: string }> {
         if (!file) {
@@ -78,7 +91,7 @@ export class VideoController {
 
     @Delete(':videoId/delete')
     async removeFile(
-        @Body('courseId') courseId: number,
+        @Param('courseId') courseId: number,
         @Param('videoTopicId') videoTopicId: number,
         @Param('videoId') videoId: number
     ): Promise<void> {
