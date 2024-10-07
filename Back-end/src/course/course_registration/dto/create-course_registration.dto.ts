@@ -10,15 +10,4 @@ export class CreateCourseRegistrationDto {
     @IsNotEmpty()
     @IsEnum(Registration)
     course_registration_status: Registration;
-
-    // user 주키
-    @IsNotEmpty()
-    @IsNumber()
-    userId: number;
-
-    // 강의 주키
-    @IsNotEmpty()
-    @IsNumber()
-    courseId: number;
-
 }
