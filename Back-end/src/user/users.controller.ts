@@ -78,13 +78,15 @@ export class UsersController {
     @UseGuards(JwtAuthGuard) // JWT 인증 가드 사용
     @Get('projects') // URL에서 사용자 ID를 제거하고 JWT에서 가져옴
     async findUserProjects(@Request() req): Promise<{ message: string; projects: ProjectDto[] }> {
-        const userId = req.user.id; // JWT에서 사용자 ID 가져오기
+        const userId = req.user.user_id; // JWT에서 사용자 ID 가져오기
         const projects = await this.usersService.findUserProjects(userId);
         return { message: '유저의 프로젝트 조회를 완료했습니다.', projects };
     }
 
-    @Get(':userId/courses-projects')
-    async getUserCoursesAndProjects(@Param('userId') userId: number): Promise<UserCoursesProjectsResponseDto> {
+    @UseGuards(JwtAuthGuard) // JWT 인증 가드 사용
+    @Get('courses-projects') // URL에서 userId 제거
+    async getUserCoursesAndProjects(@Request() req): Promise<UserCoursesProjectsResponseDto> {
+        const userId = req.user.id; // JWT에서 사용자 ID 가져오기
         const courses = await this.usersService.findUserCourses(userId);
         const projects = await this.usersService.findUserProjects(userId);
         
