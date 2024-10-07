@@ -1,8 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateExhibitionsMemberDto } from './create-exhibitions_member.dto';
+import { CreateExhibitionMemberDto, CreateExhibitionsMembersDto } from './create-exhibitions_member.dto';
 import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
 
-export class UpdateExhibitionsMemberDto extends PartialType(CreateExhibitionsMemberDto) {
+export class UpdateExhibitionMemberDto extends PartialType(CreateExhibitionsMembersDto) {
     @IsOptional() 
     @IsString()
     @IsNotEmpty() 
