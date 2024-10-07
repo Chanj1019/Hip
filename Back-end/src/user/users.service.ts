@@ -10,7 +10,7 @@ import { ConflictException } from '@nestjs/common'; // 오류메세지 반환 ht
 import { ProjectDto } from './dto/user-courses-projects.response.dto/project.dto';
 import { CourseDto } from './dto/user-courses-projects.response.dto/course.dto';
 import { Registration } from '../enums/role.enum';
-import { UserCoursesProjectsResponseDto } from './dto/user-courses-projects.response.dto';
+import { UserCoursesProjectsResponseDto } from './dto/user-courses-projects.response.dto/user-courses-projects.response.dto'
 
 @Injectable()
 export class UsersService {
