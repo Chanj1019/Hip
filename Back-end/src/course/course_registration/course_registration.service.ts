@@ -19,6 +19,14 @@ export class CourseRegistrationService {
         private readonly userRepository: Repository<User>,
     ){}
 
+    // 강의 ID가 유효한지 확인하는 함수
+    async validateCourseId(courseId: number): Promise<void> {
+        const course = await this.coursesRepository.findOne({ where: { course_id: courseId } });
+        if (!course) {
+            throw new NotFoundException(`Course with ID ${courseId} not found`);
+        }
+    }
+
     // 이미 수강신청이 되어 있는지 확인하는 함수
     async isEnrolled(courseId: number, userId: number): Promise<boolean> {
         const existingEnrollment = await this.courseRegistrationRepository.findOne({
@@ -32,6 +40,8 @@ export class CourseRegistrationService {
     }
 
     async create(createCourseRegistrationDto: CreateCourseRegistrationDto, courseId: number, loginedUser: number) {
+        await this.validateCourseId(courseId);
+
         // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
         const isAlreadyEnrolled = await this.isEnrolled(courseId, loginedUser);
 
@@ -46,17 +56,20 @@ export class CourseRegistrationService {
         return await this.courseRegistrationRepository.save(courseRegistration);
     }
 
-    async findAll(): Promise<CourseRegistration[]> {
+    async findAll(courseId: number): Promise<CourseRegistration[]> {
+        await this.validateCourseId(courseId);
         return this.courseRegistrationRepository.find();
     }
 
-    async findOne(id: number):Promise<CourseRegistration> {
+    async findOne(id: number, courseId: number):Promise<CourseRegistration> {
+        await this.validateCourseId(courseId);
         const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
         this.handleNotFound(courseRegistration, id)
         return courseRegistration;
     }
 
-    async update(id: number, updateCourseRegistrationDto: UpdateCourseRegistrationDto) {
+    async update(id: number, updateCourseRegistrationDto: UpdateCourseRegistrationDto, courseId: number) {
+        await this.validateCourseId(courseId);
         const courseRegistration = await this.courseRegistrationRepository.findOne({ 
             where: { course_registration_id: id }
         });
@@ -66,7 +79,8 @@ export class CourseRegistrationService {
         return await this.courseRegistrationRepository.save(courseRegistration);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number, courseId: number): Promise<void> {
+        await this.validateCourseId(courseId);
         const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
         this.handleNotFound(courseRegistration, id)
         await this.courseRegistrationRepository.delete(id);

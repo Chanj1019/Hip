@@ -28,8 +28,8 @@ export class CourseRegistrationController {
 
     @Get()
     @Roles('admin')
-    async findAll() {
-        const data = this.courseRegistrationService.findAll();
+    async findAll(@Param('course') courseId: number) {
+        const data = this.courseRegistrationService.findAll(courseId);
         return {
             message: "수강 신청 정보가 조회되었습니다.",
             data: data,
@@ -45,9 +45,10 @@ export class CourseRegistrationController {
     @Roles('admin')
     async update(
         @Param('id') id: number, 
-        @Body() updateCourseRegistrationDto: UpdateCourseRegistrationDto
+        @Body() updateCourseRegistrationDto: UpdateCourseRegistrationDto,
+        @Param('course') courseId: number
     ) {
-        const data = this.courseRegistrationService.update(id, updateCourseRegistrationDto);
+        const data = this.courseRegistrationService.update(id, updateCourseRegistrationDto, courseId);
         return {
             message: "수강 신청이 정보가 업데이트되었습니다.",
             data: data,
@@ -57,9 +58,10 @@ export class CourseRegistrationController {
     @Delete(':id/delete')
     @Roles('instructor', 'student')
     remove(
-        @Param('id') id: number
+        @Param('id') id: number,
+        @Param('course') courseId: number
     ) {
-        const data = this.courseRegistrationService.remove(id);
+        const data = this.courseRegistrationService.remove(id, courseId);
         return {
             message: "수강 신청이 취소되었습니다.",
             data: data,
