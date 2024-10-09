@@ -31,8 +31,18 @@ export class ProjectRegistrationService {
         return !!existingEnrollment; // 이미 존재하면 true, 없으면 false
     }
 
+    // 프로젝트 ID가 유효한지 확인하는 함수
+    async validateProjectId(projectId: number): Promise<void> {
+        const project = await this.projectsRepository.findOne({ where: { project_id: projectId } });
+        if (!project) {
+            throw new NotFoundException(`Project with ID ${projectId} not found`);
+        }
+    }
+
     // 참가 신청 하기
     async create(createProjectRegistrationDto: CreateProjectRegistrationDto, projectId: number, loginedUser: number): Promise<ProjectRegistration> {
+        await this.validateProjectId(projectId);
+
         // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
         const isAlreadyEnrolled = await this.isEnrolled(projectId, loginedUser);
         if(isAlreadyEnrolled) {
@@ -47,7 +57,8 @@ export class ProjectRegistrationService {
     }
     
     // user 참고하여 user_name과 id를 함께 반환
-    async findAll(): Promise<{ projectRegistration: ProjectRegistration; userName: string; userId: string, projectTopic: string }[]> {
+    async findAll(projectId: number): Promise<{ projectRegistration: ProjectRegistration; userName: string; userId: string, projectTopic: string }[]> {
+        await this.validateProjectId(projectId);
         const info = await this.projectRegistrationRepository.find({ relations: ['user', 'project'] });  // 각 등록에 대한 사용자와 프로젝트 정보
         return info.map(registration => ({
             projectRegistration: registration,
@@ -57,13 +68,15 @@ export class ProjectRegistrationService {
         }));
     }
 
-    async findOne(id: number): Promise<ProjectRegistration> {
+    async findOne(id: number, projectId: number): Promise<ProjectRegistration> {
+        await this.validateProjectId(projectId);
         const registration = await this.projectRegistrationRepository.findOne({ where: { project_registration_id: id } });
         this.handleNotFound(registration, id);
         return registration;
     }
 
-    async update(id: number, updateProjectRegistrationDto: UpdateProjectRegistrationDto): Promise<ProjectRegistration> {
+    async update(id: number, updateProjectRegistrationDto: UpdateProjectRegistrationDto, projectId: number): Promise<ProjectRegistration> {
+        await this.validateProjectId(projectId);
         const registration = await this.projectRegistrationRepository.findOne({ where: { project_registration_id: id } });
         this.handleNotFound(registration, id);
 
@@ -71,7 +84,8 @@ export class ProjectRegistrationService {
         return await this.projectRegistrationRepository.save(registration);
     }    
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number, projectId: number): Promise<void> {
+        await this.validateProjectId(projectId);
         const registration = await this.projectRegistrationRepository.findOne({ where: { project_registration_id: id } });
         this.handleNotFound(registration, id);
         await this.projectRegistrationRepository.delete(id);
