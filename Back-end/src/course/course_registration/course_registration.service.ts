@@ -43,6 +43,9 @@ export class CourseRegistrationService {
         const courseRegistration = this.courseRegistrationRepository.create(createCourseRegistrationDto);
         courseRegistration.user = await this.userRepository.findOneBy({ user_id: loginedUser });  // 특정 사용자와 연결된 정보
         courseRegistration.course = await this.coursesRepository.findOneBy({ course_id: courseId });  // 특정 프로젝트와 연결된 정보
+        if (!courseRegistration.user || !courseRegistration.course) {
+            throw new NotFoundException('사용자 또는 강의를 찾을 수 없습니다.');
+        }
         return await this.courseRegistrationRepository.save(courseRegistration);
     }
 
