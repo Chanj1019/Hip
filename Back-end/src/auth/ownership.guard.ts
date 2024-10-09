@@ -6,6 +6,7 @@ import { ExhibitionService } from '../exhibition/exhibitions/exhibitions.service
 import { ExhibitionsDocService } from '../exhibition/exhibitions_doc/exhibitions_doc.service';
 import { CourseDocService } from '../course/course_doc/course_doc.service';
 import { DocNameService } from '../course/doc_name/doc_name.service';
+import { ProjectDocService } from 'src/project/project_doc/project_doc.service';
 
 
 @Injectable()
@@ -16,7 +17,8 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
         private readonly exhibitionService: ExhibitionService,
         private readonly exhibitionDocService: ExhibitionsDocService,
         private readonly courseDocService: CourseDocService,
-        private readonly docNameService: DocNameService
+        private readonly docNameService: DocNameService,
+        private readonly projectDocService: ProjectDocService
     ) {
         super();
     }
@@ -63,6 +65,32 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
             }
             // 프로젝트와 관련된 사용자 중 요청한 사용자 ID와 일치하는 사용자 찾기
             const owner = project.users.find(user => user.user_id === user.user_id);
+            if (!owner) {
+                throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
+            }
+            resourceOwnerId = owner.user_id; 
+        }
+
+        else if (resourceType === 'project') {
+            const project = await this.projectService.findOne(resourceId);
+            if (!project) {
+                throw new ForbiddenException('존재하지 않는 프로젝트입니다.');
+            }
+            // 프로젝트와 관련된 사용자 중 요청한 사용자 ID와 일치하는 사용자 찾기
+            const owner = project.users.find(user => user.user_id === user.user_id);
+            if (!owner) {
+                throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
+            }
+            resourceOwnerId = owner.user_id; 
+        }
+
+        else if (resourceType === 'projectDoc') {
+            const projectDoc = await this.projectDocService.findById(resourceId);
+            if (!projectDoc) {
+                throw new ForbiddenException('존재하지 않는 프로젝트 문서 입니다.');
+            }
+            // 프로젝트와 관련된 사용자 중 요청한 사용자 ID와 일치하는 사용자 찾기
+            const owner = projectDoc.project.users.find(user => user.user_id === user.user_id);
             if (!owner) {
                 throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
             }
