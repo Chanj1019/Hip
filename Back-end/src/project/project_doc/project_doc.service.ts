@@ -40,14 +40,22 @@ export class ProjectDocService {
         });
     }
 
-    async create(createProjectDocDto: CreateProjectDocDto, file: Express.Multer.File): Promise<ProjectDoc> {
-        const projectId = createProjectDocDto.projectId;
-        
-        const project = await this.projectRepository.findOne({ where: { project_id: projectId } });
-
+    // 프로젝트 ID가 유효한지 확인
+    async validateProjectId(projectId: number): Promise<void> {
+        const project = await this.projectRepository.findOne({ where: {project_id: projectId }});
         if (!project) {
-            throw new NotFoundException(`ID가 ${projectId}인 프로젝트를 찾을 수 없습니다.`);
+            throw new NotFoundException(`Project with ID ${projectId} not found`);
         }
+    } 
+
+    // projectDoc 일치 예외 처리
+    private async handleNotFound(doc: ProjectDoc, id: number): Promise<void> {
+        if (!doc) {
+            throw new NotFoundException(`Document with ID ${id} not found`);
+        }
+    }
+
+    async create(projectId: number, createProjectDocDto: CreateProjectDocDto, file: Express.Multer.File): Promise<ProjectDoc> {
 
         // S3에 파일 업로드
         const uniqueFileName = `${uuidv4()}_${file.originalname}`;
@@ -74,6 +82,9 @@ export class ProjectDocService {
             throw new InternalServerErrorException('파일 경로가 비어 있습니다.');
         }
 
+        await this.validateProjectId(projectId);
+        const project = await this.projectRepository.findOne({ where: {project_id: projectId }});
+
         const projectDoc = this.projectDocRepository.create({
             ...createProjectDocDto,
             project,
@@ -83,17 +94,15 @@ export class ProjectDocService {
         return await this.projectDocRepository.save(projectDoc);
     }
 
-    async findAll(): Promise<ProjectDoc[]> {
+    async findAll(projectId: number): Promise<ProjectDoc[]> {
+        await this.validateProjectId(projectId);
         return await this.projectDocRepository.find({
         relations: ['project'],
         });
     }
 
-    async findOne(id: number, project_id: number): Promise<ProjectDoc> {
-        const project = await this.projectRepository.findOne({ where: { project_id: project_id }});
-        if (!project) {
-            throw new NotFoundException(`ID가 ${project_id}인 프로젝트를 찾을 수 없습니다.`);
-        }
+    async findOne(id: number, projectId: number): Promise<ProjectDoc> {
+        await this.validateProjectId(projectId);
 
         const doc = await this.projectDocRepository.findOne({
             where: {
@@ -101,30 +110,26 @@ export class ProjectDocService {
             },
             relations: ['project'], // 연관된 프로젝트도 함께 가져오기
         });
-        this.handleNotFound(doc, id);
+        await this.handleNotFound(doc, id);
         return doc;
     }
   
   
-    async update(id: number, updateProjectDocDto: UpdateProjectDocDto): Promise<ProjectDoc> {
+    async update(id: number, updateProjectDocDto: UpdateProjectDocDto, projectId: number): Promise<ProjectDoc> {
+        await this.validateProjectId(projectId);
+
         const doc = await this.projectDocRepository.findOne({ where: { project_doc_id: id } });
-        this.handleNotFound(doc, id);
+        await this.handleNotFound(doc, id);
 
         Object.assign(doc, updateProjectDocDto);
         return await this.projectDocRepository.save(doc);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number, projectId: number): Promise<void> {
+        await this.validateProjectId(projectId);
         const doc = await this.projectDocRepository.findOne({ where: { project_doc_id: id } });
-        this.handleNotFound(doc, id);
+        await this.handleNotFound(doc, id);
 
         await this.projectDocRepository.remove(doc);
-    }
-
-    // 예외 처리
-    private handleNotFound(doc: ProjectDoc, id: number): void {
-        if (!doc) {
-            throw new NotFoundException(`Document with ID ${id} not found`);
-        }
     }
 }
