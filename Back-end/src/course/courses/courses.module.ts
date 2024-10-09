@@ -13,11 +13,12 @@ import { CourseDocModule } from '../course_doc/course_doc.module';
 import { DocNameModule } from '../doc_name/doc_name.module';
 import { CourseRegistration } from '../course_registration/entities/course_registration.entity';
 import { CourseRegistrationModule } from '../course_registration/course_registration.module';
+import { ProjectDocModule } from 'src/project/project_doc/project_doc.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Course, DocName, VideoTopic, CourseRegistration]),
-        UsersModule, ProjectsModule, ExhibitionModule, ExhibitionsDocModule, CourseDocModule, DocNameModule, CourseRegistrationModule
+        UsersModule, ProjectsModule, ExhibitionModule, ExhibitionsDocModule, CourseDocModule, DocNameModule, CourseRegistrationModule, ProjectDocModule
     ],
     providers: [CoursesService],
     controllers: [CoursesController],
