@@ -18,44 +18,50 @@ export class FeedbackService {
         private readonly projectsRepository: Repository<Project>
     ) {}
 
-    // 프로젝트 ID가 유효한지 확인하는 함수
-    async validateProjectId(projectId: number): Promise<void> {
+    // 프로젝트 ID, DocID가 유효한지 확인
+    async validateProjectAndDocId(projectId: number, projectDocId: number): Promise<void> {
         const project = await this.projectsRepository.findOne({ where: { project_id: projectId } });
         if (!project) {
             throw new NotFoundException(`Project with ID ${projectId} not found`);
         }
+
+        const projectDoc = await this.projectDocRepository.findOne({ where: { project_doc_id: projectDocId } });
+        if (!projectDoc) {
+            throw new NotFoundException(`Project Document with ID ${projectDocId} not found`);
+        }
     }
 
-    async create(createFeedbackDto: CreateFeedbackDto, projectId: number): Promise<Feedback> {
-        await this.validateProjectId(projectId);
+    async create(createFeedbackDto: CreateFeedbackDto, projectId: number, projectDocId: number): Promise<Feedback> {
+        await this.validateProjectAndDocId(projectId, projectDocId);
+        
         const projectDoc = await this.projectDocRepository.findOne({ where: { project_doc_id: createFeedbackDto.projectDocId } });
-
         if (!projectDoc) {
-            throw new Error('Project document not found'); // 문서가 없으면 오류 발생
+            throw new Error('Project document not found');
         }
 
-        const feedback = this.feedbackRepository.create({ ...createFeedbackDto, projectDoc });
+        const feedback = this.feedbackRepository.create({ ...createFeedbackDto });
         return this.feedbackRepository.save(feedback);
     }
 
-    async update(id: number, updateFeedbackDto: UpdateFeedbackDto, projectId: number): Promise<Feedback> {
-        await this.validateProjectId(projectId);
+    async update(id: number, updateFeedbackDto: UpdateFeedbackDto, projectId: number, projectDocId: number): Promise<Feedback> {
+        await this.validateProjectAndDocId(projectId, projectDocId);
+        
         await this.feedbackRepository.update(id, updateFeedbackDto);
         return this.feedbackRepository.findOne({ where: { id } });
     }
 
-    async findAll(projectId: number): Promise<Feedback[]> {
-        await this.validateProjectId(projectId);
+    async findAll(projectId: number, projectDocId: number): Promise<Feedback[]> {
+        await this.validateProjectAndDocId(projectId, projectDocId);
         return this.feedbackRepository.find({ relations: ['projectDoc'] });
     }
 
-    async findOne(id: number, projectId: number): Promise<Feedback> {
-        await this.validateProjectId(projectId);
+    async findOne(id: number, projectId: number, projectDocId: number): Promise<Feedback> {
+        await this.validateProjectAndDocId(projectId, projectDocId);
         return this.feedbackRepository.findOne({ where: { id }, relations: ['projectDoc'] });
     }
 
-    async remove(id: number, projectId: number): Promise<void> {
-        await this.validateProjectId(projectId);
+    async remove(id: number, projectId: number, projectDocId: number): Promise<void> {
+        await this.validateProjectAndDocId(projectId, projectDocId);
         await this.feedbackRepository.delete(id);
     }
 }
