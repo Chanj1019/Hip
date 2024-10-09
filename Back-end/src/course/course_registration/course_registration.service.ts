@@ -31,7 +31,7 @@ export class CourseRegistrationService {
         return !!existingEnrollment; // 이미 존재하면 true, 없으면 false
     }
 
-    async create(createCourseRegistrationDto: CreateCourseRegistrationDto, courseId: number, loginedUser: number) {
+    async create(createCourseRegistrationDto: CreateCourseRegistrationDto, loginedUser: number, courseId: number,) {
         // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
         const isAlreadyEnrolled = await this.isEnrolled(courseId, loginedUser);
 
