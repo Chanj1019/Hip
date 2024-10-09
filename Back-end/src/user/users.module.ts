@@ -11,6 +11,7 @@ import { ExhibitionsDocModule } from 'src/exhibition/exhibitions_doc/exhibitions
 import { CourseDocModule } from 'src/course/course_doc/course_doc.module';
 import { DocNameModule } from 'src/course/doc_name/doc_name.module';
 import { ProjectDocModule } from 'src/project/project_doc/project_doc.module';
+import { FeedbackModule } from 'src/project/feedback/feedback.module';
 dotenv.config();
 
 // ProjectsModule 임포트
@@ -24,6 +25,7 @@ dotenv.config();
         forwardRef(() => CourseDocModule),
         forwardRef(() => DocNameModule),
         forwardRef(() => ProjectDocModule),
+        forwardRef(() => FeedbackModule),
          // ProjectsModule을 forwardRef로 임포트
     ],
     providers: [UsersService,HashService],
