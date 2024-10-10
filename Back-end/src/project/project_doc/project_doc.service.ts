@@ -46,13 +46,6 @@ export class ProjectDocService {
         if (!project) {
             throw new NotFoundException(`Project with ID ${projectId} not found`);
         }
-    } 
-
-    // projectDoc 일치 예외 처리
-    private async handleNotFound(doc: ProjectDoc, id: number): Promise<void> {
-        if (!doc) {
-            throw new NotFoundException(`Document with ID ${id} not found`);
-        }
     }
 
     async create(projectId: number, createProjectDocDto: CreateProjectDocDto, file: Express.Multer.File): Promise<ProjectDoc> {
@@ -110,26 +103,23 @@ export class ProjectDocService {
             },
             relations: ['project'], // 연관된 프로젝트도 함께 가져오기
         });
-        await this.handleNotFound(doc, id);
+        if (!doc) {
+            throw new NotFoundException(`Registration with ID ${id} not found`);
+        }
         return doc;
     }
   
   
     async update(id: number, updateProjectDocDto: UpdateProjectDocDto, projectId: number): Promise<ProjectDoc> {
-        await this.validateProjectId(projectId);
-
-        const doc = await this.projectDocRepository.findOne({ where: { project_doc_id: id } });
-        await this.handleNotFound(doc, id);
+        const doc = await this.findOne(id, projectId);
 
         Object.assign(doc, updateProjectDocDto);
         return await this.projectDocRepository.save(doc);
     }
 
     async remove(id: number, projectId: number): Promise<void> {
-        await this.validateProjectId(projectId);
-        const doc = await this.projectDocRepository.findOne({ where: { project_doc_id: id } });
-        await this.handleNotFound(doc, id);
+        await this.findOne(id, projectId);
 
-        await this.projectDocRepository.remove(doc);
+        await this.projectDocRepository.delete(id);
     }
 }
