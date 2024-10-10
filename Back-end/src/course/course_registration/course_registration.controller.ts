@@ -6,7 +6,7 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 
-@Controller('courses/:course/courseRegistration')
+@Controller('courses/:courseId/courseRegistration')
 export class CourseRegistrationController {
     constructor(private readonly courseRegistrationService: CourseRegistrationService) {}
 
@@ -14,7 +14,10 @@ export class CourseRegistrationController {
     @Post('register')
     @Roles('instructor', 'student')
   
-    async create(@Body() createCourseRegistrationDto: CreateCourseRegistrationDto, @Request() req, @Param('course') course_id: number) {
+    async create(
+        @Body() createCourseRegistrationDto: CreateCourseRegistrationDto, 
+        @Request() req, 
+        @Param('courseId') course_id: number) {
         // 로그인된 user 저장
         const loginedUser = req.user.user_id;
 
