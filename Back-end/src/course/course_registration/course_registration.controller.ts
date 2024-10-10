@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { CourseRegistrationService } from './course_registration.service';
-import { CreateCourseRegistrationDto } from './dto/create-course_registration.dto';
-import { UpdateCourseRegistrationDto } from './dto/update-course_registration.dto';
+import { CreateRequestCourseRegistrationDto } from './dto/create-request-course_registration.dto';
+import { CreateResponseCourseRegistrationDto } from './dto/create-response-course_registration.dto';
+import { UpdateRequestCourseRegistrationDto } from './dto/update-request-course_registration.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -14,15 +15,23 @@ export class CourseRegistrationController {
     @Post('register')
     @Roles('instructor', 'student')
   
-    async create(@Body() createCourseRegistrationDto: CreateCourseRegistrationDto, @Request() req, @Param('course') course_id: number) {
+    async create(
+        @Body() createRequestCourseRegistrationDto: CreateRequestCourseRegistrationDto, 
+        @Param('course') course_id: number,
+        @Request() req
+    ): Promise<{ message: string; data: UpdateRequestCourseRegistrationDto }> {
         // 로그인된 user 저장
         const loginedUser = req.user.user_id;
 
-        const data = await this.courseRegistrationService.create(createCourseRegistrationDto, loginedUser, course_id);
+        // 수강 신청 생성
+        const courseRegistration = await this.courseRegistrationService.create(createRequestCourseRegistrationDto, course_id, loginedUser);
+
+        // 응답 DTO
+        const responseDto = new CreateResponseCourseRegistrationDto(courseRegistration);
 
         return { 
             message: "수강 신청이 완료되었습니다.",
-            data: data,
+            data: responseDto,
         };
     }
 

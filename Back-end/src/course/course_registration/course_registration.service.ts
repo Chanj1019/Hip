@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateCourseRegistrationDto } from './dto/create-course_registration.dto';
-import { UpdateCourseRegistrationDto } from './dto/update-course_registration.dto';
+import { CreateRequestCourseRegistrationDto } from './dto/create-request-course_registration.dto';
+import { UpdateRequestCourseRegistrationDto } from './dto/update-request-course_registration.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseRegistration } from './entities/course_registration.entity';
@@ -39,7 +39,7 @@ export class CourseRegistrationService {
         return !!existingEnrollment; // 이미 존재하면 true, 없으면 false
     }
 
-    async create(createCourseRegistrationDto: CreateCourseRegistrationDto, courseId: number, loginedUser: number) {
+    async create(createCourseRegistrationDto: CreateRequestCourseRegistrationDto, courseId: number, loginedUser: number) {
         await this.validateCourseId(courseId);
 
         // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
