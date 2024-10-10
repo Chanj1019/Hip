@@ -64,32 +64,21 @@ export class CourseRegistrationService {
     async findOne(id: number, courseId: number):Promise<CourseRegistration> {
         await this.validateCourseId(courseId);
         const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
-        this.handleNotFound(courseRegistration, id)
+        if(!courseRegistration) {
+            throw new NotFoundException(`Registration with ID ${id} not found`);
+        }
         return courseRegistration;
     }
 
     async update(id: number, updateCourseRegistrationDto: UpdateCourseRegistrationDto, courseId: number) {
-        await this.validateCourseId(courseId);
-        const courseRegistration = await this.courseRegistrationRepository.findOne({ 
-            where: { course_registration_id: id }
-        });
-        this.handleNotFound(courseRegistration, id)
+        const courseRegistration = await this.findOne(id, courseId);
 
         Object.assign(courseRegistration, updateCourseRegistrationDto);
         return await this.courseRegistrationRepository.save(courseRegistration);
     }
 
     async remove(id: number, courseId: number): Promise<void> {
-        await this.validateCourseId(courseId);
-        const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
-        this.handleNotFound(courseRegistration, id)
+        await this.findOne(id, courseId);
         await this.courseRegistrationRepository.delete(id);
-    }
-
-    // 예외 처리
-    private handleNotFound(courseRegistration: CourseRegistration, id: number): void {
-        if (!courseRegistration) {
-            throw new NotFoundException(`Registration with ID ${id} not found`);
-        }
     }
 }
