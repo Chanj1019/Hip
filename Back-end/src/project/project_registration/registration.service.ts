@@ -75,23 +75,20 @@ export class ProjectRegistrationService {
         if (!registration) {
             throw new NotFoundException(`Registration with ID ${id} not found`);
         }
-    
         return registration;
     }    
 
     async update(id: number, updateProjectRegistrationDto: UpdateProjectRegistrationDto, projectId: number): Promise<ProjectRegistration> {
-        const registration = await this.findOne(id, projectId); // project_id를 사용하여 프로젝트 ID도 확인합니다.
+        const registration = await this.findOne(id, projectId); 
         
-        // DTO를 사용하여 등록 정보 업데이트
         Object.assign(registration, updateProjectRegistrationDto);
         return await this.projectRegistrationRepository.save(registration);
     }
 
 
-    async remove(id: number, projectId: number): Promise<ProjectRegistration> {
-        const registration = await this.findOne(id, projectId);
+    async remove(id: number, projectId: number): Promise<void> {
+        await this.findOne(id, projectId);
         
         await this.projectRegistrationRepository.delete(id);
-        return registration;
     }
 }
