@@ -34,35 +34,25 @@ export class VideoService {
         });
     }
 
-    // private bucketName = 'your-bucket-name';
+    // Pre-signed URL 발급을 위한 메소드
+    async generatePreSignedUrl(fileName: string, fileType: string): Promise<string> {
+        const bucketName = process.env.AWS_S3_BUCKET_NAME;
+        if (!bucketName) {
+            throw new Error('AWS S3 bucket name is not configured');
+        }
 
-    // async getUploadUrl(fileName: string, fileType: string): Promise<string> {
-    //     const params = {
-    //       Bucket: this.bucketName,
-    //       Key: fileName,
-    //       ContentType: fileType,
-    //     };
-    //     const command = new PutObjectCommand(params);
-    //     return getSignedUrl(this.s3, command, { expiresIn: 60 }); // URL expiration time in seconds
-    // }
+        const params = {
+            Bucket: bucketName,
+            Key: `uploads/${fileName}`,
+            ContentType: fileType,
+        };
 
-    // async deleteFile(fileKey: string) {
-    //     const params = {
-    //       Bucket: this.bucketName,
-    //       Key: fileKey,
-    //     };
-    //     const command = new DeleteObjectCommand(params);
-    //     return this.s3.send(command);
-    //   }
-    
-    //   async generatePresignedStreamUrl(fileKey: string) {
-    //     const params = {
-    //       Bucket: this.bucketName,
-    //       Key: fileKey,
-    //     };
-    //     const command = new GetObjectCommand(params);
-    //     return getSignedUrl(this.s3, command, { expiresIn: 60 });
-    //   }
+        // PutObjectCommand를 사용하여 Pre-signed URL 생성
+        const command = new PutObjectCommand(params);
+        const preSignedUrl = await getSignedUrl(this.s3, command, { expiresIn: 3600 }); // URL 1시간 유효
+
+        return preSignedUrl;
+    }
 
 
     private async validate(
