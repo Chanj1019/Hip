@@ -31,14 +31,14 @@ export class FeedbackController {
         return await this.feedbackService.findAll(projectId, projectDocId);
     }
 
-    @Get(':id/read')
-    async findOne(
-        @Param('id') id: number,
-        @Param('projectId') projectId: number,
-        @Param('projectDocs') projectDocId: number
-    ): Promise<Feedback> {
-        return await this.feedbackService.findOne(id, projectId, projectDocId);
-    }
+    // @Get(':id/read')
+    // async findOne(
+    //     @Param('id') id: number,
+    //     @Param('projectId') projectId: number,
+    //     @Param('projectDocs') projectDocId: number
+    // ): Promise<Feedback> {
+    //     return await this.feedbackService.findOne(id, projectId, projectDocId);
+    // }
 
     @Patch(':id/update')
     @Roles('instructor')
