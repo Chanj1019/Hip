@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request }
 import { CourseRegistrationService } from './course_registration.service';
 import { CreateRequestCourseRegistrationDto } from './dto/create-request-course_registration.dto';
 import { UpdateRequestCourseRegistrationDto } from './dto/update-request-course_registration.dto';
-import { GetAdminResponseCourseRegistrationDto } from './dto/get-response-course_registration.dto';
+import { GetAdminResponseCourseRegistrationDto } from './dto/get-admin-course_registration.dto';
+import { CourseResponseDto } from '../courses/dto/course-response.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -32,24 +33,30 @@ export class CourseRegistrationController {
         };
     }
 
-    // <admin>의 전체 수강 신청 정보 조회
+    // <admin> 전체 수강 신청 정보 조회
     @Get()
     @Roles('admin')
     async findAllForAdmin(): Promise<{ message: string, data: GetAdminResponseCourseRegistrationDto[] }> {
-        const foundRegistration = await this.courseRegistrationService.findAllCoursesWithRegistrationsForAdmin();
-        const responseDtos = foundRegistration.map(responseDto => new GetAdminResponseCourseRegistrationDto(responseDto));
+        const foundRegistrations = await this.courseRegistrationService.findAllCoursesWithRegistrationsForAdmin();
+        const responseDtos = foundRegistrations.map(responseDto => new GetAdminResponseCourseRegistrationDto(responseDto));
         return {
-            message: "전체 수강 신청 정보가 조회되었습니다.",
+            message: "수강 신청 정보가 조회되었습니다.",
             data: responseDtos,
         };
+    } 
+
+    // <student,instructor> 수강 신청 가능 강의 조회
+    @Get()
+    @Roles('student','instructor')
+    async findCourses(): Promise<{ message: string, data: CourseResponseDto[] }> {
+        const generation = '3기';
+        const courses = await this.courseRegistrationService.findCourses(generation);
+
+        return {
+            message: "수강 신청 정보가 조회되었습니다.",
+            data: courses.map(course => new CourseResponseDto(course)),
+        };
     }
-
-    
-
-    // @Get(':id')
-    // findOne(@Param('id') id: string) {
-    //     return this.courseRegistrationService.findOne(+id);
-    // }
 
     // 수강 신청 수정
     // @Patch(':id/update')

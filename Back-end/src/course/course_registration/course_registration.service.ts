@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRequestCourseRegistrationDto } from './dto/create-request-course_registration.dto';
 import { UpdateRequestCourseRegistrationDto } from './dto/update-request-course_registration.dto';
-import { GetAdminResponseCourseRegistrationDto } from './dto/get-response-course_registration.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseRegistration } from './entities/course_registration.entity';
@@ -64,7 +63,7 @@ export class CourseRegistrationService {
     //     return this.courseRegistrationRepository.find();
     // }
 
-    // <admin>의 전체 수강 신청 정보 조회
+    // <admin> 전체 수강 신청 정보 조회
     async findAllCoursesWithRegistrationsForAdmin(): Promise<CourseRegistration[]> {
         const registrations = await this.courseRegistrationRepository.find({
             relations: ['user', 'course'], // 사용자와 강의 정보 모두 로드
@@ -76,6 +75,13 @@ export class CourseRegistrationService {
         }
     
         return registrations;
+    }
+
+    // <student,instructor> 수강 신청 가능 강의 조회
+    async findCourses(generation: string): Promise<Course[]> {
+        return await this.coursesRepository.find({
+            where: { generation }
+        });
     }
 
     // 특정 수강 신청 찾기
