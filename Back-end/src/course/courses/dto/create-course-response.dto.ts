@@ -6,6 +6,7 @@ export class DocNameResponseDto {
     description: string;
     instructor_name: string;
     course_notice: string;
+    generation:string;
 
     constructor(course: Course) {
         this.course_id = course.course_id;
@@ -13,5 +14,6 @@ export class DocNameResponseDto {
         this.description = course.description;
         this.instructor_name = course.instructor_name;
         this.course_notice = course.course_notice;
+        this.generation = course.generation;
     }
 }

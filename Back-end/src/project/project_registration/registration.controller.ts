@@ -26,8 +26,10 @@ export class ProjectRegistrationController {
 
     @Get()
     @Roles('instructor', 'admin')
-    async findAll() {
-        const data = await this.projectRegistrationService.findAll();
+    async findAll(
+        @Param('project') projectId: number,
+    ) {
+        const data = await this.projectRegistrationService.findAll(projectId);
         return {
             message: "프로젝트 신청자가 조회되었습니다.",
             data: data,
@@ -46,8 +48,11 @@ export class ProjectRegistrationController {
 
     @Patch(':id')
     @Roles('instructor','admin')
-    async update(@Param('id') id: number, @Body() updateProjectRegistrationDto: UpdateProjectRegistrationDto) {
-        const updatedData = await this.projectRegistrationService.update(id, updateProjectRegistrationDto);
+    async update(
+        @Param('id') id: number, 
+        @Body() updateProjectRegistrationDto: UpdateProjectRegistrationDto, 
+        @Param('project') projectId: number) {
+        const updatedData = await this.projectRegistrationService.update(id, updateProjectRegistrationDto, projectId);
         return {
             message: "프로젝트 신청 정보가 업데이트되었습니다.",
             data: updatedData,
@@ -57,8 +62,8 @@ export class ProjectRegistrationController {
     // 프로젝트 참가 신청을 삭제
     @Delete(':id')
     @Roles('student')
-    async remove(@Param('id') id: number) {
-        await this.projectRegistrationService.remove(id);
+    async remove(@Param('id') id: number, @Param('project') projectId: number) {
+        await this.projectRegistrationService.remove(id, projectId);
         return {
             message: "프로젝트 신청이 취소되었습니다.",
         };

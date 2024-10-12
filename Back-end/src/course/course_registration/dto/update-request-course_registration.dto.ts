@@ -1,7 +1,7 @@
 import { IsOptional, IsEnum } from 'class-validator';
 import { Registration } from '../../../enums/role.enum';
 
-export class UpdateCourseRegistrationDto {
+export class UpdateRequestCourseRegistrationDto {
 
     @IsOptional()
     @IsEnum(Registration)

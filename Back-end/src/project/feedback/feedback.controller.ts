@@ -16,37 +16,48 @@ export class FeedbackController {
     @Post('register')
     @Roles('instructor')
     async create(
-        @Body() createFeedbackDto: CreateFeedbackDto
+        @Body() createFeedbackDto: CreateFeedbackDto,
+        @Param('projectId') projectId: number,
+        @Param('projectDocs') projectDocId: number
     ): Promise<Feedback> {
-        return await this.feedbackService.create(createFeedbackDto);
+        return await this.feedbackService.create(createFeedbackDto, projectId, projectDocId);
     }
 
     @Get('allFeedback')
-    async findAll(): Promise<Feedback[]> {
-        return await this.feedbackService.findAll();
+    async findAll(
+        @Param('projectId') projectId: number,
+        @Param('projectDocs') projectDocId: number
+    ): Promise<Feedback[]> {
+        return await this.feedbackService.findAll(projectId, projectDocId);
     }
 
-    @Get(':id/read')
-    async findOne(
-        @Param('id') id: number
-    ): Promise<Feedback> {
-        return await this.feedbackService.findOne(id);
-    }
+    // @Get(':id/read')
+    // async findOne(
+    //     @Param('id') id: number,
+    //     @Param('projectId') projectId: number,
+    //     @Param('projectDocs') projectDocId: number
+    // ): Promise<Feedback> {
+    //     return await this.feedbackService.findOne(id, projectId, projectDocId);
+    // }
 
     @Patch(':id/update')
     @Roles('instructor')
     async update(
         @Param('id') id: number, 
-        @Body() updateFeedbackDto: UpdateFeedbackDto
+        @Body() updateFeedbackDto: UpdateFeedbackDto,
+        @Param('projectId') projectId: number,
+        @Param('projectDocs') projectDocId: number
     ): Promise<Feedback> {
-        return await this.feedbackService.update(id, updateFeedbackDto);
+        return await this.feedbackService.update(id, updateFeedbackDto, projectId, projectDocId);
     }
 
     @Delete(':id/delete')
     @Roles('instructor')
     async remove(
-        @Param('id') id: number
+        @Param('id') id: number,
+        @Param('projectId') projectId: number,
+        @Param('projectDocs') projectDocId: number
     ): Promise<void> {
-        return await this.feedbackService.remove(id);
+        return await this.feedbackService.remove(id, projectId, projectDocId);
     }
 }
