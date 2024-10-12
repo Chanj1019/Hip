@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { CourseRegistrationService } from './course_registration.service';
 import { CreateRequestCourseRegistrationDto } from './dto/create-request-course_registration.dto';
-import { CreateResponseCourseRegistrationDto } from './dto/create-response-course_registration.dto';
 import { UpdateRequestCourseRegistrationDto } from './dto/update-request-course_registration.dto';
+import { GetAdminResponseCourseRegistrationDto } from './dto/get-response-course_registration.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -14,56 +14,59 @@ export class CourseRegistrationController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('register')
     @Roles('instructor', 'student')
-  
+
+    // 수강 신청
     async create(
         @Body() createRequestCourseRegistrationDto: CreateRequestCourseRegistrationDto, 
         @Param('course') course_id: number,
         @Request() req
-    ): Promise<{ message: string; data: UpdateRequestCourseRegistrationDto }> {
+    ): Promise<{ message: string }> {
         // 로그인된 user 저장
         const loginedUser = req.user.user_id;
 
         // 수강 신청 생성
-        const courseRegistration = await this.courseRegistrationService.create(createRequestCourseRegistrationDto, course_id, loginedUser);
-
-        // 응답 DTO
-        const responseDto = new CreateResponseCourseRegistrationDto(courseRegistration);
+        await this.courseRegistrationService.create(createRequestCourseRegistrationDto, course_id, loginedUser);
 
         return { 
-            message: "수강 신청이 완료되었습니다.",
-            data: responseDto,
+            message: "수강 신청이 완료되었습니다."
         };
     }
 
+    // <admin>의 전체 수강 신청 정보 조회
     @Get()
     @Roles('admin')
-    async findAll(@Param('course') courseId: number) {
-        const data = this.courseRegistrationService.findAll(courseId);
+    async findAllForAdmin(): Promise<{ message: string, data: GetAdminResponseCourseRegistrationDto[] }> {
+        const foundRegistration = await this.courseRegistrationService.findAllCoursesWithRegistrationsForAdmin();
+        const responseDtos = foundRegistration.map(responseDto => new GetAdminResponseCourseRegistrationDto(responseDto));
         return {
-            message: "수강 신청 정보가 조회되었습니다.",
-            data: data,
-        }
+            message: "전체 수강 신청 정보가 조회되었습니다.",
+            data: responseDtos,
+        };
     }
+
+    
 
     // @Get(':id')
     // findOne(@Param('id') id: string) {
     //     return this.courseRegistrationService.findOne(+id);
     // }
 
-    @Patch(':id/update')
-    @Roles('admin')
-    async update(
-        @Param('id') id: number, 
-        @Body() updateCourseRegistrationDto: UpdateCourseRegistrationDto,
-        @Param('course') courseId: number
-    ) {
-        const data = this.courseRegistrationService.update(id, updateCourseRegistrationDto, courseId);
-        return {
-            message: "수강 신청이 정보가 업데이트되었습니다.",
-            data: data,
-        }
-    }
+    // 수강 신청 수정
+    // @Patch(':id/update')
+    // @Roles('admin')
+    // async update(
+    //     @Param('id') id: number, 
+    //     @Body() updateCourseRegistrationDto: UpdateCourseRegistrationDto,
+    //     @Param('course') courseId: number
+    // ) {
+    //     const data = this.courseRegistrationService.update(id, updateCourseRegistrationDto, courseId);
+    //     return {
+    //         message: "수강 신청이 정보가 업데이트되었습니다.",
+    //         data: data,
+    //     }
+    // }
 
+    // 수강 신청 삭제
     @Delete(':id/delete')
     @Roles('instructor', 'student')
     remove(
