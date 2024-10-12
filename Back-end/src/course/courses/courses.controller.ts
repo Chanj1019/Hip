@@ -34,6 +34,7 @@ export class CoursesController {
     }
 
     @Get(':id/read')
+    @Roles('student','instructor','admin')
     async findOne(
       @Param('id') id: number
     ) {
@@ -46,7 +47,8 @@ export class CoursesController {
 
     @Patch(':type/:id/update')
     @Roles('admin','instructor')
-    @UseGuards(OwnershipGuard, ApprovedInstructorGuard)
+    //@UseGuards(OwnershipGuard, ApprovedInstructorGuard)
+    @UseGuards(OwnershipGuard)
     async update(
       @Param('id') id: number, 
       @Body() updateCourseDto: any,
