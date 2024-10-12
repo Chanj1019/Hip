@@ -4,10 +4,10 @@ import { ProjectDoc } from '../../../project/project_doc/entities/project_doc.en
 @Entity('feedback')
 export class Feedback {
     @PrimaryGeneratedColumn()
-    id: number;
+    feedback_id: number;
 
     @Column()
-    content: string;
+    feedback_content: string;
 
     // feedback - project_doc
     @ManyToOne(() => ProjectDoc, (project_doc) => project_doc.feedbacks)

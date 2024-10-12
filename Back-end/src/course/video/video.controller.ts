@@ -97,4 +97,13 @@ export class VideoController {
     ): Promise<void> {
         return this.videoService.removeFile(courseId, videoTopicId, videoId);
     }
+
+    @Post('presigned-url')
+    async getPreSignedUrl(
+        @Body() body: { fileName: string, fileType: string }
+    ): Promise<{ url: string }> {
+        const { fileName, fileType } = body;
+        const url = await this.videoService.generatePreSignedUrl(fileName, fileType);
+        return { url };
+    }
 }
