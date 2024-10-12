@@ -45,7 +45,31 @@ export class AttendanceService {
         return this.attendanceRepository.save(attendance);
     }
 
-    // 출석 기록 조회
+    // // 출석 기록 조회
+    // async findAttendance(courseId: number, userId: number): Promise<Attendance> {
+    //     const attendance = await this.attendanceRepository.findOne({
+    //         where: { course: { course_id: courseId }, user: { user_id: userId } },
+    //     });
+
+    //     if (!attendance) {
+    //         throw new NotFoundException('Attendance record not found');
+    //     }
+
+    //     return attendance;
+    // }
+
+    // // 출석 상태 업데이트
+    // async updateAttendanceStatus(attendanceId: number, newField: 'present' | 'absent' | 'late'): Promise<Attendance> {
+    //     const attendance = await this.attendanceRepository.findOne({ where: { attendance_id: attendanceId } });
+
+    //     if (!attendance) {
+    //         throw new NotFoundException('Attendance record not found');
+    //     }
+
+    //     attendance.field = newField; // 새로운 출석 상태로 변경
+    //     return this.attendanceRepository.save(attendance);
+    // }
+
     async findAttendance(courseId: number, userId: number): Promise<Attendance> {
         const attendance = await this.attendanceRepository.findOne({
             where: { course: { course_id: courseId }, user: { user_id: userId } },
@@ -58,7 +82,6 @@ export class AttendanceService {
         return attendance;
     }
 
-    // 출석 상태 업데이트
     async updateAttendanceStatus(attendanceId: number, newField: 'present' | 'absent' | 'late'): Promise<Attendance> {
         const attendance = await this.attendanceRepository.findOne({ where: { attendance_id: attendanceId } });
 
@@ -70,6 +93,17 @@ export class AttendanceService {
         return this.attendanceRepository.save(attendance);
     }
 
+    async checkAttendance(courseId: number, userId: number, inputCode: string): Promise<boolean> {
+        const attendance = await this.findAttendance(courseId, userId);
+
+        // 입력한 난수와 저장된 난수 비교
+        if (attendance.random_code === inputCode) {
+            await this.updateAttendanceStatus(attendance.attendance_id, 'present'); // 출석 상태 변경
+            return true; // 출석 성공
+        } else {
+            return false; // 출석 실패
+        }
+    }
     // 특정 학생의 출석 상태 업데이트
     async updateAttendanceByStudentId(dto: UpdateStudentAttendanceDto): Promise<Attendance> {
         const attendance = await this.attendanceRepository.findOne({
@@ -95,5 +129,29 @@ export class AttendanceService {
     
         return registrations.map(registration => registration.user); // 등록된 사용자 목록 반환
     }
+
+    async createAttendanceForApprovedStudents(courseId: number, randomCode: string): Promise<Attendance[]> {
+        // 승인된 학생 조회
+        const approvedRegistrations = await this.courseRegistrationRepository
+            .createQueryBuilder('registration')
+            .leftJoinAndSelect('registration.user', 'user') // 사용자와 조인
+            .where('registration.course_id = :courseId', { courseId })
+            .andWhere('registration.course_registration_status = :status', { status: Registration.APPROVED })
+            .getMany(); // 여러 개의 결과 가져오기
     
+        // 출석 기록 생성 및 저장
+        const attendances: Attendance[] = [];
+        for (const registration of approvedRegistrations) {
+            const attendance = this.attendanceRepository.create({
+                course: { course_id: courseId }, // course_id로 Course 엔티티 참조
+                user: registration.user, // 사용자 엔티티 참조
+                attendance_date: new Date(),
+                field: 'absent', // 기본값: 'absent'
+                random_code: randomCode, // 생성된 난수 저장
+            });
+            attendances.push(await this.attendanceRepository.save(attendance));
+        }
+    
+        return attendances; // 생성된 출석 기록 반환
+    }
 }

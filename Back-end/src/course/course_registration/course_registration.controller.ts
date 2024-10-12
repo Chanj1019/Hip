@@ -8,14 +8,13 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 
-@Controller('courses/:course/courseRegistration')
+@Controller('courses/:courseId/courseRegistration')
 export class CourseRegistrationController {
     constructor(private readonly courseRegistrationService: CourseRegistrationService) {}
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('register')
     @Roles('instructor', 'student')
-
     // 수강 신청
     async create(
         @Body() createRequestCourseRegistrationDto: CreateRequestCourseRegistrationDto, 
