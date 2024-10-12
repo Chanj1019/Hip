@@ -42,7 +42,6 @@ export class CourseRegistrationService {
     // 수강 신청 하기
     async create(createCourseRegistrationDto: CreateRequestCourseRegistrationDto, courseId: number, loginedUser: number) {
         await this.validateCourseId(courseId);
-
         // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
         const isAlreadyEnrolled = await this.isEnrolled(courseId, loginedUser);
 
@@ -54,6 +53,9 @@ export class CourseRegistrationService {
         const courseRegistration = this.courseRegistrationRepository.create(createCourseRegistrationDto);
         courseRegistration.user = await this.userRepository.findOneBy({ user_id: loginedUser });  // 특정 사용자와 연결된 정보
         courseRegistration.course = await this.coursesRepository.findOneBy({ course_id: courseId });  // 특정 프로젝트와 연결된 정보
+        if (!courseRegistration.user || !courseRegistration.course) {
+            throw new NotFoundException('사용자 또는 강의를 찾을 수 없습니다.');
+        }
         return await this.courseRegistrationRepository.save(courseRegistration);
     }
 

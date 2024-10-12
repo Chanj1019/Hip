@@ -122,4 +122,21 @@ export class ProjectDocService {
 
         await this.projectDocRepository.delete(id);
     }
+
+    async findById(id: number): Promise<ProjectDoc> {
+        if (id <= 0) {
+            throw new BadRequestException('유효하지 않은 ID입니다.');
+        }
+  
+        const doc = await this.projectDocRepository.findOne({
+        where: { project_doc_id: id },
+        relations: ['project'],
+        });
+  
+        if (!doc) {
+            throw new NotFoundException('자료를 찾을 수 없습니다.');
+        }
+  
+        return doc;
+    }
 }

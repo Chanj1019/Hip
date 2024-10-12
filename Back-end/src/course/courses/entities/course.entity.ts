@@ -35,7 +35,7 @@ export class Course {
     videoTopic: VideoTopic[];
 
     // course - course_registration
-    @OneToMany(() => CourseRegistration, (course_registration) => course_registration.course)
+    @OneToMany(() => CourseRegistration, (course_registration) => course_registration.course, { cascade: true })
     course_registrations: CourseRegistration[];
 
     @OneToMany(() => Attendance, attendance => attendance.course)

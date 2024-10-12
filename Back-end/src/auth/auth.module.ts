@@ -14,10 +14,13 @@ import { ExhibitionModule } from '../exhibition/exhibitions/exhibitions.module';
 import { ExhibitionsDocModule } from '../exhibition/exhibitions_doc/exhibitions_doc.module';
 import { CourseDocModule } from '../course/course_doc/course_doc.module';
 import { DocNameModule } from '../course/doc_name/doc_name.module';
+import { ProjectDocModule } from '../project/project_doc/project_doc.module';
+import { FeedbackModule } from '../project/feedback/feedback.module';
 @Global()
 @Module({
     imports: [
-        UsersModule, CoursesModule, ProjectsModule, ExhibitionModule, ExhibitionsDocModule, CourseDocModule, DocNameModule,
+        UsersModule, CoursesModule, ProjectsModule, ExhibitionModule,
+        ExhibitionsDocModule, CourseDocModule, DocNameModule, ProjectDocModule, FeedbackModule,
         TypeOrmModule.forFeature([User]),
         JwtModule.register({
             secret: process.env.JWT_SECRET,
