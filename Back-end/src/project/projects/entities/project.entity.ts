@@ -30,6 +30,9 @@ export class Project {
     @Column({ type: 'varchar', length: 255, nullable: true })
     requirements: string;
 
+    @Column({ type: 'varchar', length: 10, nullable: false })
+    generation: string;
+
     // project - user
     @ManyToMany(() => User, (user) => user.projects)
     users: User[];
