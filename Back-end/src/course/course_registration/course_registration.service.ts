@@ -97,12 +97,12 @@ export class CourseRegistrationService {
     }
 
     // 수강 신청 수정
-    // async update(id: number, updateCourseRegistrationDto: UpdateCourseRegistrationDto, courseId: number) {
-    //     const courseRegistration = await this.findOne(id, courseId);
+    async update(id: number, updateRequestCourseRegistrationDto: UpdateRequestCourseRegistrationDto, courseId: number) {
+        const courseRegistration = await this.findOne(id, courseId);
 
-    //     Object.assign(courseRegistration, updateCourseRegistrationDto);
-    //     return await this.courseRegistrationRepository.save(courseRegistration);
-    // }
+        Object.assign(courseRegistration, updateRequestCourseRegistrationDto);
+        return await this.courseRegistrationRepository.save(courseRegistration);
+    }
 
     // 수강 신청 제거
     async remove(id: number, courseId: number): Promise<void> {

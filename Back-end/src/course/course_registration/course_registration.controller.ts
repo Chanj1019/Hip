@@ -58,19 +58,19 @@ export class CourseRegistrationController {
     }
 
     // 수강 신청 수정
-    // @Patch(':id/update')
-    // @Roles('admin')
-    // async update(
-    //     @Param('id') id: number, 
-    //     @Body() updateCourseRegistrationDto: UpdateCourseRegistrationDto,
-    //     @Param('course') courseId: number
-    // ) {
-    //     const data = this.courseRegistrationService.update(id, updateCourseRegistrationDto, courseId);
-    //     return {
-    //         message: "수강 신청이 정보가 업데이트되었습니다.",
-    //         data: data,
-    //     }
-    // }
+    @Patch(':id/update')
+    @Roles('admin')
+    async update(
+        @Param('id') id: number, 
+        @Body() updateRequestCourseRegistrationDto: UpdateRequestCourseRegistrationDto,
+        @Param('course') courseId: number
+    ) {
+        const data = this.courseRegistrationService.update(id, updateRequestCourseRegistrationDto, courseId);
+        return {
+            message: "수강 신청이 정보가 업데이트되었습니다.",
+            data: data,
+        }
+    }
 
     // 수강 신청 삭제
     @Delete(':id/delete')
