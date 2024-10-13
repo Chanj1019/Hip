@@ -25,4 +25,8 @@ export class UpdateProjectDto {
     @IsOptional()
     @IsString()
     requirements?: string;
+
+    @IsOptional()
+    @IsString()
+    generation?: string;
 }

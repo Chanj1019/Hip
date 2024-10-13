@@ -100,7 +100,7 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
         }
 
         else if (resourceType === 'feedback') {
-            const feedback = await this.feedbackService.findOne(resourceId);
+            const feedback = await this.feedbackService.findById(resourceId);
             if (!feedback) {
                 throw new ForbiddenException('존재하지 않는 프로젝트 문서 입니다.');
             }
