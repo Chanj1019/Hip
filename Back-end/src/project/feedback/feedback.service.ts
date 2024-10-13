@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Feedback } from './entities/feedback.entity';
@@ -63,5 +63,22 @@ export class FeedbackService {
     async remove(id: number, projectId: number, projectDocId: number): Promise<void> {
         await this.findOne(id,projectId, projectDocId);
         await this.feedbackRepository.delete(id);
+    }
+
+    async findById(id: number): Promise<Feedback> {
+        if (id <= 0) {
+            throw new BadRequestException('유효하지 않은 ID입니다.');
+        }
+  
+        const feedback = await this.feedbackRepository.findOne({
+        where: { feedback_id: id },
+        relations: ['project', 'projectDoc'],
+        });
+  
+        if (!feedback) {
+            throw new NotFoundException('자료를 찾을 수 없습니다.');
+        }
+  
+        return feedback;
     }
 }
