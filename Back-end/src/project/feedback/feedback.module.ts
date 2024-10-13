@@ -10,7 +10,8 @@ import { Project } from '../projects/entities/project.entity';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Feedback, ProjectDoc, Project]),
-    UsersModule, ProjectsModule],
+    forwardRef(() => UsersModule), forwardRef(() => ProjectsModule),
+    ],
     controllers: [FeedbackController],
     providers: [FeedbackService],
     exports: [FeedbackService]

@@ -10,7 +10,7 @@ import { ProjectsModule } from '../projects/projects.module';
 
 @Module({
     imports: [TypeOrmModule.forFeature([ProjectDoc,Project,Feedback]),
-    forwardRef(() => UsersModule),
+    forwardRef(() => UsersModule), forwardRef(() => ProjectsModule),
     ProjectsModule],
     providers: [ProjectDocService],
     controllers: [ProjectDocController],
