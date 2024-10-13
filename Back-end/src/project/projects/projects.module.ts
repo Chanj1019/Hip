@@ -9,11 +9,12 @@ import { UsersService } from '../../user/users.service';
 import { ProjectRegistrationModule } from '../project_registration/registration.module';
 import { ProjectRegistrationService } from '../project_registration/registration.service';
 import { ProjectRegistration } from '../project_registration/entities/registration.entity';
+import { FeedbackModule } from '../feedback/feedback.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Project, User, ProjectRegistration]),
-        forwardRef(() => UsersModule), ProjectRegistrationModule,
+        forwardRef(() => UsersModule),forwardRef(() => FeedbackModule), ProjectRegistrationModule,
     ],
     providers: [ProjectsService, UsersService, ProjectRegistrationService],
     controllers: [ProjectsController],

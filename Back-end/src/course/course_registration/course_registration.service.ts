@@ -79,14 +79,7 @@ export class CourseRegistrationService {
         return registrations;
     }
 
-    // <student,instructor> 수강 신청 가능 강의 조회
-    async findCourses(generation: string): Promise<Course[]> {
-        return await this.coursesRepository.find({
-            where: { generation }
-        });
-    }
-
-    // 특정 수강 신청 찾기
+    // <student,instructor> 개인 수강 신청 상태 조회
     async findOne(id: number, courseId: number):Promise<CourseRegistration> {
         await this.validateCourseId(courseId);
         const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course_registration_id: id }});
