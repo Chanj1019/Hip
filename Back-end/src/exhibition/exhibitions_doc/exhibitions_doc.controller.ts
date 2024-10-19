@@ -26,7 +26,7 @@ export class ExhibitionsDocController {
     // }
     @Post('register')
     @UseInterceptors(FileFieldsInterceptor([
-        { name: 'files', maxCount: 10 } // 'files' 필드에서 여러 이미지 파일을 업로드 받음
+        { name: 'files', maxCount: 5 } // 'files' 필드에서 여러 이미지 파일을 업로드 받음
     ]))
     @Roles('admin')
     async createExhibitionDoc(
