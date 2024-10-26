@@ -22,7 +22,7 @@ export class Course {
     @Column({ type: 'varchar', length: 100, nullable:true })
     course_notice: string;
 
-    @Column({ type: 'varchar', length: 10, nullable: false })
+    @Column({ type: 'varchar', length: 10, nullable: false, default: '3기'})
     generation: string;
 
     @ManyToMany(() => User, (user) => user.course)
