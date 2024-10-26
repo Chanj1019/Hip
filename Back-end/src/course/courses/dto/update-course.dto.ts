@@ -20,4 +20,8 @@ export class UpdateCourseDto {
     @IsOptional()
     @Length(0, 100)
     course_notice?: string;
+
+    @IsString()
+    @IsOptional()
+    generation?: string;
 }

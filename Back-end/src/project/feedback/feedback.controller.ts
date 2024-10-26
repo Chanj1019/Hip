@@ -9,44 +9,55 @@ import { Roles } from '../../auth/roles.decorator';
 import { ApprovedStudentGuard } from '../../auth/project.approved.guard';
 
 @UseGuards(JwtAuthGuard, RolesGuard, ApprovedStudentGuard)
-@Controller('projects/:projectId/projectDocs/:projectDocs/feedback')
+@Controller('projects/:project/projectDocs/:projectDoc/feedback')
 export class FeedbackController {
     constructor(private readonly feedbackService: FeedbackService) {}
 
     @Post('register')
     @Roles('instructor')
     async create(
-        @Body() createFeedbackDto: CreateFeedbackDto
+        @Body() createFeedbackDto: CreateFeedbackDto,
+        @Param('project') projectId: number,
+        @Param('projectDoc') projectDocId: number
     ): Promise<Feedback> {
-        return await this.feedbackService.create(createFeedbackDto);
+        return await this.feedbackService.create(createFeedbackDto, projectId, projectDocId);
     }
 
     @Get('allFeedback')
-    async findAll(): Promise<Feedback[]> {
-        return await this.feedbackService.findAll();
+    async findAll(
+        @Param('project') projectId: number,
+        @Param('projectDoc') projectDocId: number
+    ): Promise<Feedback[]> {
+        return await this.feedbackService.findAll(projectId, projectDocId);
     }
 
     @Get(':id/read')
     async findOne(
-        @Param('id') id: number
+        @Param('id') id: number,
+        @Param('project') projectId: number,
+        @Param('projectDoc') projectDocId: number
     ): Promise<Feedback> {
-        return await this.feedbackService.findOne(id);
+        return await this.feedbackService.findOne(id, projectId, projectDocId);
     }
 
     @Patch(':id/update')
     @Roles('instructor')
     async update(
         @Param('id') id: number, 
-        @Body() updateFeedbackDto: UpdateFeedbackDto
+        @Body() updateFeedbackDto: UpdateFeedbackDto,
+        @Param('project') projectId: number,
+        @Param('projectDoc') projectDocId: number
     ): Promise<Feedback> {
-        return await this.feedbackService.update(id, updateFeedbackDto);
+        return await this.feedbackService.update(id, updateFeedbackDto, projectId, projectDocId);
     }
 
     @Delete(':id/delete')
     @Roles('instructor')
     async remove(
-        @Param('id') id: number
+        @Param('id') id: number,
+        @Param('project') projectId: number,
+        @Param('projectDoc') projectDocId: number
     ): Promise<void> {
-        return await this.feedbackService.remove(id);
+        return await this.feedbackService.remove(id, projectId, projectDocId);
     }
 }
