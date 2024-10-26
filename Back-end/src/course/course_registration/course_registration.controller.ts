@@ -12,7 +12,7 @@ export class CourseRegistrationController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('register')
-    @Roles('instructor', 'student')
+    @Roles('instructor', 'student', 'admin')
   
     async create(
         @Body() createCourseRegistrationDto: CreateCourseRegistrationDto, 
