@@ -36,43 +36,49 @@ export class ExhibitionService {
              });
            }
 
-        async create(createExhibitionDto: CreateExhibitionDto, file: Express.Multer.File): Promise<Exhibition> {
+           async create(createExhibitionDto: CreateExhibitionDto, file: Express.Multer.File): Promise<{ exhibition_id: number }> {
             const existingExhibition = await this.exhibitionsRepository.findOne({
                 where: { exhibition_title: createExhibitionDto.exhibition_title },
             });
-
+        
             if (existingExhibition) {
                 throw new ConflictException('이미 존재하는 전시회 제목입니다.');
             }
-
+        
             // 파일이 제공되었는지 확인
             let filePath = null;
             if (file) {
                 const uniqueFileName = `${uuidv4()}_${file.originalname}`;
                 try {
                     const command = new PutObjectCommand({
-                        Bucket:process.env.S3_BUCKET_NAME,
+                        Bucket: process.env.AWS_S3_BUCKET_NAME,
                         Key: `exhibitions/${uniqueFileName}`,
                         Body: file.buffer,
                         ContentType: file.mimetype,
                     });
                     await this.s3.send(command);
-                    filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/${uniqueFileName}`;
+                    filePath = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/${uniqueFileName}`;
                 } catch (error) {
                     console.error('파일 업로드 오류:', error);
                     throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
                 }
             }
-
+        
             // 전시회 객체 생성
             const exhibition = this.exhibitionsRepository.create({
                 ...createExhibitionDto,
                 exhibition_date: new Date(), // 현재 날짜를 자동으로 설정
                 file_path: filePath, // 파일 경로 저장
             });
-
-            return await this.exhibitionsRepository.save(exhibition);
+        
+            // 전시회 저장
+            const savedExhibition = await this.exhibitionsRepository.save(exhibition);
+        
+            // 자동 생성된 exhibition_id 반환
+            return { exhibition_id: savedExhibition.exhibition_id }; // id를 반환
         }
+        
+        
         async findAll(): Promise<Exhibition[]> {
             return await this.exhibitionsRepository.find();
         }
