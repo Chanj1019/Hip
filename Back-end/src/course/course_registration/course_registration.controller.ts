@@ -15,7 +15,7 @@ export class CourseRegistrationController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('register')
-    @Roles('instructor', 'student')
+    @Roles('instructor', 'student', 'admin')
     // 수강 신청
     async create(
         @Body() createRequestCourseRegistrationDto: CreateRequestCourseRegistrationDto, 
