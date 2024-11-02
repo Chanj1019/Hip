@@ -4,9 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository,Not } from 'typeorm';
 import { CreateExhibitionDto } from './dto/create-exhibition.dto';
 import { UpdateExhibitionDto } from './dto/update-exhibition.dto';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 dotenv.config(); // .env 파일 로드
 @Injectable()
@@ -80,7 +81,25 @@ export class ExhibitionService {
         
         
         async findAll(): Promise<Exhibition[]> {
-            return await this.exhibitionsRepository.find();
+            const exhibitions = await this.exhibitionsRepository.find({ relations: ['exhibitionDocs'] });
+            // 각 전시회의 exhibition_doc에서 file_path를 사용하여 URL 생성
+            for (const exhibition of exhibitions) {
+                if (exhibition.exhibitionDocs) {
+                    for (const doc of exhibition.exhibitionDocs) {
+                        doc.file_path = await this.getSignedUrl(doc.file_path);
+                    }
+                }
+            }
+            return exhibitions
+        }
+
+        private async getSignedUrl(filePath: string): Promise<string> {
+            const command = new GetObjectCommand({
+                Bucket: process.env.AWS_S3_BUCKET_NAME,
+                Key: filePath,
+            });
+
+            return await getSignedUrl(this.s3, command, { expiresIn: 60 }); // URL 만료 시간 (초)
         }
     
         async findOne(exhibitionTitle: string): Promise<Exhibition> {
