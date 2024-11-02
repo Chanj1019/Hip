@@ -27,8 +27,7 @@ export class VideoTopicService {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
         const videoTopic = this.videoTopicRepository.create({
-            ...createVideoTopicDto,
-            course
+            ...createVideoTopicDto
         });
         return await this.videoTopicRepository.save(videoTopic);
     }
