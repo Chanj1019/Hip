@@ -54,9 +54,9 @@ import { Attendance } from './attendance/entities/attendance.entity';
                 synchronize: true,
             }),
         }),
-        ServeStaticModule.forRoot({
-            rootPath: join(__dirname, '..', 'public'),
-        }),
+        // ServeStaticModule.forRoot({
+        //     rootPath: join(__dirname, '..', 'public'),
+        // }),
         MulterModule.register({
             dest: './uploads',
         }),
