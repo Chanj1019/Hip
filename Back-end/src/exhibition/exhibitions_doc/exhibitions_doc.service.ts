@@ -5,9 +5,11 @@ import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
 import { ExhibitionDoc } from './entities/exhibition_doc.entity';
 import { Exhibition } from '../exhibitions/exhibition.entity';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
+import { Readable } from 'stream';
+import { Response } from 'express';
 
 dotenv.config(); 
 @Injectable()
@@ -163,5 +165,46 @@ export class ExhibitionsDocService {
     async remove(id: number): Promise<void> {
         const doc = await this.findOne(id);
         await this.exhibitionsDocRepository.remove(doc);
+    }
+
+
+    async streamVideo(
+        exhibition_doc_id: number,
+        res: Response
+    ): Promise<void> {
+        const image = await this.exhibitionsDocRepository.findOne({
+            where: { exhibition_doc_id }
+        });
+
+        if (!exhibition_doc_id || !image.file_path) {
+            throw new NotFoundException('비디오를 찾을 수 없습니다.');
+        }
+
+        const bucketName = process.env.AWS_S3_BUCKET_NAME;
+        if (!bucketName) {
+            throw new Error('AWS S3 bucket name is not configured');
+        }
+
+        try {
+            const command = new GetObjectCommand({
+                Bucket: bucketName,
+                Key: image.file_path,
+            });
+
+            const data = await this.s3.send(command);
+            const stream = data.Body as Readable; // 타입을 Readable로 명시적으로 지정
+
+            if (!stream) {
+                throw new Error('파일 스트림을 가져올 수 없습니다.');
+            }
+                res.setHeader('Content-Type', 'video/mp4'); // MIME 타입 설정
+                res.setHeader('Accept-Ranges', 'bytes'); // 바이트 범위 수신 허용
+
+                // 스트리밍을 위해 파이프하기
+                stream.pipe(res);
+        } catch (error) {
+            console.error('비디오 스트리밍 실패:', error);
+            throw new InternalServerErrorException(`비디오 스트리밍에 실패했습니다: ${error.message}`);
+        }
     }
 }
