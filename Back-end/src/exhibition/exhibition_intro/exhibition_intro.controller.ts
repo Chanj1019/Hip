@@ -1,16 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ExhibitionIntroService } from './exhibition_intro.service';
 import { CreateExhibitionIntroDto } from './dto/create-exhibition_intro.dto';
 import { UpdateExhibitionIntroDto } from './dto/update-exhibition_intro.dto';
 import { ExhibitionIntro } from './entities/exhibition_intro.entity';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('exhibition-intro')
 export class ExhibitionIntroController {
     constructor(private readonly exhibitionIntroService: ExhibitionIntroService) {}
 
     @Post('register')
-    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(AnyFilesInterceptor())
+    // @UseGuards(JwtAuthGuard)
     async create(@Body() createExhibitionIntroDto: CreateExhibitionIntroDto): Promise<{ message: string; intros: ExhibitionIntro[]; }> {
         const intros = await this.exhibitionIntroService.create(createExhibitionIntroDto);
         return { message: 'intro 생성이 완료되었습니다.', intros };
