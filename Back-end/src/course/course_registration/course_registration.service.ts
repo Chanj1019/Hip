@@ -42,7 +42,7 @@ export class CourseRegistrationService {
     // 수강 신청 하기
     async create(createCourseRegistrationDto: CreateRequestCourseRegistrationDto, courseId: number, loginedUser: number) {
         await this.validateCourseId(courseId);
-        // 이미 해당 프로젝트에 참가 신청이 되어 있을 때
+        // 이미 해당 강의에 참가 신청이 되어 있을 때
         const isAlreadyEnrolled = await this.isEnrolled(courseId, loginedUser);
 
         if(isAlreadyEnrolled){
