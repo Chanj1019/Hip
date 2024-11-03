@@ -93,4 +93,10 @@ export class ExhibitionController {
         await this.exhibitionService.remove(exhibitionTitle);
         return { message: '전시가 삭제되었습니다.' };
     }
+
+    @Get('presigned-url')
+    async getPresignedUrl(@Query('filePath') filePath: string): Promise<{ url: string }> {
+        const url = await this.exhibitionService.getSignedUrl(filePath);
+        return { url };
+    }
 }
