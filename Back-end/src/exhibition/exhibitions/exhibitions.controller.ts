@@ -95,9 +95,13 @@ export class ExhibitionController {
         return { message: '전시가 삭제되었습니다.' };
     }
 
-    @Get('presigned-url')
-    async getPresignedUrl(@Query('filePath') filePath: string): Promise<{ url: string }> {
-        const url = await this.exhibitionService.getSignedUrl(filePath);
+    @Get('presigned-url/:exhibition_id')
+    async getPresignedUrl(
+        @Param('exhibition_id') exhibitionId: number
+    ): Promise<{ url: string }> {
+        // console.log(`Request for presigned URL for exhibition ID: ${exhibitionId}`);
+        const url = await this.exhibitionService.getSignedUrl(exhibitionId);
+        // console.log('Generated presigned URLs:', url);
         return { url };
     }
 }
