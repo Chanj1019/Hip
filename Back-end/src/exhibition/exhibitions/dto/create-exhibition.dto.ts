@@ -16,6 +16,6 @@ export class CreateExhibitionDto {
     @IsString()
     description: string;
 
-    @IsNotEmpty()
-    user_id:number;
+    // @IsNotEmpty()
+    // user_id:number;
 }
