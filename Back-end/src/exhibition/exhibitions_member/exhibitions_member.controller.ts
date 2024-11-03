@@ -33,6 +33,7 @@ export class ExhibitionsMemberController {
     }
 
     @Get(':id')
+    @Roles('admin')
     async findOne(@Param('id') id: number): Promise<{ member: ExhibitionMember; message: string }> {
         const member = await this.exhibitionsMemberService.findOne(id);
         return { message: `Id가 ${id}인 멤버를 조회했습니다.`, member }; // 특정 전시 멤버 반환

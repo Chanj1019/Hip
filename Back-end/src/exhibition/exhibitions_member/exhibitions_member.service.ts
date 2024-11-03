@@ -115,7 +115,7 @@ export class ExhibitionsMemberService {
     
         // 외래 키 유효성 확인 (exhibitions_id가 필요한 경우)
         if (updateData.exhibitions_id) {
-            const exhibition = await this.exhibitionService.findOne(String(updateData.exhibitions_id));
+            const exhibition = await this.exhibitionService.findOne((updateData.exhibitions_id));
             if (!exhibition) {
                 throw new NotFoundException(`Exhibition with ID ${updateData.exhibitions_id} not found`);
             }
