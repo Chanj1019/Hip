@@ -43,7 +43,10 @@ export class ExhibitionsMemberService {
         });
     }
 
-    async create(createExhibitionsMembersDto: CreateExhibitionsMembersDto, files: Express.Multer.File[]): Promise<ExhibitionMember[]> {
+    async create(
+        createExhibitionsMembersDto: CreateExhibitionsMembersDto,
+        files: Express.Multer.File[]
+    ): Promise<ExhibitionMember[]> {
         const members: ExhibitionMember[] = [];
 
         const exhibitionExists = await this.exhibitionRepository.findOne({
@@ -53,6 +56,7 @@ export class ExhibitionsMemberService {
         if (!exhibitionExists) {
             throw new NotFoundException(`Exhibition with ID ${createExhibitionsMembersDto.exhibitions_id} not found.`);
         }
+
         // 각 멤버를 순회하면서 파일을 연결
         for (let i = 0; i < createExhibitionsMembersDto.members.length; i++) {
             const memberData = createExhibitionsMembersDto.members[i];
@@ -69,7 +73,7 @@ export class ExhibitionsMemberService {
                         ContentType: files[i].mimetype,
                     });
                     await this.s3.send(command); // S3에 파일 업로드
-                    filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibition_members/${uniqueFileName}`;
+                    filePath = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibition_members/${uniqueFileName}`;
                 } catch (error) {
                     console.error(error);
                     throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
@@ -81,7 +85,6 @@ export class ExhibitionsMemberService {
                 ...memberData,
                 exhibition: { exhibition_id: createExhibitionsMembersDto.exhibitions_id },
                 file_path: filePath, // S3에서 반환된 URL을 file_path에 저장
-                
             });
 
             members.push(await this.exhibitionMemberRepository.save(exhibitionMember)); // 멤버 저장

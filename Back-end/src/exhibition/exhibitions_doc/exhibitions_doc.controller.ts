@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param , UseGuards, UploadedFiles} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param , UseGuards, UploadedFiles, BadRequestException} from '@nestjs/common';
 import { ExhibitionsDocService } from './exhibitions_doc.service';
 import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
@@ -24,19 +24,29 @@ export class ExhibitionsDocController {
     //     const doc = await this.exhibitionDocsService.createExhibitionDoc(createExhibitionDocDto, file);
     //     return { message: '전시 문서가 성공적으로 등록되었습니다.', doc };
     // }
+  
     @Post('register')
     @UseInterceptors(FileFieldsInterceptor([
-        { name: 'files', maxCount: 10 } // 'files' 필드에서 여러 이미지 파일을 업로드 받음
+        { name: 'outputImages', maxCount: 5 }, // 최대 5개의 이미지 파일
+        { name: 'outputVideo', maxCount: 1 }   // 최대 1개의 비디오 파일
     ]))
-    @Roles('admin')
     async createExhibitionDoc(
         @Body() createExhibitionDocDto: CreateExhibitionsDocDto,
-        @UploadedFiles() files: { files?: Express.Multer.File[] } // 업로드된 파일들을 가져옴
-    ): Promise<{ message: string; docs: any[] }> { // 반환 타입 정의
-        const docs = await this.exhibitionDocsService.createExhibitionDocs(createExhibitionDocDto.exhibition_id, files.files);
+        @UploadedFiles() files: { outputImages?: Express.Multer.File[]; outputVideo?: Express.Multer.File[] }
+    ): Promise<{ message: string; docs: any[] }> {
+        // 배열 체크
+        const images = files.outputImages || [];
+        const video = files.outputVideo ? [files.outputVideo[0]] : []; // 비디오도 배열로 처리
+        console.log('수신된 이미지:', images);
+        console.log('이미지 개수:', images.length);
+        if (!Array.isArray(images) || !Array.isArray(video)) {
+            throw new BadRequestException('파일이 올바르게 전달되지 않았습니다.');
+        }
+    
+        const docs = await this.exhibitionDocsService.createExhibitionDocs(createExhibitionDocDto.exhibitions_id, images, video);
         return { message: '전시 문서가 성공적으로 등록되었습니다.', docs };
     }
-
+    
 
     @Get()
     async findAll(): Promise<{doc:ExhibitionDoc[];message: string}> {

@@ -13,9 +13,9 @@ export class VideoTopic {
     @Column({ nullable: true })
     video_pa_topic_id: number;
     
-    // @ManyToOne(() => VideoTopic, videoTopic => VideoTopic.subTopics, { nullable: true })
-    // @JoinColumn({ name: 'pa_topic_id' })
-    // pa_topic: VideoTopic;
+    // @ManyToOne(() => VideoTopic, videoTopic => videoTopic.subTopics, { nullable: true, onDelete: 'CASCADE' })
+    // @JoinColumn({ name: 'video_pa_topic_id' })
+    // pa_topic: VideoTopic | null;
 
     // @OneToMany(() => VideoTopic, videoTopic => videoTopic.pa_topic)
     // subTopics: VideoTopic[];

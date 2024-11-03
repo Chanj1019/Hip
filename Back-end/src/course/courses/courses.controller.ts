@@ -5,6 +5,7 @@ import { Roles } from '../../auth/roles.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { ApprovedInstructorGuard } from '../../auth/course.approved.guard';
 import { OwnershipGuard } from '../../auth/ownership.guard';
+// import { CreateCourseDto } from './dto/create-course.dto';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')
@@ -14,7 +15,7 @@ export class CoursesController {
     @Post('register')
     @Roles('admin')
     async create(
-      @Body() CreateCourseDto: any
+      @Body() CreateCourseDto: any,
     ) {
         const data = await this.coursesService.create(CreateCourseDto);
         return {

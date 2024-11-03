@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, Req, Res, HttpStatus, UseGuards, Request } from '@nestjs/common';//추가
+import { Controller, Get, Post, Body, Param, Delete, Put, HttpException, Req, Res, HttpStatus, UseGuards, Request, BadRequestException, ConflictException } from '@nestjs/common';//추가
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -13,13 +13,22 @@ import { UserCoursesProjectsResponseDto } from './dto/user-courses-projects.resp
 export class UsersController {
     constructor(private readonly usersService: UsersService,
     ) {}
-
+    
     @Post('register')
-    async create(@Body() createUserDto: CreateUserDto): Promise<{ message: string; user: User }> {
-        const user = await this.usersService.create(createUserDto);
-        return { message: '회원가입이 완료되었습니다.', user };
+    async create(@Body() createUserDto: CreateUserDto): Promise<{ message: string; user?: User }> {
+        try {
+            const user = await this.usersService.create(createUserDto);
+            return { message: '회원가입이 완료되었습니다.', user };
+        } catch (error) {
+            // 여기에서 발생한 오류를 다시 던져서 NestJS의 기본 오류 처리기를 사용합니다.
+            if (error instanceof ConflictException) {
+                throw new ConflictException(error.message);
+            } else if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
+            }
+            throw new BadRequestException('회원가입 중 오류가 발생했습니다.');
+        }
     }
-
     @Get()
     async findAll(): Promise<{ message: string; users: User[] }> {
         const users = await this.usersService.findAll();

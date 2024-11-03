@@ -15,8 +15,8 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
     constructor(
         private readonly courseService: CoursesService,
         private readonly projectService: ProjectsService,
-        private readonly exhibitionService: ExhibitionService,
-        private readonly exhibitionDocService: ExhibitionsDocService,
+        // private readonly exhibitionService: ExhibitionService,
+        // private readonly exhibitionDocService: ExhibitionsDocService,
         private readonly courseDocService: CourseDocService,
         private readonly docNameService: DocNameService,
         private readonly projectDocService: ProjectDocService,
@@ -112,31 +112,31 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
             resourceOwnerId = owner.user_id; 
         }
 
-        else if ( resourceType ==='exhibition'){
-            const exhibition = await this.exhibitionService.findOne(resourceId);
-            if (!exhibition){
-                throw new ForbiddenException('존재하지 않는 전시회입니다.');
-            }
+        // else if ( resourceType ==='exhibition'){
+        //     const exhibition = await this.exhibitionService.findOne(resourceId);
+        //     if (!exhibition){
+        //         throw new ForbiddenException('존재하지 않는 전시회입니다.');
+        //     }
 
-            const owner = exhibition.user.find(user => user.user_id === user.user_id)
-            if (!owner) {
-                throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
-            }
-            resourceOwnerId = owner.user_id; 
-        }
+        //     const owner = exhibition.user.find(user => user.user_id === user.user_id)
+        //     if (!owner) {
+        //         throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
+        //     }
+        //     resourceOwnerId = owner.user_id; 
+        // }
         
-        else if ( resourceType ==='exhibitionDoc'){
-            const exhibitionDoc = await this.exhibitionDocService.findOne(resourceId);
-            if (!exhibitionDoc){
-                throw new ForbiddenException('존재하지 않는 전시회입니다.');
-            }
+        // else if ( resourceType ==='exhibitionDoc'){
+        //     const exhibitionDoc = await this.exhibitionDocService.findOne(resourceId);
+        //     if (!exhibitionDoc){
+        //         throw new ForbiddenException('존재하지 않는 전시회입니다.');
+        //     }
 
-            const owner = exhibitionDoc.exhibition.user.find(user => user.user_id === user.user_id)
-            if (!owner) {
-                throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
-            }
-            resourceOwnerId = owner.user_id; 
-        }
+        //     const owner = exhibitionDoc.exhibition.user.find(user => user.user_id === user.user_id)
+        //     if (!owner) {
+        //         throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
+        //     }
+        //     resourceOwnerId = owner.user_id; 
+        // }
 
         else if ( resourceType ==='courseDoc'){
             const courseDoc = await this.courseDocService.findById(resourceId);

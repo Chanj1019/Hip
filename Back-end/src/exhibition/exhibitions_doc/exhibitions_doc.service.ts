@@ -5,9 +5,11 @@ import { CreateExhibitionsDocDto } from './dto/create-exhibitions_doc.dto';
 import { UpdateExhibitionsDocDto } from './dto/update-exhibitions_doc.dto';
 import { ExhibitionDoc } from './entities/exhibition_doc.entity';
 import { Exhibition } from '../exhibitions/exhibition.entity';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
+import { Readable } from 'stream';
+import { Response } from 'express';
 
 dotenv.config(); 
 @Injectable()
@@ -80,8 +82,11 @@ export class ExhibitionsDocService {
 
     //     return await this.exhibitionsDocRepository.save(exhibitionDoc);
     // }
-
-    async createExhibitionDocs(exhibitionId: number, files: Express.Multer.File[]): Promise<ExhibitionDoc[]> {
+    async createExhibitionDocs(
+        exhibitionId: number, 
+        files: Express.Multer.File[], 
+        outputVideo: Express.Multer.File[]
+    ): Promise<ExhibitionDoc[]> {
         const exhibition = await this.exhibitionRepository.findOne({ where: { exhibition_id: exhibitionId } });
     
         if (!exhibition) {
@@ -91,6 +96,10 @@ export class ExhibitionsDocService {
         const exhibitionDocs: ExhibitionDoc[] = [];
     
         // 이미지 처리
+        if (!Array.isArray(files) || files.length === 0) {
+            throw new BadRequestException('이미지 파일이 배열이 아닙니다.');
+        }
+    
         for (const file of files) {
             const uniqueFileName = `${uuidv4()}_${file.originalname}`;
             let uploadResult;
@@ -118,8 +127,38 @@ export class ExhibitionsDocService {
             exhibitionDocs.push(await this.exhibitionsDocRepository.save(exhibitionDoc));
         }
     
-        return exhibitionDocs; // 저장된 모든 전시 문서 반환
+        // 비디오 처리
+        if (outputVideo && outputVideo.length > 0) {
+            const videoFile = outputVideo[0]; // 비디오 파일은 배열로 전달되므로 첫 번째 요소 사용
+            const uniqueVideoFileName = `${uuidv4()}_${videoFile.originalname}`;
+            let uploadResult;
+    
+            try {
+                const command = new PutObjectCommand({
+                    Bucket: process.env.AWS_S3_BUCKET_NAME,
+                    Key: `exhibitions/videos/${uniqueVideoFileName}`,
+                    Body: videoFile.buffer,
+                    ContentType: videoFile.mimetype,
+                });
+                uploadResult = await this.s3.send(command);
+            } catch (error) {
+                console.error(error);
+                throw new InternalServerErrorException('비디오 업로드에 실패했습니다.');
+            }
+    
+            const videoFilePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/videos/${uniqueVideoFileName}`;
+    
+            const exhibitionVideoDoc = this.exhibitionsDocRepository.create({
+                exhibition,
+                file_path: videoFilePath,
+            });
+    
+            exhibitionDocs.push(await this.exhibitionsDocRepository.save(exhibitionVideoDoc));
+        }
+    
+        return exhibitionDocs; // 모든 전시 문서 반환
     }
+    
     
     async findAll(): Promise<ExhibitionDoc[]> {
         return await this.exhibitionsDocRepository.find({
@@ -149,10 +188,10 @@ export class ExhibitionsDocService {
     async update(id: number, updateExhibitionsDocDto: UpdateExhibitionsDocDto): Promise<ExhibitionDoc> {
         const doc = await this.findOne(id);
   
-        if (updateExhibitionsDocDto.exhibition_id) {
-        const exhibition = await this.exhibitionRepository.findOne({ where: { exhibition_id: updateExhibitionsDocDto.exhibition_id } });
+        if (updateExhibitionsDocDto.exhibitions_id) {
+        const exhibition = await this.exhibitionRepository.findOne({ where: { exhibition_id: updateExhibitionsDocDto.exhibitions_id } });
         if (!exhibition) {
-            throw new NotFoundException(`ID가 ${updateExhibitionsDocDto.exhibition_id}인 전시를 찾을 수 없습니다.`);
+            throw new NotFoundException(`ID가 ${updateExhibitionsDocDto.exhibitions_id}인 전시를 찾을 수 없습니다.`);
         }
         }
 
@@ -163,5 +202,46 @@ export class ExhibitionsDocService {
     async remove(id: number): Promise<void> {
         const doc = await this.findOne(id);
         await this.exhibitionsDocRepository.remove(doc);
+    }
+
+
+    async streamVideo(
+        exhibition_doc_id: number,
+        res: Response
+    ): Promise<void> {
+        const image = await this.exhibitionsDocRepository.findOne({
+            where: { exhibition_doc_id }
+        });
+
+        if (!exhibition_doc_id || !image.file_path) {
+            throw new NotFoundException('비디오를 찾을 수 없습니다.');
+        }
+
+        const bucketName = process.env.AWS_S3_BUCKET_NAME;
+        if (!bucketName) {
+            throw new Error('AWS S3 bucket name is not configured');
+        }
+
+        try {
+            const command = new GetObjectCommand({
+                Bucket: bucketName,
+                Key: image.file_path,
+            });
+
+            const data = await this.s3.send(command);
+            const stream = data.Body as Readable; // 타입을 Readable로 명시적으로 지정
+
+            if (!stream) {
+                throw new Error('파일 스트림을 가져올 수 없습니다.');
+            }
+                res.setHeader('Content-Type', 'video/mp4'); // MIME 타입 설정
+                res.setHeader('Accept-Ranges', 'bytes'); // 바이트 범위 수신 허용
+
+                // 스트리밍을 위해 파이프하기
+                stream.pipe(res);
+        } catch (error) {
+            console.error('비디오 스트리밍 실패:', error);
+            throw new InternalServerErrorException(`비디오 스트리밍에 실패했습니다: ${error.message}`);
+        }
     }
 }
