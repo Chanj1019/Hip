@@ -74,6 +74,7 @@ export class ExhibitionService {
 
             return await this.exhibitionsRepository.save(exhibition);
         }
+
         async findAll(): Promise<Exhibition[]> {
             const exhibitions = await this.exhibitionsRepository.find({ relations: ['exhibitionDocs'] });
             // 각 전시회의 exhibition_doc에서 file_path를 사용하여 URL 생성
@@ -87,7 +88,7 @@ export class ExhibitionService {
             return exhibitions
         }
 
-        private async getSignedUrl(filePath: string): Promise<string> {
+        async getSignedUrl(filePath: string): Promise<string> {
             const command = new GetObjectCommand({
                 Bucket: process.env.AWS_S3_BUCKET_NAME,
                 Key: filePath,
