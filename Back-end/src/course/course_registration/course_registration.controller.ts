@@ -15,11 +15,11 @@ export class CourseRegistrationController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('register')
-    @Roles('instructor', 'student')
+    @Roles('instructor', 'student', 'admin')
     // 수강 신청
     async create(
         @Body() createRequestCourseRegistrationDto: CreateRequestCourseRegistrationDto, 
-        @Param('course') course_id: number,
+        @Param('courseId') course_id: number,
         @Request() req
     ): Promise<{ message: string }> {
         // 로그인된 user 저장
