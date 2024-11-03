@@ -21,10 +21,11 @@ export class ExhibitionController {
     async create(
         @Body() createExhibitionDto: CreateExhibitionDto,
         @UploadedFile() file: Express.Multer.File // 파일을 인자로 받음
-    ): Promise<{ message: string; exhibition: Exhibition }> {
+    ): Promise<{ message: string; exhibition_id: number }> {
         const exhibition = await this.exhibitionService.create(createExhibitionDto, file);
-        return { message: '등록이 완료되었습니다', exhibition };
+        return { message: '등록이 완료되었습니다', exhibition_id: exhibition.exhibition_id }; // exhibition_id 포함
     }
+
     // 모든 전시 조회
     @Get()
     async findAll(): Promise<{ message: string; exhibitions: Exhibition[] }> {

@@ -41,30 +41,30 @@ export class ExhibitionService {
             const existingExhibition = await this.exhibitionsRepository.findOne({
                 where: { exhibition_title: createExhibitionDto.exhibition_title },
             });
-
+        
             if (existingExhibition) {
                 throw new ConflictException('이미 존재하는 전시회 제목입니다.');
             }
-
+        
             // 파일이 제공되었는지 확인
             let filePath = null;
             if (file) {
                 const uniqueFileName = `${uuidv4()}_${file.originalname}`;
                 try {
                     const command = new PutObjectCommand({
-                        Bucket:process.env.S3_BUCKET_NAME,
+                        Bucket: process.env.AWS_S3_BUCKET_NAME,
                         Key: `exhibitions/${uniqueFileName}`,
                         Body: file.buffer,
                         ContentType: file.mimetype,
                     });
                     await this.s3.send(command);
-                    filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/${uniqueFileName}`;
+                    filePath = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/${uniqueFileName}`;
                 } catch (error) {
                     console.error('파일 업로드 오류:', error);
                     throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
                 }
             }
-
+        
             // 전시회 객체 생성
             const exhibition = this.exhibitionsRepository.create({
                 ...createExhibitionDto,
@@ -78,13 +78,13 @@ export class ExhibitionService {
         async findAll(): Promise<Exhibition[]> {
             const exhibitions = await this.exhibitionsRepository.find({ relations: ['exhibitionDocs'] });
             // 각 전시회의 exhibition_doc에서 file_path를 사용하여 URL 생성
-            for (const exhibition of exhibitions) {
-                if (exhibition.exhibitionDocs) {
-                    for (const doc of exhibition.exhibitionDocs) {
-                        doc.file_path = await this.getSignedUrl(doc.file_path);
-                    }
-                }
-            }
+            // for (const exhibition of exhibitions) {
+            //     if (exhibition.exhibitionDocs) {
+            //         for (const doc of exhibition.exhibitionDocs) {
+            //             doc.file_path = await this.getSignedUrl(doc.file_path);
+            //         }
+            //     }
+            // }
             return exhibitions
         }
 

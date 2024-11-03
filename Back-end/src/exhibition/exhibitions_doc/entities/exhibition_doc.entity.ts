@@ -13,6 +13,5 @@ export class ExhibitionDoc {
     @Column()
     file_path: string; 
 
-    @Column({ nullable: true }) 
-    feedback: string; 
+   
 }
