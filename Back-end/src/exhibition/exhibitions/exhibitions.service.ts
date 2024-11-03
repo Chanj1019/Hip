@@ -58,7 +58,7 @@ export class ExhibitionService {
                         ContentType: file.mimetype,
                     });
                     await this.s3.send(command);
-                    filePath = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/${uniqueFileName}`;
+                    filePath = `exhibitions/${uniqueFileName}`;
                 } catch (error) {
                     console.error('파일 업로드 오류:', error);
                     throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
@@ -88,13 +88,29 @@ export class ExhibitionService {
             return exhibitions
         }
 
-        async getSignedUrl(filePath: string): Promise<string> {
+        async getSignedUrl(exhibitionId: number): Promise<string> {
+            const exhibition = await this.exhibitionsRepository.findOne({
+                where: { exhibition_id: exhibitionId}
+            })
+            if(!exhibition){
+                console.error('유효하지 않은 exhibitionId:', exhibitionId);
+                throw new Error('전시 정보를 찾을 수 없습니다.'); // 오류 던지기
+            }
+            const filePath = exhibition.file_path;
+            console.log('파일 경로: ', filePath)
             const command = new GetObjectCommand({
                 Bucket: process.env.AWS_S3_BUCKET_NAME,
                 Key: filePath,
             });
 
-            return await getSignedUrl(this.s3, command, { expiresIn: 60 }); // URL 만료 시간 (초)
+            try {
+                // 프리사인드 URL 생성
+                const signedUrl = await getSignedUrl(this.s3, command, { expiresIn: 60 });
+                return signedUrl; // URL 반환
+            } catch (error) {
+                console.error('프리사인드 URL 생성 실패:', error);
+                throw new Error('프리사인드 URL 생성 중 오류가 발생했습니다.'); // 오류 발생
+            }
         }
     
         async findOne(exhibitionTitle: string): Promise<Exhibition> {
