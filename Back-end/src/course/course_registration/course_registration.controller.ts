@@ -4,7 +4,6 @@ import { CreateRequestCourseRegistrationDto } from './dto/create-request-course_
 import { UpdateRequestCourseRegistrationDto } from './dto/update-request-course_registration.dto';
 import { GetAdminResponseCourseRegistrationDto } from './dto/get-admin-course_registration.dto';
 import { CourseRegistration } from './entities/course_registration.entity';
-import { CourseResponseDto } from '../courses/dto/course-response.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -36,8 +35,10 @@ export class CourseRegistrationController {
     // <admin> 전체 수강 신청 정보 조회
     @Get()
     @Roles('admin')
-    async findAllForAdmin(): Promise<{ message: string, data: GetAdminResponseCourseRegistrationDto[] }> {
-        const foundRegistrations = await this.courseRegistrationService.findAllCoursesWithRegistrationsForAdmin();
+    async findAllForAdmin(
+        @Param('courseId') course_id: number,
+    ): Promise<{ message: string, data: GetAdminResponseCourseRegistrationDto[] }> {
+        const foundRegistrations = await this.courseRegistrationService.findAllCoursesWithRegistrationsForAdmin(course_id);
         const responseDtos = foundRegistrations.map(responseDto => new GetAdminResponseCourseRegistrationDto(responseDto));
 
         return {
