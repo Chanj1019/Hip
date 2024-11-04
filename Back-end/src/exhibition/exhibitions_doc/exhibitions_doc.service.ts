@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 import { Readable } from 'stream';
 import { Response } from 'express';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 dotenv.config(); 
 @Injectable()
@@ -117,7 +118,7 @@ export class ExhibitionsDocService {
                 throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
             }
     
-            const filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/images/${uniqueFileName}`;
+            const filePath = `exhibitions/images/${uniqueFileName}`;
     
             const exhibitionDoc = this.exhibitionsDocRepository.create({
                 exhibition,
@@ -146,7 +147,7 @@ export class ExhibitionsDocService {
                 throw new InternalServerErrorException('비디오 업로드에 실패했습니다.');
             }
     
-            const videoFilePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibitions/videos/${uniqueVideoFileName}`;
+            const videoFilePath = `exhibitions/videos/${uniqueVideoFileName}`;
     
             const exhibitionVideoDoc = this.exhibitionsDocRepository.create({
                 exhibition,
@@ -244,4 +245,30 @@ export class ExhibitionsDocService {
             throw new InternalServerErrorException(`비디오 스트리밍에 실패했습니다: ${error.message}`);
         }
     }
+
+    async getSignedUrl(exhibition_doc_id: number): Promise<string> {
+        const exhibitionDoc = await this.exhibitionsDocRepository.findOne({
+            where: { exhibition_doc_id: exhibition_doc_id}
+        })
+        if(!exhibitionDoc){
+            console.error('유효하지 않은 exhibition_doc_id:', exhibition_doc_id);
+            throw new Error('전시 정보를 찾을 수 없습니다.'); // 오류 던지기
+        }
+        const filePath = exhibitionDoc.file_path;
+        console.log('파일 경로: ', filePath)
+        const command = new GetObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: filePath,
+        });
+
+        try {
+            // 프리사인드 URL 생성
+            const signedUrl = await getSignedUrl(this.s3, command, { expiresIn: 600 });
+            return signedUrl; // URL 반환
+        } catch (error) {
+            console.error('프리사인드 URL 생성 실패:', error);
+            throw new Error('프리사인드 URL 생성 중 오류가 발생했습니다.'); // 오류 발생
+        }
+    }
+
 }

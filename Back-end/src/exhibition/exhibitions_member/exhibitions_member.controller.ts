@@ -9,13 +9,13 @@ import { Roles } from '../../auth/roles.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { UpdateExhibitionMemberDto } from './dto/update-exhibitions_member.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+// @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('exhibition-members')
 export class ExhibitionsMemberController {
     constructor(private readonly exhibitionsMemberService: ExhibitionsMemberService) {}
 
     @Post('register')
-    @Roles('admin')
+    // @Roles('admin')
     @UseInterceptors(FilesInterceptor('members[*][image]')) // 'image'는 클라이언트에서 보내는 파일 필드 이름
     async create(
         @Body() createExhibitionsMembersDto: CreateExhibitionsMembersDto,
@@ -27,19 +27,21 @@ export class ExhibitionsMemberController {
     }
 
     @Get()
+    // @Roles('admin')
     async findAll(): Promise<{ members: ExhibitionMember[]; message: string }> {
         const members = await this.exhibitionsMemberService.findAll();
         return { message: '전체 멤버를 조회했습니다', members }; // 모든 전시 멤버 반환
     }
 
     @Get(':id')
+    // @Roles('admin')
     async findOne(@Param('id') id: number): Promise<{ member: ExhibitionMember; message: string }> {
         const member = await this.exhibitionsMemberService.findOne(id);
         return { message: `Id가 ${id}인 멤버를 조회했습니다.`, member }; // 특정 전시 멤버 반환
     }
 
     @Put(':id')
-    @Roles('admin')
+    // @Roles('admin')
     async update(
         @Param('id') id: number,
         @Body() updateData: UpdateExhibitionMemberDto // UpdateExhibitionMemberDto 사용
@@ -49,9 +51,20 @@ export class ExhibitionsMemberController {
     }
 
     @Delete(':id')
-    @Roles('admin')
+    // @Roles('admin')
     async remove(@Param('id') id: number): Promise<{ message: string }> {
         await this.exhibitionsMemberService.remove(id);
         return { message: '삭제 완료되었습니다.' }; // 삭제 완료 메시지 반환
+    }
+
+    // @Roles('admin')
+    @Get('presigned-url/:exhibition_member_id')
+    async getPresignedUrl(
+        @Param('exhibition_member_id') exhibition_member_id: number
+    ): Promise<{ url: string }> {
+        // console.log(`Request for presigned URL for exhibition ID: ${exhibitionId}`);
+        const url = await this.exhibitionsMemberService.getSignedUrl(exhibition_member_id);
+        // console.log('Generated presigned URLs:', url);
+        return { url };
     }
 }
