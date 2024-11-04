@@ -76,4 +76,15 @@ export class ExhibitionsDocController {
         await this.exhibitionDocsService.remove(id);
         return ({ message: '성공적으로 삭제되었습니다.' });
     }
+
+    @Get('presigned-url/:exhibition_doc_id')
+    @Roles('admin')
+    async getPresignedUrl(
+        @Param('exhibition_doc_id') exhibition_doc_id: number
+    ): Promise<{ url: string }> {
+        // console.log(`Request for presigned URL for exhibition ID: ${exhibitionId}`);
+        const url = await this.exhibitionDocsService.getSignedUrl(exhibition_doc_id);
+        // console.log('Generated presigned URLs:', url);
+        return { url };
+    }
 }

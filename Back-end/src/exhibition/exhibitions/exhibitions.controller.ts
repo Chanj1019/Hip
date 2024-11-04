@@ -37,9 +37,10 @@ export class ExhibitionController {
     }
 
     // 특정 전시 조회
-    @Get(':exhibition_title')
-    async findOne(@Param('exhibition_title') exhibitionTitle: string): Promise<{ message: string; exhibition: Exhibition }> {
-        const exhibition = await this.exhibitionService.findOne(exhibitionTitle);
+    @Get(':id')
+    @Roles('admin')
+    async findOne(@Param('id') id: number): Promise<{ message: string; exhibition: Exhibition }> {
+        const exhibition = await this.exhibitionService.findOne(id);
         return { message: '전시 조회를 완료했습니다.', exhibition };
     }
 
