@@ -66,7 +66,8 @@ export class CourseRegistrationService {
     // }
 
     // <admin> 전체 수강 신청 정보 조회
-    async findAllCoursesWithRegistrationsForAdmin(): Promise<CourseRegistration[]> {
+    async findAllCoursesWithRegistrationsForAdmin(course_id: number): Promise<CourseRegistration[]> {
+        await this.validateCourseId(course_id)
         const registrations = await this.courseRegistrationRepository.find({
             relations: ['user', 'course'], // 사용자와 강의 정보 모두 로드
             where: { course: { generation: '3기' } },
