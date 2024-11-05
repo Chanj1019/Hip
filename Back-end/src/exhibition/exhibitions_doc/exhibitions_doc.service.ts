@@ -210,11 +210,11 @@ export class ExhibitionsDocService {
         exhibition_doc_id: number,
         res: Response
     ): Promise<void> {
-        const image = await this.exhibitionsDocRepository.findOne({
+        const video = await this.exhibitionsDocRepository.findOne({
             where: { exhibition_doc_id }
         });
 
-        if (!exhibition_doc_id || !image.file_path) {
+        if (!exhibition_doc_id || !video.file_path) {
             throw new NotFoundException('비디오를 찾을 수 없습니다.');
         }
 
@@ -226,7 +226,7 @@ export class ExhibitionsDocService {
         try {
             const command = new GetObjectCommand({
                 Bucket: bucketName,
-                Key: image.file_path,
+                Key: video.file_path,
             });
 
             const data = await this.s3.send(command);
