@@ -1,7 +1,8 @@
 import { Controller, Post, Get, Patch, Delete, Param, Body } from '@nestjs/common';
 import { DocNameService } from './doc_name.service';
-import { CreateDocNameDto } from './dto/create-doc_name.dto'; // CreateDocNameDto 임포트
-import { UpdateDocNameDto } from './dto/update-doc_name.dto'; // UpdateDocNameDto 임포트
+import { CreateDocNameDto } from './dto/create-doc_name.dto';
+import { UpdateDocNameDto } from './dto/update-doc_name.dto';
+import { DocNameResponseDto } from './dto/doc_name-with-coursedoc-response.dto';
 
 @Controller('courses/:courseId/docNames')
 export class DocNameController {
@@ -11,33 +12,33 @@ export class DocNameController {
     async create(
         @Param('courseId') courseId: number, 
         @Body() createDocNameDto: CreateDocNameDto
-    ) {
-        const data = await this.docNameService.create(courseId, createDocNameDto);
+    ): Promise<{ message: string; data: DocNameResponseDto }> {
+        const docName = await this.docNameService.create(courseId, createDocNameDto);
         return {
             message: "doc_name 생성에 성공하셨습니다",
-            data: data
+            data: new DocNameResponseDto(docName)
         };
     }
 
     @Get('allDN')
     async findAll(
         @Param('courseId') courseId: number, 
-    ) {
-        const data = await this.docNameService.findAll(courseId);
+    ): Promise<{ message: string; data: DocNameResponseDto[] }> {
+        const docNames = await this.docNameService.findAll(courseId);
         return {
             message: "전체 강의의 doc_name 조회에 성공하셨습니다",
-            data: data
+            data: docNames.map(docName => new DocNameResponseDto(docName))
         };
     }
 
     @Get('root')
     async findRootDocName(
         @Param('courseId') courseId: number, 
-    ) {
-        const data = await this.docNameService.findRootDocName(courseId);
+    ): Promise<{ message: string; data: DocNameResponseDto }> {
+        const docName = await this.docNameService.findRootDocName(courseId);
         return {
             message: "특정 강의의 pa_topic_id의 값을 null로 갖는 doc_name 조회에 성공하셨습니다",
-            data: data
+            data: new DocNameResponseDto(docName)
         };
     }
 
@@ -45,11 +46,11 @@ export class DocNameController {
     async findOne(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number
-    ) {
-        const data = await this.docNameService.findOne(courseId, topicId);
+    ): Promise<{ message: string; data: DocNameResponseDto }> {
+        const docName = await this.docNameService.findOne(courseId, topicId);
         return {
             message: "특정 강의의 doc_name 조회에 성공하셨습니다",
-            data: data
+            data: new DocNameResponseDto(docName)
         };
     }
 
@@ -58,24 +59,22 @@ export class DocNameController {
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number,
         @Body() updateDocNameDto: UpdateDocNameDto
-    ) {
-        const data = await this.docNameService.update(courseId, topicId, updateDocNameDto);
+    ): Promise<{ message: string; data: DocNameResponseDto }> {
+        const docName = await this.docNameService.update(courseId, topicId, updateDocNameDto);
         return {
-          message: "doc_name 수정에 성공하셨습니다",
-          data: data
+            message: "doc_name 수정에 성공하셨습니다",
+            data: new DocNameResponseDto(docName)
         };
     }
-  
 
     @Delete(':topicId/delete')
     async remove(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number
-    ) {
-        const data = await this.docNameService.remove(courseId, topicId);
+    ): Promise<{ message: string }> {
+        await this.docNameService.remove(courseId, topicId);
         return {
-            message: "doc_name 삭제에 성공하셨습니다",
-            data: data
+            message: "doc_name 삭제에 성공하셨습니다"
         };
     }
 }
