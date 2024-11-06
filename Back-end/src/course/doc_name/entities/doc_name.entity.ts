@@ -21,7 +21,7 @@ export class DocName {
     subTopics: DocName[];
 
     @ManyToOne(() => Course, course => course.docName, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'course_id' })
+    @JoinColumn()
     course: Course;
 
     @OneToMany(() => CourseDoc, courseDoc => courseDoc.docName, { cascade: true })
