@@ -13,6 +13,9 @@ export class DocName {
     @Column({ nullable: true })
     pa_topic_id: number;
     
+    @Column()
+    course_id: number; // FK 컬럼 명시적 선언
+    
     @ManyToOne(() => DocName, docName => docName.subTopics, { nullable: true })
     @JoinColumn({ name: 'pa_topic_id' })
     pa_topic: DocName;
