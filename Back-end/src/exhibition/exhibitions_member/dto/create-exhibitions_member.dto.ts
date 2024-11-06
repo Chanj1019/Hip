@@ -16,10 +16,6 @@ export class CreateExhibitionMemberDto {
     @IsString()
     name: string; // name은 단일 문자열
 
-    @IsNotEmpty()
-    @IsString()
-    generation: string; // generation은 단일 문자열
-
     @IsOptional()
     image?: Express.Multer.File; // 이 줄은 제거하세요
 }
@@ -28,10 +24,7 @@ export class CreateExhibitionMemberDto {
 export class ExhibitionMemberResponseDto {
     @IsNotEmpty()
     name: string;
-
-    @IsNotEmpty()
-    generation: string;
-
+    
     @IsNotEmpty()
     file_path: string; // S3에서 저장된 파일 경로
 }
