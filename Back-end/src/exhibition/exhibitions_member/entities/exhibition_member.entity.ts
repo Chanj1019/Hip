@@ -11,10 +11,7 @@ export class ExhibitionMember {
 
     @Column({ nullable: true })
     nick_name?: string;
-
-    @Column()
-    generation: string;
-
+    
     @Column()
     file_path: string;
 
