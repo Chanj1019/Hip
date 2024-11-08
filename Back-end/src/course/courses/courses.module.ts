@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CoursesController } from './courses.controller';
 import { Course } from './entities/course.entity'
@@ -15,16 +15,24 @@ import { CourseRegistration } from '../course_registration/entities/course_regis
 import { CourseRegistrationModule } from '../course_registration/course_registration.module';
 import { ProjectDocModule } from '../../project/project_doc/project_doc.module';
 import { FeedbackModule } from '../../project/feedback/feedback.module';
+import { UsersController } from 'src/user/users.controller';
+import { UsersService } from 'src/user/users.service';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Course, DocName, VideoTopic, CourseRegistration]),
-        UsersModule, ProjectsModule, ExhibitionModule, ExhibitionsDocModule,
-        CourseDocModule, DocNameModule, CourseRegistrationModule, ProjectDocModule,
-        FeedbackModule
+        forwardRef(() => UsersModule),
+        forwardRef(() => ProjectsModule),
+        forwardRef(() => ExhibitionModule),
+        forwardRef(() => ExhibitionsDocModule),
+        forwardRef(() => CourseDocModule),
+        forwardRef(() => DocNameModule),
+        forwardRef(() => CourseRegistrationModule),
+        forwardRef(() => ProjectDocModule),
+        forwardRef(() => FeedbackModule)
     ],
-    providers: [CoursesService],
-    controllers: [CoursesController],
-    exports: [TypeOrmModule]
+    providers: [CoursesService, UsersService],
+    controllers: [CoursesController, UsersController],
+    exports: [CoursesService, TypeOrmModule]
 })
 export class CoursesModule {}

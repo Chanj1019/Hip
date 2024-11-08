@@ -25,7 +25,12 @@ export class DocNameService {
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
-        const docName = this.docNameRepository.create({...createDocNameDto});
+            // DocName 엔티티 생성
+        const docName = this.docNameRepository.create({
+            topic_title: createDocNameDto.topic_title,
+            pa_topic_id: createDocNameDto.pa_topic_id,
+            course: course  // course 엔티티 전체를 할당
+        });
         return await this.docNameRepository.save(docName);
     }
 

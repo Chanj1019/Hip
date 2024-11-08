@@ -63,6 +63,7 @@ export class CourseRegistrationController {
         };
     }
 
+
     // 수강 신청 수정
     @Patch(':id/update')
     @Roles('admin')
@@ -77,7 +78,7 @@ export class CourseRegistrationController {
             data: data,
         }
     }
-
+    
     // 수강 신청 삭제
     @Delete(':id/delete')
     @Roles('instructor', 'student')
@@ -91,4 +92,38 @@ export class CourseRegistrationController {
             data: data,
         }
     }
+
+    // <admin> 전체 수강 신청 정보 조회 -> 11/06, 쿼리 빌더로 course와 함께 JSON으로 보냄
+    // @Get()
+    // @Roles('admin')
+    // async findAllForAdmin(
+    //     @Param('courseId') course_id: number,
+    // ): Promise<{ message: string, data: GetAdminResponseCourseRegistrationDto[] }> {
+    //     const foundRegistrations = await this.courseRegistrationService.findAllCoursesWithRegistrationsForAdmin(course_id);
+    //     const responseDtos = foundRegistrations.map(responseDto => new GetAdminResponseCourseRegistrationDto(responseDto));
+
+    //     return {
+    //         message: "수강 신청 정보가 조회되었습니다.",
+    //         data: responseDtos,
+    //     };
+    // } 
+
+    // <student,instructor> 개인 수강 신청 상태 조회 -> 11/06, 쿼리 빌더로 course와 함께 JSON으로 보냄
+    // @Get(':id')
+    // @Roles('student','instructor')
+    // async findOne(
+    //     @Param('id') id: number,
+    //     @Param('courseId') courseId: number
+    // ): Promise<{ message: string, data: CourseRegistration }> {
+    //     const generation = '3기';
+    //     const data = await this.courseRegistrationService.findOne(id, courseId);
+
+    //     return {
+    //         message: "수강 신청 정보가 조회되었습니다.",
+    //         data: data
+    //     };
+    // }
+
 }
+export { GetAdminResponseCourseRegistrationDto };
+
