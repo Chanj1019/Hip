@@ -20,40 +20,6 @@ export class DocNameController {
         };
     }
 
-    @Get('allDN')
-    async findAll(
-        @Param('courseId') courseId: number, 
-    ): Promise<{ message: string; data: DocNameResponseDto[] }> {
-        const docNames = await this.docNameService.findAll(courseId);
-        return {
-            message: "전체 강의의 doc_name 조회에 성공하셨습니다",
-            data: docNames.map(docName => new DocNameResponseDto(docName))
-        };
-    }
-
-    @Get('root')
-    async findRootDocName(
-        @Param('courseId') courseId: number, 
-    ): Promise<{ message: string; data: DocNameResponseDto }> {
-        const docName = await this.docNameService.findRootDocName(courseId);
-        return {
-            message: "특정 강의의 pa_topic_id의 값을 null로 갖는 doc_name 조회에 성공하셨습니다",
-            data: new DocNameResponseDto(docName)
-        };
-    }
-
-    @Get(':topicId/read')
-    async findOne(
-        @Param('courseId') courseId: number, 
-        @Param('topicId') topicId: number
-    ): Promise<{ message: string; data: DocNameResponseDto }> {
-        const docName = await this.docNameService.findOne(courseId, topicId);
-        return {
-            message: "특정 강의의 doc_name 조회에 성공하셨습니다",
-            data: new DocNameResponseDto(docName)
-        };
-    }
-
     @Patch(':topicId/update')
     async update(
         @Param('courseId') courseId: number, 
@@ -77,4 +43,39 @@ export class DocNameController {
             message: "doc_name 삭제에 성공하셨습니다"
         };
     }
+    
+    // 조회는 course에서 쿼리빌더로 이루어짐.
+    // @Get('allDN')
+    // async findAll(
+    //     @Param('courseId') courseId: number, 
+    // ): Promise<{ message: string; data: DocNameResponseDto[] }> {
+    //     const docNames = await this.docNameService.findAll(courseId);
+    //     return {
+    //         message: "전체 강의의 doc_name 조회에 성공하셨습니다",
+    //         data: docNames.map(docName => new DocNameResponseDto(docName))
+    //     };
+    // }
+
+    // @Get('root')
+    // async findRootDocName(
+    //     @Param('courseId') courseId: number, 
+    // ): Promise<{ message: string; data: DocNameResponseDto }> {
+    //     const docName = await this.docNameService.findRootDocName(courseId);
+    //     return {
+    //         message: "특정 강의의 pa_topic_id의 값을 null로 갖는 doc_name 조회에 성공하셨습니다",
+    //         data: new DocNameResponseDto(docName)
+    //     };
+    // }
+
+    // @Get(':topicId/read')
+    // async findOne(
+    //     @Param('courseId') courseId: number, 
+    //     @Param('topicId') topicId: number
+    // ): Promise<{ message: string; data: DocNameResponseDto }> {
+    //     const docName = await this.docNameService.findOne(courseId, topicId);
+    //     return {
+    //         message: "특정 강의의 doc_name 조회에 성공하셨습니다",
+    //         data: new DocNameResponseDto(docName)
+    //     };
+    // }
 }

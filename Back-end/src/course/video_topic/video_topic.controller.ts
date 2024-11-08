@@ -18,36 +18,6 @@ export class VideoTopicController {
         return { message: "video topic 생성에 성공하셨습니다", data };
     }
 
-    @Get('allVT')
-    async findAll(
-        @Param('courseId') courseId: number
-    ): Promise<{ message: string; data: VideoTopic[] }> {
-        const data = await this.videoTopicService.findAll(courseId);
-        return { message: "전체 video topic 조회에 성공하셨습니다", data };
-    }
-
-    @Get('allVT2')
-    async findAll2(
-        @Param('courseId') courseId: number
-    ): Promise<{ message: string; data1: VideoTopicResponseDto[], data2: VideoTopicResponseDto[] }> {
-        const data1 = await this.videoTopicService.getTopicsWithNullPaTopicId(courseId);
-        const data2 = await this.videoTopicService.getTopicsWithSpecificPaTopicId(courseId);
-        
-        return { message: 'Data retrieval successful', data1, data2 };
-    }
-    
-    @Get(':id/read')
-    async findOne(
-        @Param('courseId') courseId: number,
-        @Param('id') video_topic_id: number
-    ): Promise<{ message: string; data: VideoTopic }> {
-        const data = await this.videoTopicService.findOne(courseId, video_topic_id);
-        if (!data) {
-            throw new NotFoundException('VideoTopic not found');
-        }
-        return { message: "특정 video topic 조회에 성공하셨습니다", data };
-    }
-
     @Patch(':id/update')
     async update(
         @Param('courseId') courseId: number,
@@ -69,4 +39,34 @@ export class VideoTopicController {
         }
         return { message: "video topic 삭제에 성공하셨습니다", data };
     }
+
+    // @Get('allVT')
+    // async findAll(
+    //     @Param('courseId') courseId: number
+    // ): Promise<{ message: string; data: VideoTopic[] }> {
+    //     const data = await this.videoTopicService.findAll(courseId);
+    //     return { message: "전체 video topic 조회에 성공하셨습니다", data };
+    // }
+
+    // @Get('allVT2')
+    // async findAll2(
+    //     @Param('courseId') courseId: number
+    // ): Promise<{ message: string; data1: VideoTopicResponseDto[], data2: VideoTopicResponseDto[] }> {
+    //     const data1 = await this.videoTopicService.getTopicsWithNullPaTopicId(courseId);
+    //     const data2 = await this.videoTopicService.getTopicsWithSpecificPaTopicId(courseId);
+        
+    //     return { message: 'Data retrieval successful', data1, data2 };
+    // }
+    
+    // @Get(':id/read')
+    // async findOne(
+    //     @Param('courseId') courseId: number,
+    //     @Param('id') video_topic_id: number
+    // ): Promise<{ message: string; data: VideoTopic }> {
+    //     const data = await this.videoTopicService.findOne(courseId, video_topic_id);
+    //     if (!data) {
+    //         throw new NotFoundException('VideoTopic not found');
+    //     }
+    //     return { message: "특정 video topic 조회에 성공하셨습니다", data };
+    // }
 }

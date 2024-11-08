@@ -6,12 +6,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CourseRegistration } from '../course_registration/entities/course_registration.entity';
 import { Registration } from '../../enums/role.enum';
+import { CourseWithVideoTopicResponseDto } from './dto/course-with-videotopic.dto';
+import { User } from 'src/user/user.entity';
+import { CourseResponseDto } from './dto/course-response.dto';
+import { CourseWithDocNameAndCourseDocResponseDto } from './dto/course-with-docname-and-coursedoc.dto';
 
 @Injectable()
 export class CoursesService {
     private readonly logger = new Logger(CoursesService.name);
 
     constructor(
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
         @InjectRepository(Course)
         private coursesRepository: Repository<Course>,
         @InjectRepository(CourseRegistration)
@@ -33,6 +39,21 @@ export class CoursesService {
         return course;
     }
 
+    async findMy(userId: number): Promise<CourseResponseDto[]> {
+        const user = await this.userRepository.findOne({
+            where: { user_id: userId },
+            relations: ['course'],
+        });
+
+        if (!user) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+        }
+
+        // course 정보를 DTO로 변환
+        return user.course.map(course => new CourseResponseDto(course));
+    }
+    
+    // 관리자 조회
     async findAll(): Promise<Course[]> {
         return this.coursesRepository.find();
     }
@@ -46,6 +67,47 @@ export class CoursesService {
             throw new NotFoundException('클래스를 찾지 못했습니다.'); // 예외 처리 추가
         }
         return course;
+    }
+
+    async findCourseWithDocnameAndCourseDoc(userId: number): Promise<CourseWithDocNameAndCourseDocResponseDto[]> {
+        const user = await this.userRepository.findOne({
+            where: { user_id: userId },
+            relations: {
+                course: {
+                    docName: {
+                        subTopics: {
+                            courseDocs: true
+                        },
+                        courseDocs: true
+                    }
+                }
+            }
+        });
+
+        if (!user) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+        }
+
+        return user.course.map(course => new CourseWithDocNameAndCourseDocResponseDto(course));
+    }
+
+    async findCourseWithVideoTopic(userId: number): Promise<CourseWithVideoTopicResponseDto[]> {
+        const user = await this.userRepository.findOne({
+            where: { user_id: userId },
+            relations: {
+                course: {
+                    videoTopic: {
+                        videos: true
+                    }
+                }
+            }
+        });
+
+        if (!user) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+        }
+
+        return user.course.map(course => new CourseWithVideoTopicResponseDto(course));
     }
 
     async isApprovedInstructor(loginedUserId: number, courseId: number): Promise<boolean> {
