@@ -113,13 +113,13 @@ export class ExhibitionService {
             }
         }
     
-        async findOne(exhibitionTitle: string): Promise<Exhibition> {
-            if (!exhibitionTitle) {
-                throw new BadRequestException('Exhibition title must be provided');
+        async findOne(id: number): Promise<Exhibition> {
+            if (!id) {
+                throw new BadRequestException('Exhibition id must be provided');
             }
         
             const exhibition = await this.exhibitionsRepository.findOne({
-                where: { exhibition_title: exhibitionTitle },
+                where: { exhibition_id: id },
                 relations: ['exhibitionDocs', 'exhibitionMembers', 'exhibitionIntros'],
             });
         

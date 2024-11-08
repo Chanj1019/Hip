@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 import { Readable } from 'stream';
 import { UpdateExhibitionMemberDto } from './dto/update-exhibitions_member.dto';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 dotenv.config(); // .env 파일 로드
 
@@ -73,7 +74,7 @@ export class ExhibitionsMemberService {
                         ContentType: files[i].mimetype,
                     });
                     await this.s3.send(command); // S3에 파일 업로드
-                    filePath = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/exhibition_members/${uniqueFileName}`;
+                    filePath = `exhibition_members/${uniqueFileName}`;
                 } catch (error) {
                     console.error(error);
                     throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
@@ -115,7 +116,7 @@ export class ExhibitionsMemberService {
     
         // 외래 키 유효성 확인 (exhibitions_id가 필요한 경우)
         if (updateData.exhibitions_id) {
-            const exhibition = await this.exhibitionService.findOne(String(updateData.exhibitions_id));
+            const exhibition = await this.exhibitionService.findOne((updateData.exhibitions_id));
             if (!exhibition) {
                 throw new NotFoundException(`Exhibition with ID ${updateData.exhibitions_id} not found`);
             }
@@ -164,6 +165,31 @@ export class ExhibitionsMemberService {
         } catch (error) {
             console.error(error);
             throw new InternalServerErrorException('파일 다운로드에 실패했습니다.');
+        }
+    }
+
+    async getSignedUrl(exhibition_member_id: number): Promise<string> {
+        const exhibitionMember = await this.exhibitionMemberRepository.findOne({
+            where: { exhibition_member_id: exhibition_member_id}
+        })
+        if(!exhibitionMember){
+            console.error('유효하지 않은 exhibition_member_id:', exhibition_member_id);
+            throw new Error('전시 정보를 찾을 수 없습니다.'); // 오류 던지기
+        }
+        const filePath = exhibitionMember.file_path;
+        console.log('파일 경로: ', filePath)
+        const command = new GetObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET_NAME,
+            Key: filePath,
+        });
+
+        try {
+            // 프리사인드 URL 생성
+            const signedUrl = await getSignedUrl(this.s3, command, { expiresIn: 60 });
+            return signedUrl; // URL 반환
+        } catch (error) {
+            console.error('프리사인드 URL 생성 실패:', error);
+            throw new Error('프리사인드 URL 생성 중 오류가 발생했습니다.'); // 오류 발생
         }
     }
 }

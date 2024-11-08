@@ -14,10 +14,10 @@ export class CourseRegistrationController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('register')
-    @Roles('instructor', 'student', 'admin')
+    @Roles('instructor', 'student','admin')
     // 수강 신청
     async create(
-        @Body() createRequestCourseRegistrationDto: CreateRequestCourseRegistrationDto, 
+        @Body() createRequestCourseRegistrationDto: CreateRequestCourseRegistrationDto,
         @Param('courseId') course_id: number,
         @Request() req
     ): Promise<{ message: string }> {
@@ -31,6 +31,38 @@ export class CourseRegistrationController {
             message: "수강 신청이 완료되었습니다."
         };
     }
+
+    // <admin> 전체 수강 신청 정보 조회
+    @Get()
+    @Roles('admin')
+    async findAllForAdmin(
+        @Param('courseId') course_id: number,
+    ): Promise<{ message: string, data: GetAdminResponseCourseRegistrationDto[] }> {
+        const foundRegistrations = await this.courseRegistrationService.findAllCoursesWithRegistrationsForAdmin(course_id);
+        const responseDtos = foundRegistrations.map(responseDto => new GetAdminResponseCourseRegistrationDto(responseDto));
+
+        return {
+            message: "수강 신청 정보가 조회되었습니다.",
+            data: responseDtos,
+        };
+    }
+
+    // <student,instructor> 개인 수강 신청 상태 조회
+    @Get(':id')
+    @Roles('student','instructor')
+    async findOne(
+        @Param('id') id: number,
+        @Param('courseId') courseId: number
+    ): Promise<{ message: string, data: CourseRegistration }> {
+        const generation = '3기';
+        const data = await this.courseRegistrationService.findOne(id, courseId);
+
+        return {
+            message: "수강 신청 정보가 조회되었습니다.",
+            data: data
+        };
+    }
+
 
     // 수강 신청 수정
     @Patch(':id/update')
