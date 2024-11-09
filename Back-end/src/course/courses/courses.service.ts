@@ -159,17 +159,20 @@ export class CoursesService {
         return course;
     }
   
-    async remove(id: number): Promise<void> {
-        const course = await this.coursesRepository.findOne(
-            { where: { course_id: id },
-            relations: ['docName'] 
+    async remove(userId: number, courseId: number): Promise<void> {
+        const user = await this.userRepository.findOne({
+            where: { user_id: userId },
+            relations: ['docName', 'videoTopic']  // 단일 relations 옵션으로 통합
         });
-        if (!course) {
-            throw new NotFoundException(`클래스를 찾지 못했습니다.`);
+        if (!user) {
+            throw new NotFoundException(`사용자를 찾지 못했습니다.`);
         }
-    
+        const course = await this.coursesRepository.findOne(
+            { where: { course_id: courseId }}
+        )
         await this.coursesRepository.remove(course);
         this.logger.log(`클래스가 삭제되었습니다.`);
+        return 
     }
     
     
