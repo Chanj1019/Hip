@@ -9,7 +9,7 @@ import { CourseWithVideoTopicResponseDto } from './dto/course-with-videotopic.dt
 import { CourseResponseDto } from './dto/course-response.dto';
 import { CourseWithCourseRegistrationResponseDto } from './dto/course-with-registration';
 import { CourseWithDocNameAndCourseDocResponseDto } from './dto/course-with-docname-and-coursedoc.dto';
-// import { CreateCourseDto } from './dto/create-course.dto';
+import { CreateCourseDto } from './dto/create-course.dto';
 
 // @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')
@@ -20,7 +20,7 @@ export class CoursesController {
     @Post('register')
     // @Roles('admin')
     async create(
-      @Body() CreateCourseDto: any,
+      @Body() CreateCourseDto: CreateCourseDto,
     ): Promise<{ message: string; data: CourseResponseDto }> {
         const data = await this.coursesService.create(CreateCourseDto);
         return {
@@ -46,9 +46,10 @@ export class CoursesController {
     // @UseGuards(OwnershipGuard)
     // @Roles('admin')
     async remove(
-      @Param('id') id: number
+      @Param('id') userId: number,
+      @Param('id') courseId: number
     ): Promise<{ message: string; data: void }> {
-        const data = await this.coursesService.remove(id);
+        const data = await this.coursesService.remove(userId, courseId);
         return {
             message: "강의 삭제에 성공하셨습니다",
             data: data
