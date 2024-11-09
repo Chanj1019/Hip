@@ -11,10 +11,10 @@ export class VideoTopic {
     video_topic_title: string;
 
     @Column({ nullable: true })
-    video_pa_topic_id: number;
+    video_pa_topic_id?: number;
     
-    @Column({ type: 'varchar', length: 100 })
-    file_path: string;
+    @Column({ type: 'varchar', length: 100, nullable: true })
+    file_path?: string;
     
     // @ManyToOne(() => VideoTopic, videoTopic => videoTopic.subTopics, { nullable: true, onDelete: 'CASCADE' })
     // @JoinColumn({ name: 'video_pa_topic_id' })

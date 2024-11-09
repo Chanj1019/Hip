@@ -4,7 +4,7 @@ import { DocName } from "../entities/doc_name.entity";
 export class DocNameResponseDto {
     topic_id: number;
     topic_title: string;
-    pa_topic_id: number;
+    pa_topic_id?: number;
     course_doc: CourseDocResponseDto[];
     
     constructor(docName: DocName) {

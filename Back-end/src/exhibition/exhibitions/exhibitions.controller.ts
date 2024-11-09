@@ -39,7 +39,9 @@ export class ExhibitionController {
     // 특정 전시 조회
     @Get(':id')
     @Roles('admin')
-    async findOne(@Param('id') id: number): Promise<{ message: string; exhibition: Exhibition }> {
+    async findOne(
+        @Param('id') id: number
+    ): Promise<{ message: string; exhibition: Exhibition }> {
         const exhibition = await this.exhibitionService.findOne(id);
         return { message: '전시 조회를 완료했습니다.', exhibition };
     }
@@ -94,7 +96,9 @@ export class ExhibitionController {
 
     @Delete(':exhibition_title')
     // @Roles('admin')
-    async remove(@Param('exhibition_title') exhibitionTitle: string): Promise<{ message: string }> {
+    async remove(
+        @Param('exhibition_title') exhibitionTitle: string
+    ): Promise<{ message: string }> {
         await this.exhibitionService.remove(exhibitionTitle);
         return { message: '전시가 삭제되었습니다.' };
     }

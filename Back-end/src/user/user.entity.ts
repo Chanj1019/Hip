@@ -54,7 +54,7 @@ export class User {
     project_registrations: ProjectRegistration[];
 
     // user - course_registration  연결 추가
-    @OneToMany(() => CourseRegistration, (course_registration) => course_registration.user)
+    @OneToMany(() => CourseRegistration, (course_registration) => course_registration.user, { cascade: true })
     course_registrations: CourseRegistration[];
 
     // 학생이 출석 기록을 가질 수 있는 관계 설정
