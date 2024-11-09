@@ -8,4 +8,7 @@ export class CreateVideoTopicDto {
     @IsNumber()
     @IsOptional()
     video_pa_topic_id?: number;
+    
+    @IsOptional()
+    file_path?: string
 }

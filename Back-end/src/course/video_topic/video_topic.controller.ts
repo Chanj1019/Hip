@@ -1,9 +1,9 @@
 import { Controller, Post, Get, Patch, Delete, Param, Body, NotFoundException } from '@nestjs/common';
 import { VideoTopicService } from './video_topic.service';
-import { CreateVideoTopicDto } from './dto/create-video_topic.dto';
 import { UpdateVideoTopicDto } from './dto/update-video_topic.dto';
 import { VideoTopic } from './entities/video_topic.entity';
 import { VideoTopicResponseDto } from './dto/video_topic-response.dto';
+import { CreateVideoTopicDto } from './dto/create-video_topic.dto';
 
 @Controller('courses/:courseId/videoTopics')
 export class VideoTopicController {
@@ -13,9 +13,9 @@ export class VideoTopicController {
     async create(
         @Param('courseId') courseId: number,
         @Body() createVideoTopicDto: CreateVideoTopicDto
-    ): Promise<{ message: string; data: VideoTopic }> {
+    ): Promise<{ message: string; data: VideoTopicResponseDto  }> {
         const data = await this.videoTopicService.create(courseId, createVideoTopicDto);
-        return { message: "video topic 생성에 성공하셨습니다", data };
+        return { message: "video topic 생성에 성공하셨습니다", data: data };
     }
 
     @Patch(':id/update')
