@@ -54,7 +54,7 @@ export class AuthService {
             throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
         }
     
-        const token = this.jwtService.sign({ id: user.user_id, role: user.user_role, name: user.user_name }); // 여기에 id, role 등 추가해서 보내줘야 함.
+        const token = this.jwtService.sign({ id: user.user_id, role: user.user_role, name: user.user_name, email: user.email }); // 여기에 id, role 등 추가해서 보내줘야 함.
         return token;
     }
     
