@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, Res, Patch } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import { UpdateVideoDto } from './dto/update-video.dto';
 
 @Controller('courses/:courseId/:videoTopicId/video')
 export class VideoController {
@@ -62,9 +63,6 @@ export class VideoController {
     //   return { uploadUrl };
     // }
       
-
-
-
     @Get(':video_id/stream')
     async stream(
         @Param('courseId') courseId: number,
@@ -79,6 +77,7 @@ export class VideoController {
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(
         @Param('courseId') courseId: number,
+        @Param('videoTitle') videoTitle: string,
         @Param('videoTopicId') videoTopicId: number,
         @UploadedFile() file: Express.Multer.File
     ): Promise< { message: string }> {
@@ -86,7 +85,17 @@ export class VideoController {
             throw new BadRequestException('파일이 전송되지 않았습니다.');
         }
         
-        return this.videoService.uploadFile(courseId, videoTopicId, file);
+        return this.videoService.uploadVideo(courseId, videoTitle, videoTopicId, file);
+    }
+
+    @Patch('update/:videoId')
+    async update(
+        @Param('courseId') courseId: number,
+        @Param('videoTopicId') videoTopicId: number,
+        @Param('id') id: number, 
+        @Body() updateVideoDto: UpdateVideoDto
+    ) {
+        return await this.videoService.updateVideo(courseId, videoTopicId, id, updateVideoDto);
     }
 
     @Delete(':videoId/delete')
