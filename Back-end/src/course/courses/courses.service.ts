@@ -104,17 +104,17 @@ export class CoursesService {
         return new CourseWithVideoTopicResponseDto(course);
     }
 
-    async findCourseWithCourseRegistration(userId: number): Promise<CourseWithCourseRegistrationResponseDto[]> {
-        const user = await this.userRepository.findOne({
-            where: { user_id: userId },
+    async findCourseWithCourseRegistration(courseId: number): Promise<CourseWithCourseRegistrationResponseDto> {
+        const course = await this.coursesRepository.findOne({
+            where: { course_id: courseId },
             relations: ['course_registration']
         });
 
-        if (!user) {
-            throw new NotFoundException(`User with ID ${userId} not found`);
+        if (!course) {
+            throw new NotFoundException(`Course with ID ${courseId} not found`);
         }
 
-        return user.course.map(course => new CourseWithCourseRegistrationResponseDto(course));
+        return new CourseWithCourseRegistrationResponseDto(course)
     }
 
 
