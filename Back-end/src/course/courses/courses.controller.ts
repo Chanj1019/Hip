@@ -115,9 +115,9 @@ export class CoursesController {
     @Get('course-docname-coursedoc/:id')
     // @Roles('student','instructor','admin')
     async findCourseWithCourseRegistration(
-        @Param('id') id: number
-    ): Promise<{ message: string; data: CourseWithCourseRegistrationResponseDto[] }> {
-        const data = await this.coursesService.findCourseWithCourseRegistration(id);
+        @Param('id') courseId: number
+    ): Promise<{ message: string; data: CourseWithCourseRegistrationResponseDto }> {
+        const data = await this.coursesService.findCourseWithCourseRegistration(courseId);
         return {
             message: "강의와 수강신청 정보 조회에 성공하였습니다",
             data: data

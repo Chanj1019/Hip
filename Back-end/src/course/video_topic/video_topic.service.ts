@@ -30,8 +30,6 @@ export class VideoTopicService {
         
         const videoTopic = this.videoTopicRepository.create({
             video_topic_title: createVideoTopicDto.video_topic_title,
-            video_pa_topic_id: createVideoTopicDto.video_pa_topic_id || null,
-            file_path: createVideoTopicDto.file_path || null,
             course: course
         });
     
@@ -91,39 +89,27 @@ export class VideoTopicService {
         return videoTopic;
     }
 
-
-
-
-
-
-
-
-
-    async getTopicsWithNullPaTopicId(
-        courseId: number, 
-    ): Promise<VideoTopicResponseDto[]> {
-        const course = await this.courseRepository.findOne({ 
-            where: { course_id: courseId }
-        });
-        if (!course) {
-            throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
-        }
-        const topics = await this.videoTopicRepository.find({
-            select: ["video_topic_id"],
-            where: { video_pa_topic_id: null },
-        });
-        return topics.map(topic => ({ video_topic_id: topic.video_topic_id } as VideoTopicResponseDto));
-    }
+    // async getTopicsWithNullPaTopicId(
+    //     courseId: number, 
+    // ): Promise<VideoTopicResponseDto[]> {
+    //     const course = await this.courseRepository.findOne({ 
+    //         where: { course_id: courseId }
+    //     });
+    //     if (!course) {
+    //         throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
+    //     }
+    //     const topics = await this.videoTopicRepository.find({
+    //         select: ["video_topic_id"],
+    //     });
+    //     return topics.map(topic => ({ video_topic_id: topic.video_topic_id } as VideoTopicResponseDto));
+    // }
     
-    async getTopicsWithSpecificPaTopicId(
-        paTopicId: number
-    ): Promise<VideoTopicResponseDto[]> {
-        const topics = await this.videoTopicRepository.find({
-            select: ["video_topic_id"],
-            where: { video_pa_topic_id: paTopicId },
-        });
-        return topics.map(topic => ({ video_topic_id: topic.video_topic_id } as VideoTopicResponseDto));
-    }
-    
-
+    // async getTopicsWithSpecificPaTopicId(
+    //     paTopicId: number
+    // ): Promise<VideoTopicResponseDto[]> {
+    //     const topics = await this.videoTopicRepository.find({
+    //         select: ["video_topic_id"],
+    //     });
+    //     return topics.map(topic => ({ video_topic_id: topic.video_topic_id } as VideoTopicResponseDto));
+    // }
 }

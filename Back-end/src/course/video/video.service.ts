@@ -9,6 +9,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } fro
 import { Response } from 'express';
 import { Readable } from 'stream';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { UpdateVideoDto } from './dto/update-video.dto';
 
 @Injectable()
 export class VideoService {
@@ -171,10 +172,11 @@ export class VideoService {
         }
     }
     
-    async uploadFile(
+    async uploadVideo(
         courseId: number,
+        videoTitle: string,
         videoTopicId: number,
-        file: Express.Multer.File
+        file: Express.Multer.File,
     ): Promise<{ message: string }> {
         await this.validate(courseId, videoTopicId);
 
@@ -196,7 +198,7 @@ export class VideoService {
             await this.s3.send(command);
             const url = `${fileName}`; // 저장할 객체 키 명시적으로 작성
             
-            await this.saveFile(url);
+            await this.saveVideo(url, videoTitle, videoTopicId);
             return { message: '성공적으로 업로드하셨습니다.' };
 
         } catch (error) {
@@ -205,13 +207,23 @@ export class VideoService {
         }
     }
 
-    async saveFile(
-        video_url: string
+    async saveVideo(
+        video_url: string,
+        videoTitle: string,
+        videoTopicId: number,
     ): Promise<void> {
         try {
+            const videoTopic = await this.videoTopicRepository.findOne({
+                where:{ video_topic_id: videoTopicId}
+            })
+            if (!videoTopic) {
+                throw new NotFoundException("해당 영상의 주제를 찾을 수 없습니다.");
+            }
             // Create video entity with relations to course and video topic
             const video = this.videoRepository.create({
-                video_url
+                video_url: video_url,
+                video_title: videoTitle,
+                videoTopic: videoTopic  
             });
             // Save video entity
             await this.videoRepository.save(video);
@@ -221,6 +233,31 @@ export class VideoService {
         }
     }
 
+    async updateVideo(
+        courseId: number,
+        videoTopicId: number,
+        id: number, 
+        updateVideoDto: UpdateVideoDto
+    ): Promise<{ message: string }> {
+        try {
+            await this.validate(courseId, videoTopicId);
+
+            const video = await this.videoRepository.findOne({
+                where: { video_id: id }
+            });
+
+            if (!video || !video.video_url) {
+                throw new NotFoundException('비디오를 찾을 수 없습니다.');
+            }
+
+            Object.assign(video, updateVideoDto);
+            await this.videoRepository.save(video);
+            return { message: '영상 이름이 수정되었습니다. '}
+        } catch (error) {
+            console.error('File save error:', error);
+            throw new BadRequestException(`영상 이름 수정에 실패했습니다: ${error.message}`);
+        }
+    }
     async removeFile(
         courseId: number,
         videoTopicId: number,
