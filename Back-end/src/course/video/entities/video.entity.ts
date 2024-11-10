@@ -9,6 +9,9 @@ export class Video {
     @Column({ type: 'varchar', length: 100 })
     video_url: string;
 
+    @Column()
+    video_title: string;
+    
     @ManyToOne(() => VideoTopic, (videotopic) => videotopic.videos, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'video_topic_id' })
     videoTopic: VideoTopic;
