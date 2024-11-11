@@ -44,4 +44,4 @@
 
 
 # <br/>:star2:Server Address
-* ##### Server URL: - hipacademy.site
+* ##### Server URL: - <www.hipacademy.site>
