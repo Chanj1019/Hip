@@ -21,8 +21,15 @@ async function bootstrap() {
 
     // CORS 설정
     app.enableCors({
-        origin: 'http://localhost:4200',  // 특정 출처를 명시
+        origin: [
+                'http://localhost:4200',
+                'https://d2r1i81lny2w8r.cloudfront.net', // CloudFront 도메인
+                'https://boardapp.site', // 커스텀 도메인
+                'https://www.boardapp.site', 
+                ],// www 커스텀 도메인  // 특정 출처를 명시
+                methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,  // 'withCredentials'를 사용하려면 'true'로 설정
+        
     });
 
     await app.listen(3000);
