@@ -58,8 +58,5 @@ async function bootstrap() {
                 await app.listen(process.env.HTTP_SERVER_PORT, ()=> {
                     Logger.log(`Application Running on [BASIC] http://localhost:${process.env.HTTP_SERVER_PORT}`);
                 });
-
-
-    await app.listen(3000);
 }
 bootstrap();
