@@ -19,12 +19,12 @@ export class CourseRegistration {
     course_reporting_date: Date;
 
     // course_registration - user
-    @ManyToOne(() => User, (user) => user.course_registrations)
+    @ManyToOne(() => User, (user) => user.course_registrations, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'userId' }) // 외래 키의 이름을 명시
     user: User;
 
     // course_registration - course
-    @ManyToOne(() => Course, (course) => course.course_registrations)
+    @ManyToOne(() => Course, (course) => course.course_registrations, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'courseId' }) // 외래 키의 이름을 명시
     course: Course;
 }

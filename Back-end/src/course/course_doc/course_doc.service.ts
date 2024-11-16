@@ -64,13 +64,16 @@ export class CourseDocService {
         topicId: number,
         createCourseDocDto: CreateCourseDocDto,
         file: Express.Multer.File
-    ): Promise<string> {
+    ): Promise<CourseDoc> {  // 반환 타입을 CourseDoc으로 변경
         await this.validate(courseId, topicId);
+        
         const fileName = `${uuidv4()}-${file.originalname}`;
         const bucketName = this.configService.get<string>('AWS_S3_BUCKET_NAME');
+        
         if (!bucketName) {
             throw new Error('AWS S3 bucket name is not configured');
         }
+
         try {
             const command = new PutObjectCommand({
                 Bucket: bucketName,
@@ -78,10 +81,22 @@ export class CourseDocService {
                 Body: file.buffer,
                 ContentType: file.mimetype,
             });
+            
             await this.s3.send(command);
-            const url = `${fileName}`; // 저장할 객체 키 명시적으로 작성
-            await this.saveFile(url);
-            return url;
+            const url = `${fileName}`;
+            
+            // saveFile의 결과를 반환
+            const docname = await this.docNameRepository.findOne({ 
+                where: { topic_id: topicId }
+            })
+
+            const courseDoc = this.courseDocRepository.create({
+                file_path: url,
+                docName: docname
+            });
+
+            return await this.courseDocRepository.save(courseDoc);
+
         } catch (error) {
             console.error('File upload error:', error);
             throw new InternalServerErrorException(`파일 업로드에 실패했습니다: ${error.message}`);

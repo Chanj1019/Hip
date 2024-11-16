@@ -39,7 +39,9 @@ export class ExhibitionController {
     // 특정 전시 조회
     @Get(':id')
     @Roles('admin')
-    async findOne(@Param('id') id: number): Promise<{ message: string; exhibition: Exhibition }> {
+    async findOne(
+        @Param('id') id: number
+    ): Promise<{ message: string; exhibition: Exhibition }> {
         const exhibition = await this.exhibitionService.findOne(id);
         return { message: '전시 조회를 완료했습니다.', exhibition };
     }
@@ -91,6 +93,7 @@ export class ExhibitionController {
         throw new HttpException('업데이트 중 오류가 발생했습니다', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @Delete(':id')
     @Roles('admin')

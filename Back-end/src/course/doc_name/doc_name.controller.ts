@@ -20,7 +20,7 @@ export class DocNameController {
         };
     }
 
-    @Patch(':topicId/update')
+    @Patch('update/:topicId')
     async update(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number,
@@ -33,7 +33,7 @@ export class DocNameController {
         };
     }
 
-    @Delete(':topicId/delete')
+    @Delete('/delete/:topicId')
     async remove(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number
