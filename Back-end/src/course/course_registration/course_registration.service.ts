@@ -90,6 +90,16 @@ export class CourseRegistrationService {
         return courseRegistration;
     }
 
+    async findStatus(courseId: number):Promise<CourseRegistration> {
+        await this.validateCourseId(courseId);
+        const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course: { course_id: courseId } }});
+        if(!courseRegistration) {
+            throw new NotFoundException(`Not found`);
+        }
+        return courseRegistration;
+    }
+
+
     // 수강 신청 수정
     async update(id: number, updateRequestCourseRegistrationDto: UpdateRequestCourseRegistrationDto, courseId: number) {
         const courseRegistration = await this.findOne(id, courseId);

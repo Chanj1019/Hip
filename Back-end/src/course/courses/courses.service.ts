@@ -70,6 +70,18 @@ export class CoursesService {
         return course;
     }
 
+    // registration에서 강의에 대해 status를 조회하는 코드
+    // async findStatus(id: number): Promise<Course> {
+    //     const course = await this.coursesRepository.findOne(
+    //         { where: { course_id: id },
+    //         relations: ['course_registrations'] 
+    //     });
+    //     if (!course) {
+    //         throw new NotFoundException('클래스를 찾지 못했습니다.'); // 예외 처리 추가
+    //     }
+    //     return course;
+    // }
+
     async findCourseWithDocnameAndCourseDoc(courseId: number): Promise<CourseWithDocNameAndCourseDocResponseDto> {
         const course = await this.coursesRepository.findOne({
             where: { course_id: courseId },
