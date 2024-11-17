@@ -94,12 +94,11 @@ export class ExhibitionController {
         }
     }
 
-    @Delete(':exhibition_title')
-    // @Roles('admin')
-    async remove(
-        @Param('exhibition_title') exhibitionTitle: string
-    ): Promise<{ message: string }> {
-        await this.exhibitionService.remove(exhibitionTitle);
+
+    @Delete(':id')
+    @Roles('admin')
+    async remove(@Param('id') id: number): Promise<{ message: string }> {
+        await this.exhibitionService.remove(id);
         return { message: '전시가 삭제되었습니다.' };
     }
 
