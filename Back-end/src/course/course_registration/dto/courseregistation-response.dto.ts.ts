@@ -3,7 +3,7 @@ import { Registration } from '../../../enums/role.enum';
 import { UserResponseDto } from '../../../user/dto/user-response.dto';
 import { CourseResponseDto } from '../../courses/dto/course-response.dto';
 
-export class GetAdminResponseCourseRegistrationDto {
+export class CourseRegistationResponseDto {
     course_registration_status: Registration;
     course_reporting_date: Date;
     applicant: UserResponseDto;

@@ -16,12 +16,13 @@ import { CourseDocModule } from '../course/course_doc/course_doc.module';
 import { DocNameModule } from '../course/doc_name/doc_name.module';
 import { ProjectDocModule } from '../project/project_doc/project_doc.module';
 import { FeedbackModule } from '../project/feedback/feedback.module';
+import { Course } from 'src/course/courses/entities/course.entity';
 @Global()
 @Module({
     imports: [
         UsersModule, CoursesModule, ProjectsModule, ExhibitionModule,
         ExhibitionsDocModule, CourseDocModule, DocNameModule, ProjectDocModule, FeedbackModule,
-        TypeOrmModule.forFeature([User]),
+        TypeOrmModule.forFeature([User, Course]),
         JwtModule.register({
             secret: process.env.JWT_SECRET,
             signOptions: { expiresIn: '1h' },

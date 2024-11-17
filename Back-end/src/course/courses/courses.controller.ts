@@ -29,7 +29,7 @@ export class CoursesController {
         };
     }
 
-    // 관리자 강의 전체 조회(ComponentA)
+    // 관리자 강의 전체 조회
     @Get('course-all')
     // @Roles('student','instructor','admin')
     async findAll(
@@ -41,7 +41,20 @@ export class CoursesController {
         };
     }
 
-    // 관리자 강의 삭제(ComponentA)
+    // status
+    // @Get('/registration-status/:id')
+    // // @Roles('student','instructor','admin')
+    // async findStatus(
+    //     @Param('id') id: number,
+    // ): Promise<{ message: string; data: CourseResponseDto }> {
+    //     const data = await this.coursesService.findStatus(id);
+    //     return {
+    //         message: "강의 조회에 성공하셨습니다",
+    //         data: data
+    //     };
+    // }
+
+    // 관리자 강의 삭제
     @Delete('delete/:id')
     // @UseGuards(OwnershipGuard)
     // @Roles('admin')
