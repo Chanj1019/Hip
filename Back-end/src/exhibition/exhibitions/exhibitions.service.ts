@@ -173,13 +173,13 @@ export class ExhibitionService {
             });
         }
 
-        async remove(exhibitionTitle: string): Promise<void> {
+        async remove(id: number): Promise<void> {
             const result = await this.exhibitionsRepository.delete({
-                exhibition_title: exhibitionTitle,
+                exhibition_id: id,
             });
         
             if (result.affected === 0) {
-                throw new NotFoundException(`Exhibition with title "${exhibitionTitle}" not found`);
+                throw new NotFoundException(`Exhibition with title "${id}" not found`);
             }
         }
         
