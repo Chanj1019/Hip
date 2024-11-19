@@ -125,7 +125,7 @@ export class CoursesController {
     }
 
     // 학생: 강의 수강신청
-    @Get('course-docname-coursedoc/:id')
+    @Get('course-courseregistration/:id')
     // @Roles('student','instructor','admin')
     async findCourseWithCourseRegistration(
         @Param('id') courseId: number
