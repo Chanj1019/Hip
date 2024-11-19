@@ -119,7 +119,7 @@ export class CoursesService {
     async findCourseWithCourseRegistration(courseId: number): Promise<CourseWithCourseRegistrationResponseDto> {
         const course = await this.coursesRepository.findOne({
             where: { course_id: courseId },
-            relations: ['course_registration']
+            relations: ['course_registrations']
         });
 
         if (!course) {
