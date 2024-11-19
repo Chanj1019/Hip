@@ -30,10 +30,10 @@ async function bootstrap() {
     app.enableCors({
         origin: [
                 'http://localhost:4200',
-                // 'https://d2r1i81lny2w8r.cloudfront.net', // CloudFront 도메인
-                // 'https://boardapp.site', // 커스텀 도메인
-                // 'https://www.boardapp.site',
-                // 'http://hipacademy.site.s3-website.ap-northeast-2.amazonaws.com'
+                'https://d2r1i81lny2w8r.cloudfront.net', // CloudFront 도메인
+                'https://boardapp.site', // 커스텀 도메인
+                'https://www.boardapp.site', 
+                'http://hipacademy.site.s3-website.ap-northeast-2.amazonaws.com'
                 ],// www 커스텀 도메인  // 특정 출처를 명시
                 methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
                 exposedHeaders: ['Authorization'], // 이 부분 추가
@@ -41,23 +41,22 @@ async function bootstrap() {
                 });
 
                             // HTTPS 옵션 설정
-                // const httpsOptions = {
-                //     key: fs.readFileSync('/etc/letsencrypt/live/api.hipacademy.site/privkey.pem'),
-                //     cert: fs.readFileSync('/etc/letsencrypt/live/api.hipacademy.site/fullchain.pem'),
-                // };
-                //
-                // // HTTPS 서버 생성
-                // const server = https.createServer(httpsOptions, app.getHttpAdapter().getInstance());
-                //
-                // // NestJS 애플리케이션을 HTTPS 서버에 연결 (HTTPS 적용)
-                // server.listen(process.env.HTTPS_SERVER_PORT, ()=> {
-                //     Logger.log(`Application Running on [SECURED] https://api.hipacademy.site:${process.env.HTTPS_SERVER_PORT}`);
-                // });
-                //
-                // // NestJS 애플리케이션 시작 (HTTPS 기존)
-                // await app.listen(process.env.HTTP_SERVER_PORT, ()=> {
-                //     Logger.log(`Application Running on [BASIC] http://localhost:${process.env.HTTP_SERVER_PORT}`);
-                // });
-    await app.listen(3000);
+                const httpsOptions = {
+                    key: fs.readFileSync('/etc/letsencrypt/live/api.hipacademy.site/privkey.pem'),
+                    cert: fs.readFileSync('/etc/letsencrypt/live/api.hipacademy.site/fullchain.pem'),
+                };
+
+                // HTTPS 서버 생성
+                const server = https.createServer(httpsOptions, app.getHttpAdapter().getInstance());
+
+                // NestJS 애플리케이션을 HTTPS 서버에 연결 (HTTPS 적용)
+                server.listen(process.env.HTTPS_SERVER_PORT, ()=> {
+                    Logger.log(`Application Running on [SECURED] https://api.hipacademy.site:${process.env.HTTPS_SERVER_PORT}`);
+                });
+
+                // NestJS 애플리케이션 시작 (HTTPS 기존)
+                await app.listen(process.env.HTTP_SERVER_PORT, ()=> {
+                    Logger.log(`Application Running on [BASIC] http://localhost:${process.env.HTTP_SERVER_PORT}`);
+                });
 }
 bootstrap();
