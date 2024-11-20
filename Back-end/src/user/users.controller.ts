@@ -38,6 +38,14 @@ export class UsersController {
         return { message: '사용자 조회를 완료했습니다.', user };
     }
 
+    @Get(':id')
+    async findUserWithCourseAndCourseRegistration(
+        @Param('id') userId: number
+    ): Promise<{ message: string; user: User }> {
+        const user = await this.usersService.findUserWithCourseAndCourseRegistration(userId);
+        return { message: '사용자 조회를 완료했습니다.', user };
+    }
+
     @Delete(':id')
     @UseGuards(JwtAuthGuard,OwnershipGuard)
     async remove(@Param('id') id: number): Promise<{ message: string }> {

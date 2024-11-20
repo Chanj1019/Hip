@@ -67,7 +67,7 @@ export class AuthService {
         ?.filter(registration => {
             console.log('Registration status:', registration.course_registration_status);
             console.log('Registration course:', registration.course);
-            return registration.course_registration_status === 'approved' && registration.course;
+            return registration.course_registration_status === 'APPROVED' && registration.course;
         })
         ?.map(registration => {
             console.log('Mapping course:', registration.course);
