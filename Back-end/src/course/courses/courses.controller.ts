@@ -7,9 +7,9 @@ import { ApprovedInstructorGuard } from '../../auth/course.approved.guard';
 import { OwnershipGuard } from '../../auth/ownership.guard';
 import { CourseWithVideoTopicResponseDto } from './dto/course-with-videotopic.dto';
 import { CourseResponseDto } from './dto/course-response.dto';
-import { CourseWithCourseRegistrationResponseDto } from './dto/course-with-registration';
 import { CourseWithDocNameAndCourseDocResponseDto } from './dto/course-with-docname-and-coursedoc.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
+import { CourseWithCourseRegistrationResponseDto } from './dto/course-with-registration.dto';
 
 // @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')

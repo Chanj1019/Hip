@@ -10,8 +10,8 @@ import { CourseWithVideoTopicResponseDto } from './dto/course-with-videotopic.dt
 import { User } from 'src/user/user.entity';
 import { CourseResponseDto } from './dto/course-response.dto';
 import { CourseWithDocNameAndCourseDocResponseDto } from './dto/course-with-docname-and-coursedoc.dto';
-import { CourseWithCourseRegistrationResponseDto } from './dto/course-with-registration';
 import { UserResponseDto } from 'src/user/dto/user-response.dto';
+import { CourseWithCourseRegistrationResponseDto } from './dto/course-with-registration.dto';
 
 @Injectable()
 export class CoursesService {
@@ -116,17 +116,34 @@ export class CoursesService {
         return new CourseWithVideoTopicResponseDto(course);
     }
 
+    // courses.service.ts 수정
     async findCourseWithCourseRegistration(courseId: number): Promise<CourseWithCourseRegistrationResponseDto> {
-        const course = await this.coursesRepository.findOne({
-            where: { course_id: courseId },
-            relations: ['course_registrations']
-        });
+        try {
+            // relations에 course 추가
+            const course = await this.coursesRepository.findOne({
+                where: { 
+                    course_id: courseId 
+                },
+                relations: {
+                    course_registrations: {
+                        user: true,
+                        course: true  // course 관계 추가
+                    }
+                }
+            });
 
-        if (!course) {
-            throw new NotFoundException(`Course with ID ${courseId} not found`);
+            if (!course) {
+                throw new NotFoundException(`Course with ID ${courseId} not found`);
+            }
+
+            return new CourseWithCourseRegistrationResponseDto(course);
+        } catch (error) {
+            console.error('Error in findCourseWithCourseRegistration:', error);
+            throw new InternalServerErrorException(
+                'Failed to fetch course registration data',
+                error.message
+            );
         }
-
-        return new CourseWithCourseRegistrationResponseDto(course)
     }
 
 
