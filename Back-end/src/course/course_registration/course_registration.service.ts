@@ -7,6 +7,7 @@ import { CourseRegistration } from './entities/course_registration.entity';
 import { Course } from '../courses/entities/course.entity';
 import { User } from '../../user/user.entity';
 import { ConflictException } from '@nestjs/common';
+import { Registration } from 'src/enums/role.enum';
 
 @Injectable()
 export class CourseRegistrationService {
@@ -90,13 +91,16 @@ export class CourseRegistrationService {
         return courseRegistration;
     }
 
-    async findStatus(courseId: number):Promise<CourseRegistration> {
-        await this.validateCourseId(courseId);
-        const courseRegistration = await this.courseRegistrationRepository.findOne({ where: { course: { course_id: courseId } }});
-        if(!courseRegistration) {
-            throw new NotFoundException(`Not found`);
-        }
-        return courseRegistration;
+    // <student,instructor> 개인 수강 신청 상태 조회
+    async findOneApprovedRegistration(userId: number, courseId: number): Promise<CourseRegistration> {
+        return await this.courseRegistrationRepository
+            .createQueryBuilder('registrations')
+            .leftJoinAndSelect('registrations.user', 'user')
+            .leftJoinAndSelect('registrations.course', 'course')
+            .where('registrations.userId = :userId', { userId })  // user.id -> registrations.userId
+            .andWhere('registrations.courseId = :courseId', { courseId })
+            .andWhere('registrations.course_registration_status = :status', { status: Registration.APPROVED })
+            .getOne();
     }
 
 
