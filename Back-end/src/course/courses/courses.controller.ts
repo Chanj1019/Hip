@@ -10,6 +10,7 @@ import { CourseResponseDto } from './dto/course-response.dto';
 import { CourseWithDocNameAndCourseDocResponseDto } from './dto/course-with-docname-and-coursedoc.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { CourseWithCourseRegistrationResponseDto } from './dto/course-with-registration.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 // @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')
@@ -69,12 +70,12 @@ export class CoursesController {
     }
 
     // 관리자,강사 강의 수정
-    @Patch('/update/:id')
+    @Patch('update/:id')
     // @Roles('admin','instructor')
     // @UseGuards(OwnershipGuard, ApprovedInstructorGuard)
     async update(
       @Param('id') id: number, 
-      @Body() updateCourseDto: any,
+      @Body() updateCourseDto: UpdateCourseDto,
     //   @Request() req
     ): Promise<{ message: string; data: CourseResponseDto }> {
         // const loginedUser = req.user.user_id;
