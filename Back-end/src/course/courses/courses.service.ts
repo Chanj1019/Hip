@@ -159,43 +159,25 @@ export class CoursesService {
     } 
 
     async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
-        // 데이터베이스에서 해당 ID의 강의 조회
-        const course = await this.coursesRepository.findOne(
-            { where: { course_id: id } 
+        // 1. 강의 존재 확인
+        const course = await this.coursesRepository.findOne({
+            where: { course_id: id }
         });
-
+    
         if (!course) {
-            this.logger.warn(`클래스를 찾지 못했습니다.`);
-            throw new NotFoundException(`클래스를 찾지 못했습니다.`);
+            this.logger.warn('클래스를 찾지 못했습니다.');
+            throw new NotFoundException('클래스를 찾지 못했습니다.');
         }
-
-        // 해당 프로젝트에 대한 승인된 학생인지
-        // const approvedInstructor = await this.isApprovedInstructor(loginedUser, id);
-
-        // if (!approvedInstructor) {
-        //     throw new ConflictException(`수정 권한이 없습니다.`);
-        // }
-  
-        // UpdateCourseDto에 포함된 필드만 업데이트
-        if (updateCourseDto.course_title) {
-            course.course_title = updateCourseDto.course_title;
-        }
-        if (updateCourseDto.description) {
-            course.description = updateCourseDto.description;
-        }
-        if (updateCourseDto.instructor_name) {
-            course.instructor_name = updateCourseDto.instructor_name;
-        }
-        if (updateCourseDto.course_notice) {
-            course.course_notice = updateCourseDto.course_notice;
-        }
-  
-        // 업데이트된 엔티티를 저장
-        await this.coursesRepository.save(course);
-        this.logger.log(`Course updated: ${course.course_title}`);
-        return course;
+    
+        // 2. Object.assign을 사용하여 한번에 업데이트
+        Object.assign(course, updateCourseDto);
+    
+        // 3. 저장 및 반환
+        const updatedCourse = await this.coursesRepository.save(course);
+        this.logger.log(`Course updated: ${updatedCourse.course_title}`);
+        return updatedCourse;
     }
-  
+    
     async remove(courseId: number): Promise<void> {
         const course = await this.coursesRepository.findOne({
             where: { course_id: courseId },
