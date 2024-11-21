@@ -10,6 +10,8 @@ import { Response } from 'express';
 import { Readable } from 'stream';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { CreateVideoDto } from './dto/create-video.dto';
+import { create } from 'domain';
 
 @Injectable()
 export class VideoService {
@@ -174,7 +176,7 @@ export class VideoService {
     
     async uploadVideo(
         courseId: number,
-        videoTitle: string,
+        createVideoDto: CreateVideoDto,
         videoTopicId: number,
         file: Express.Multer.File,
     ): Promise<{ message: string }> {
@@ -198,7 +200,7 @@ export class VideoService {
             await this.s3.send(command);
             const url = `${fileName}`; // 저장할 객체 키 명시적으로 작성
             
-            await this.saveVideo(url, videoTitle, videoTopicId);
+            await this.saveVideo(url, createVideoDto, videoTopicId);
             return { message: '성공적으로 업로드하셨습니다.' };
 
         } catch (error) {
@@ -209,7 +211,7 @@ export class VideoService {
 
     async saveVideo(
         video_url: string,
-        videoTitle: string,
+        createVideoDto: CreateVideoDto,
         videoTopicId: number,
     ): Promise<void> {
         try {
@@ -222,8 +224,8 @@ export class VideoService {
             // Create video entity with relations to course and video topic
             const video = this.videoRepository.create({
                 video_url: video_url,
-                video_title: videoTitle,
-                videoTopic: videoTopic  
+                video_title: createVideoDto.video_title,
+                videoTopic: videoTopic
             });
             // Save video entity
             await this.videoRepository.save(video);
