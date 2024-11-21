@@ -4,6 +4,7 @@ import { UpdateVideoTopicDto } from './dto/update-video_topic.dto';
 import { VideoTopic } from './entities/video_topic.entity';
 import { VideoTopicResponseDto } from './dto/video_topic-response.dto';
 import { CreateVideoTopicDto } from './dto/create-video_topic.dto';
+import { VideoTopicWithVideoTitle } from './dto/video_topic-with-video-name.dto';
 
 @Controller('courses/:courseId/videoTopics')
 export class VideoTopicController {
@@ -40,13 +41,13 @@ export class VideoTopicController {
         return { message: "video topic 삭제에 성공하셨습니다", data };
     }
 
-    // @Get('allVT')
-    // async findAll(
-    //     @Param('courseId') courseId: number
-    // ): Promise<{ message: string; data: VideoTopic[] }> {
-    //     const data = await this.videoTopicService.findAll(courseId);
-    //     return { message: "전체 video topic 조회에 성공하셨습니다", data };
-    // }
+    @Get('allVedioTopic')
+    async findAllVedioTopic(
+        @Param('courseId') courseId: number
+    ): Promise<{ message: string; data: VideoTopicWithVideoTitle[] }> {
+        const data = await this.videoTopicService.findAllVedioTopic(courseId);
+        return { message: "전체 video topic 조회에 성공하셨습니다", data };
+    }
 
     // @Get('allVT2')
     // async findAll2(
