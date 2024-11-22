@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DocName } from './entities/doc_name.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { CreateDocNameDto } from './dto/create-doc_name.dto';
 import { UpdateDocNameDto } from './dto/update-doc_name.dto';
 import { Course } from '../courses/entities/course.entity';
-import { DocNameResponseDto } from './dto/doc_name-with-coursedoc-response.dto';
+import { DocNameWithCourseDocResponseDto } from './dto/doc_name-with-coursedoc-response.dto';
 
 @Injectable()
 export class DocNameService {
@@ -89,7 +89,7 @@ export class DocNameService {
     async findDocTopic(
         courseId: number, 
         topicId: number
-    ): Promise<DocNameResponseDto> {  // 반환 타입을 DTO로 변경
+    ): Promise<DocNameWithCourseDocResponseDto> {  // 반환 타입을 DTO로 변경
         const course = await this.courseRepository.findOne({
             where: { course_id: courseId }
         });
@@ -134,27 +134,29 @@ export class DocNameService {
         }
 
         // 3. DTO로 변환하여 반환
-        return new DocNameResponseDto(docName);
+        return new DocNameWithCourseDocResponseDto(docName);
     }
 
 
     // pa_topic_id이 null인 topic 조회 메서드
     async findRootDocName(
         courseId: number
-    ): Promise<DocName> {
+    ): Promise<DocName[]> {
         const course = await this.courseRepository.findOne({
             where: { course_id: courseId }
         });
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
-        const docnames = await this.docNameRepository.findOne({
-            where : { pa_topic_id: null }
+        const docnames = await this.docNameRepository.find({
+            where : { pa_topic_id: IsNull() },
+            relations: ['courseDocs']
         });
+        // pa_topic_id가 null이 아닌 값만 찾기 or 만약 pa_topic_id가 null이 아니라면 (유효성 검사)
         return docnames
     }
     // 특정 pa_topic_id를 갖는 topic 조회 메서드 추가 작성 필요 
-
+    // Not(IsNull()) 사용
   
     async findById(id: number): Promise<DocName> {
         if (id <= 0) {
