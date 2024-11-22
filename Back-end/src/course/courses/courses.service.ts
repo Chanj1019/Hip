@@ -97,6 +97,7 @@ export class CoursesService {
             docName: course.docName.map(doc => ({
                 topic_id: doc.topic_id,
                 topic_title: doc.topic_title,
+                pa_topic_id: doc.pa_topic_id,
                 course_doc: doc.courseDocs
             }))
         };

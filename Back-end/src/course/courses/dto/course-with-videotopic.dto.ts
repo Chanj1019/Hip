@@ -1,6 +1,6 @@
 import { VideoTopicResponseDto } from 'src/course/video_topic/dto/video_topic-response.dto';
 import { Course } from '../entities/course.entity';
-import { DocNameResponseDto } from 'src/course/doc_name/dto/doc_name-with-coursedoc-response.dto';
+import { DocNameWithCourseDocResponseDto } from 'src/course/doc_name/dto/doc_name-with-coursedoc-response.dto';
 
 export class CourseWithVideoTopicResponseDto {
     course_title: string;
