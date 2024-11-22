@@ -2,7 +2,7 @@ import { Controller, Post, Get, Patch, Delete, Param, Body } from '@nestjs/commo
 import { DocNameService } from './doc_name.service';
 import { CreateDocNameDto } from './dto/create-doc_name.dto';
 import { UpdateDocNameDto } from './dto/update-doc_name.dto';
-import { DocNameResponseDto } from './dto/doc_name-with-coursedoc-response.dto';
+import { DocNameWithCourseDocResponseDto } from './dto/doc_name-with-coursedoc-response.dto';
 
 @Controller('courses/:courseId/docNames')
 export class DocNameController {
@@ -12,11 +12,11 @@ export class DocNameController {
     async create(
         @Param('courseId') courseId: number, 
         @Body() createDocNameDto: CreateDocNameDto
-    ): Promise<{ message: string; data: DocNameResponseDto }> {
+    ): Promise<{ message: string; data: DocNameWithCourseDocResponseDto }> {
         const docName = await this.docNameService.create(courseId, createDocNameDto);
         return {
             message: "doc_name 생성에 성공하셨습니다",
-            data: new DocNameResponseDto(docName)
+            data: new DocNameWithCourseDocResponseDto(docName)
         };
     }
 
@@ -25,15 +25,15 @@ export class DocNameController {
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number,
         @Body() updateDocNameDto: UpdateDocNameDto
-    ): Promise<{ message: string; data: DocNameResponseDto }> {
+    ): Promise<{ message: string; data: DocNameWithCourseDocResponseDto }> {
         const docName = await this.docNameService.update(courseId, topicId, updateDocNameDto);
         return {
             message: "doc_name 수정에 성공하셨습니다",
-            data: new DocNameResponseDto(docName)
+            data: new DocNameWithCourseDocResponseDto(docName)
         };
     }
 
-    @Delete('/delete/:topicId')
+    @Delete(':topicId/delete')
     async remove(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number
@@ -47,30 +47,30 @@ export class DocNameController {
     @Get('allDN')
     async findAll(
         @Param('courseId') courseId: number, 
-    ): Promise<{ message: string; data: DocNameResponseDto[] }> {
+    ): Promise<{ message: string; data: DocNameWithCourseDocResponseDto[] }> {
         const docNames = await this.docNameService.findAll(courseId);
         return {
             message: "전체 강의의 doc_name 조회에 성공하셨습니다",
-            data: docNames.map(docName => new DocNameResponseDto(docName))
+            data: docNames.map(docName => new DocNameWithCourseDocResponseDto(docName))
         };
     }
 
     @Get('root')
-    async findRootDocName(
+    async findRootDocNames(
         @Param('courseId') courseId: number
-    ): Promise<{ message: string; data: DocNameResponseDto }> {
-        const docName = await this.docNameService.findRootDocName(courseId);
+    ): Promise<{ message: string; data: DocNameWithCourseDocResponseDto[] }> {
+        const docNames = await this.docNameService.findRootDocName(courseId);
         return {
-            message: "최상위 디렉토리인 doc_name 조회에 성공하셨습니다",
-            data: new DocNameResponseDto(docName)
+            message: "최상위 디렉토리 doc_names 조회에 성공하셨습니다",
+            data: docNames.map(docName => new DocNameWithCourseDocResponseDto(docName))
         };
     }
 
-    @Get(':topicId/read')
+    @Get(':topicId/read')   
     async findOne(
         @Param('courseId') courseId: number, 
         @Param('topicId') topicId: number
-    ): Promise<{ message: string; data: DocNameResponseDto }> {
+    ): Promise<{ message: string; data: DocNameWithCourseDocResponseDto }> {
         const docName = await this.docNameService.findDocTopic(courseId, topicId);
         return {
             message: "특정 강의의 doc_name 조회에 성공하셨습니다",
