@@ -16,7 +16,10 @@ import { CourseDocModule } from '../course/course_doc/course_doc.module';
 import { DocNameModule } from '../course/doc_name/doc_name.module';
 import { ProjectDocModule } from '../project/project_doc/project_doc.module';
 import { FeedbackModule } from '../project/feedback/feedback.module';
+import { KakaoStrategy } from './kakao.strategy';
+import { HttpModule } from '@nestjs/axios';
 import { Course } from 'src/course/courses/entities/course.entity';
+
 @Global()
 @Module({
     imports: [
@@ -33,6 +36,8 @@ import { Course } from 'src/course/courses/entities/course.entity';
         JwtStrategy,
         RolesGuard,
         OwnershipGuard,
+        KakaoStrategy,
+        
         
     ],
     controllers: [AuthController],
