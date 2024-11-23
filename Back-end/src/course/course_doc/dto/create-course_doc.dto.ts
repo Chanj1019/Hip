@@ -7,4 +7,6 @@ export class CreateCourseDocDto {
 
     @IsOptional()
     file?: Express.Multer.File; 
+
+    file_name: string;
 }

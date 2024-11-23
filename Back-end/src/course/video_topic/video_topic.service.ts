@@ -6,6 +6,7 @@ import { UpdateVideoTopicDto } from './dto/update-video_topic.dto';
 import { Course } from '../courses/entities/course.entity';
 import { VideoTopicResponseDto } from './dto/video_topic-response.dto';
 import { CreateVideoTopicDto } from './dto/create-video_topic.dto';
+import { VideoTopicWithVideoTitle } from './dto/video_topic-with-video-name.dto';
 
 @Injectable()
 export class VideoTopicService {
@@ -36,11 +37,17 @@ export class VideoTopicService {
         return await this.videoTopicRepository.save(videoTopic);
     }
 
-    async findAll(
+    async findAllVedioTopic(
         courseId:  number
-    ): Promise<VideoTopic[]> {
+    ): Promise<VideoTopicWithVideoTitle[]> {
         const videoTopics = await this.videoTopicRepository.find({
-            where: { course: { course_id: courseId } } // courseTitle을 사용하여 필터링
+            where: { 
+                course: { 
+                    course_id: courseId
+                 } }, // courseTitle을 사용하여 필터링
+            relations: {
+
+            }
         });
         if (!videoTopics.length) {
             throw new NotFoundException("해당 강의의 비디오 주제가 없습니다.");

@@ -10,9 +10,9 @@ export enum ProjectStatus {
 }
 
 export enum Registration {
-    APPROVED = 'approved',
-    PENDING = 'pending',
-    REJECTED = 'rejected'
+    APPROVED = 'APPROVED',
+    PENDING = 'PENDING',
+    REJECTED = 'REJECTED'
 }
 
 export enum TeamRole {

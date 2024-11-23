@@ -1,5 +1,5 @@
 import { Course } from '../entities/course.entity';
-import { DocNameResponseDto } from 'src/course/doc_name/dto/doc_name-with-coursedoc-response.dto';
+import { DocNameWithCourseDocResponseDto } from 'src/course/doc_name/dto/doc_name-with-coursedoc-response.dto';
 
 export class CourseWithDocNameAndCourseDocResponseDto {
     course_title: string;
@@ -7,7 +7,7 @@ export class CourseWithDocNameAndCourseDocResponseDto {
     instructor_name: string;
     course_notice: string;
     generation: string;
-    docName: DocNameResponseDto[];
+    docName: DocNameWithCourseDocResponseDto[];
 
     constructor(course: Course) {
         this.course_title = course.course_title;
@@ -16,7 +16,7 @@ export class CourseWithDocNameAndCourseDocResponseDto {
         this.course_notice = course.course_notice;
         this.generation = course.generation;
         this.docName = course.docName 
-            ? course.docName.map(docName => new DocNameResponseDto(docName)) 
+            ? course.docName.map(docName => new DocNameWithCourseDocResponseDto(docName)) 
             : [];
     }
 }

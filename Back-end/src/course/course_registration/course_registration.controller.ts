@@ -47,7 +47,6 @@ export class CourseRegistrationController {
         };
     }
 
-    // <student,instructor> 개인 수강 신청 상태 조회
     @Get(':id')
     @Roles('student','instructor')
     async findOne(
@@ -63,13 +62,14 @@ export class CourseRegistrationController {
         };
     }
 
-    @Get('registration-status')
-    // @Roles('student','instructor')
-    async findStatus(
+    @Get(':id/approvedcourse')
+    @Roles('student','instructor')
+    async findOneApprovedRegistration(
+        @Param('id') id: number,
         @Param('courseId') courseId: number
     ): Promise<{ message: string, data: CourseRegistration }> {
         const generation = '3기';
-        const data = await this.courseRegistrationService.findStatus(courseId);
+        const data = await this.courseRegistrationService.findOneApprovedRegistration(id, courseId);
 
         return {
             message: "수강 신청 정보가 조회되었습니다.",

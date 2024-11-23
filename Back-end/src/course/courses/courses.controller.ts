@@ -7,9 +7,10 @@ import { ApprovedInstructorGuard } from '../../auth/course.approved.guard';
 import { OwnershipGuard } from '../../auth/ownership.guard';
 import { CourseWithVideoTopicResponseDto } from './dto/course-with-videotopic.dto';
 import { CourseResponseDto } from './dto/course-response.dto';
-import { CourseWithCourseRegistrationResponseDto } from './dto/course-with-registration';
 import { CourseWithDocNameAndCourseDocResponseDto } from './dto/course-with-docname-and-coursedoc.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
+import { CourseWithCourseRegistrationResponseDto } from './dto/course-with-registration.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 // @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses')
@@ -69,12 +70,12 @@ export class CoursesController {
     }
 
     // 관리자,강사 강의 수정
-    @Patch('/update/:id')
+    @Patch('update/:id')
     // @Roles('admin','instructor')
     // @UseGuards(OwnershipGuard, ApprovedInstructorGuard)
     async update(
       @Param('id') id: number, 
-      @Body() updateCourseDto: any,
+      @Body() updateCourseDto: UpdateCourseDto,
     //   @Request() req
     ): Promise<{ message: string; data: CourseResponseDto }> {
         // const loginedUser = req.user.user_id;
@@ -125,7 +126,7 @@ export class CoursesController {
     }
 
     // 학생: 강의 수강신청
-    @Get('course-docname-coursedoc/:id')
+    @Get('course-courseregistration/:id')
     // @Roles('student','instructor','admin')
     async findCourseWithCourseRegistration(
         @Param('id') courseId: number

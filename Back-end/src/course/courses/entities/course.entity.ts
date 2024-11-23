@@ -10,7 +10,7 @@ export class Course {
     @PrimaryGeneratedColumn()
     course_id: number;
 
-    @Column({ type: 'varchar', length: 10, unique: true })
+    @Column({ type: 'varchar', length: 40 })
     course_title: string;
 
     @Column({ type: 'varchar', length: 100 })

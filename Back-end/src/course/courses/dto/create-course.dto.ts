@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, IsOptional, Length } from 'class-validator'
 export class CreateCourseDto {
    @IsString()
    @IsNotEmpty()
-   @Length(0, 50)
+   @Length(0, 40)
    course_title: string;
   
    @IsString()
