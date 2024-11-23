@@ -3,6 +3,7 @@ import { VideoService } from './video.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { CreateVideoDto } from './dto/create-video.dto';
 
 @Controller('courses/:courseId/:videoTopicId/video')
 export class VideoController {
@@ -77,7 +78,7 @@ export class VideoController {
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(
         @Param('courseId') courseId: number,
-        @Param('videoTitle') videoTitle: string,
+        @Body() createVideoDto: CreateVideoDto,
         @Param('videoTopicId') videoTopicId: number,
         @UploadedFile() file: Express.Multer.File
     ): Promise< { message: string }> {
@@ -85,7 +86,7 @@ export class VideoController {
             throw new BadRequestException('파일이 전송되지 않았습니다.');
         }
         
-        return this.videoService.uploadVideo(courseId, videoTitle, videoTopicId, file);
+        return this.videoService.uploadVideo(courseId, createVideoDto, videoTopicId, file);
     }
 
     @Patch('update/:videoId')

@@ -62,6 +62,13 @@ export class UsersService {
         return await this.usersRepository.findOne({ where: { user_id: userId } });
     }
 
+    async findUserWithCourseAndCourseRegistration(userId: number): Promise<User> {
+        return await this.usersRepository.findOne({
+            where: { user_id: userId },
+            relations: ['']
+        })
+    }
+    
     async remove(id: number): Promise<void> {
         const userId = await this.findOne(id);
         await this.usersRepository.remove(userId);

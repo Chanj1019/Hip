@@ -18,12 +18,14 @@ import { ProjectDocModule } from '../project/project_doc/project_doc.module';
 import { FeedbackModule } from '../project/feedback/feedback.module';
 import { KakaoStrategy } from './kakao.strategy';
 import { HttpModule } from '@nestjs/axios';
+import { Course } from 'src/course/courses/entities/course.entity';
+
 @Global()
 @Module({
     imports: [
         UsersModule, CoursesModule, ProjectsModule, ExhibitionModule,
-        ExhibitionsDocModule, CourseDocModule, DocNameModule, ProjectDocModule, FeedbackModule,HttpModule,
-        TypeOrmModule.forFeature([User]),
+        ExhibitionsDocModule, CourseDocModule, DocNameModule, ProjectDocModule, FeedbackModule,
+        TypeOrmModule.forFeature([User, Course]),
         JwtModule.register({
             secret: process.env.JWT_SECRET,
             signOptions: { expiresIn: '1h' },
