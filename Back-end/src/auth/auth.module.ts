@@ -24,7 +24,7 @@ import { Course } from 'src/course/courses/entities/course.entity';
 @Module({
     imports: [
         UsersModule, CoursesModule, ProjectsModule, ExhibitionModule,
-        ExhibitionsDocModule, CourseDocModule, DocNameModule, ProjectDocModule, FeedbackModule,
+        ExhibitionsDocModule, CourseDocModule, DocNameModule, ProjectDocModule, FeedbackModule,HttpModule
         TypeOrmModule.forFeature([User, Course]),
         JwtModule.register({
             secret: process.env.JWT_SECRET,
