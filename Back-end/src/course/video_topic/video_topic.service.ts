@@ -45,14 +45,12 @@ export class VideoTopicService {
                 course: { 
                     course_id: courseId
                  } }, // courseTitle을 사용하여 필터링
-            relations: {
-
-            }
+            relations: ['videos']
         });
         if (!videoTopics.length) {
             throw new NotFoundException("해당 강의의 비디오 주제가 없습니다.");
         }
-        return videoTopics;
+        return videoTopics.map(videoTopic => new VideoTopicWithVideoTitle(videoTopic));
     }
 
     async findOne(
