@@ -42,46 +42,45 @@ export class CoursesController {
     }
 
     // 관리자 강의 삭제(ComponentA)
-    @Delete(':type/:id/delete')
+    @Delete('delete/:id')
     // @UseGuards(OwnershipGuard)
     // @Roles('admin')
     async remove(
-      @Param('id') userId: number,
       @Param('id') courseId: number
     ): Promise<{ message: string; data: void }> {
-        const data = await this.coursesService.remove(userId, courseId);
+        const data = await this.coursesService.remove(courseId);
         return {
             message: "강의 삭제에 성공하셨습니다",
             data: data
         };
     }
 
-    // 본인 course만 조회
-    @Get('only-course-my/:id')
-    // @Roles('student', 'instructor', 'admin')
-    async findMy(
-        @Param('id') id: number
-    ): Promise<{ message: string; data: CourseResponseDto[] }> {
-        const data = await this.coursesService.findMy(id);
-        return {
-            message: "본인 강의 조회에 성공하셨습니다",
-            data: data
-        };
-    }
-
-    // 강사 강의 수정
-    @Patch(':type/:id/update')
+    // 관리자,강사 강의 수정
+    @Patch('/update/:id')
     // @Roles('admin','instructor')
     // @UseGuards(OwnershipGuard, ApprovedInstructorGuard)
     async update(
       @Param('id') id: number, 
       @Body() updateCourseDto: any,
-      @Request() req
+    //   @Request() req
     ): Promise<{ message: string; data: CourseResponseDto }> {
-        const loginedUser = req.user.user_id;
-        const data = await this.coursesService.update(id, updateCourseDto, loginedUser);
+        // const loginedUser = req.user.user_id;
+        const data = await this.coursesService.update(id, updateCourseDto);
         return {
             message: "강의 수정에 성공하셨습니다",
+            data: data
+        };
+    }
+
+    // course만 조회
+    @Get('only-course-my/:id')
+    // @Roles('student', 'istructor', 'admin')
+    async findMy(
+        @Param('id') id: number
+    ): Promise<{ message: string; data: CourseResponseDto }> {
+        const data = await this.coursesService.findMy(id);
+        return {
+            message: "본인 강의 조회에 성공하셨습니다",
             data: data
         };
     }
@@ -91,7 +90,7 @@ export class CoursesController {
     // @Roles('student','instructor','admin')
     async findCourseWithVideoTopic(
         @Param('id') id: number
-    ): Promise<{ message: string; data: CourseWithVideoTopicResponseDto[] }> {
+    ): Promise<{ message: string; data: CourseWithVideoTopicResponseDto }> {
         const data = await this.coursesService.findCourseWithVideoTopic(id);
         return {
             message: "강의와 비디오 토픽 조회에 성공하였습니다",
@@ -104,15 +103,26 @@ export class CoursesController {
     // @Roles('student','instructor','admin')
     async findCourseWithDocnameAndCourseDoc(
         @Param('id') id: number
-    ): Promise<{ message: string; data: CourseWithDocNameAndCourseDocResponseDto[] }> {
+    ): Promise<{ message: string; data: CourseWithDocNameAndCourseDocResponseDto }> {
         const data = await this.coursesService.findCourseWithDocnameAndCourseDoc(id);
         return {
-            message: "강의와 문서 조회에 성공하였습니다",
+            message: "강의와 문서 주제와 문서 조회에 성공하였습니다",
             data: data
         };
     }
 
     // 학생: 강의 수강신청
+    @Get('course-docname-coursedoc/:id')
+    // @Roles('student','instructor','admin')
+    async findCourseWithCourseRegistration(
+        @Param('id') courseId: number
+    ): Promise<{ message: string; data: CourseWithCourseRegistrationResponseDto }> {
+        const data = await this.coursesService.findCourseWithCourseRegistration(courseId);
+        return {
+            message: "강의와 수강신청 정보 조회에 성공하였습니다",
+            data: data
+        };
+    }
 
     // @Get(':id/read')
     // async findOne(

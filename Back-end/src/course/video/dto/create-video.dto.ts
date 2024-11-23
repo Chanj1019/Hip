@@ -4,4 +4,8 @@ export class CreateVideoDto {
     @IsString()
     @Length(0, 100)
     video_url: string;
+
+    @IsString()
+    @Length(0, 100)
+    video_title: string;
 }

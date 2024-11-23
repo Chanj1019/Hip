@@ -6,7 +6,7 @@ import { Response } from 'express';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 
-@UseGuards(JwtAuthGuard,RolesGuard)
+// @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('courses/:courseId/docNames/:topicId/courseDocs')
 export class CourseDocController {
     constructor(private readonly courseDocService: CourseDocService) {}
@@ -19,11 +19,10 @@ export class CourseDocController {
         @Body() createCourseDocDto: CreateCourseDocDto,
         @UploadedFile() file: Express.Multer.File
     ) {
-        // const sanitizedDocNameTitle = docNameTitle.replace(/ /g, '');
-        const data = await this.courseDocService.uploadFile(courseId, topicId, createCourseDocDto, file);
+        const courseDoc = await this.courseDocService.uploadFile(courseId, topicId, createCourseDocDto, file);
         return {
             message: "File을 성공적으로 업로드 하셨습니다.",
-            data: data,
+            data: courseDoc,
         };
     }
 
@@ -74,7 +73,7 @@ export class CourseDocController {
     //     };
     // }
 
-    @Delete(':id')
+    @Delete('delete/:id')
     async remove(
         @Param('courseId') courseId: number,
         @Param('topicId') topicId: number,

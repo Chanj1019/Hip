@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VideoTopic } from './entities/video_topic.entity';
-import { CreateVideoTopicDto } from './dto/create-video_topic.dto';
 import { UpdateVideoTopicDto } from './dto/update-video_topic.dto';
 import { Course } from '../courses/entities/course.entity';
 import { VideoTopicResponseDto } from './dto/video_topic-response.dto';
+import { CreateVideoTopicDto } from './dto/create-video_topic.dto';
 
 @Injectable()
 export class VideoTopicService {
@@ -19,16 +19,20 @@ export class VideoTopicService {
     async create(
         courseId: number, 
         createVideoTopicDto: CreateVideoTopicDto
-    ): Promise<VideoTopic> {
+    ): Promise<VideoTopicResponseDto> {  // VideoTopicResponseDto -> VideoTopic
         const course = await this.courseRepository.findOne({ 
             where: { course_id: courseId }
         });
+        
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
         }
+        
         const videoTopic = this.videoTopicRepository.create({
-            ...createVideoTopicDto
+            video_topic_title: createVideoTopicDto.video_topic_title,
+            course: course
         });
+    
         return await this.videoTopicRepository.save(videoTopic);
     }
 
@@ -85,39 +89,27 @@ export class VideoTopicService {
         return videoTopic;
     }
 
-
-
-
-
-
-
-
-
-    async getTopicsWithNullPaTopicId(
-        courseId: number, 
-    ): Promise<VideoTopicResponseDto[]> {
-        const course = await this.courseRepository.findOne({ 
-            where: { course_id: courseId }
-        });
-        if (!course) {
-            throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
-        }
-        const topics = await this.videoTopicRepository.find({
-            select: ["video_topic_id"],
-            where: { video_pa_topic_id: null },
-        });
-        return topics.map(topic => ({ video_topic_id: topic.video_topic_id } as VideoTopicResponseDto));
-    }
+    // async getTopicsWithNullPaTopicId(
+    //     courseId: number, 
+    // ): Promise<VideoTopicResponseDto[]> {
+    //     const course = await this.courseRepository.findOne({ 
+    //         where: { course_id: courseId }
+    //     });
+    //     if (!course) {
+    //         throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
+    //     }
+    //     const topics = await this.videoTopicRepository.find({
+    //         select: ["video_topic_id"],
+    //     });
+    //     return topics.map(topic => ({ video_topic_id: topic.video_topic_id } as VideoTopicResponseDto));
+    // }
     
-    async getTopicsWithSpecificPaTopicId(
-        paTopicId: number
-    ): Promise<VideoTopicResponseDto[]> {
-        const topics = await this.videoTopicRepository.find({
-            select: ["video_topic_id"],
-            where: { video_pa_topic_id: paTopicId },
-        });
-        return topics.map(topic => ({ video_topic_id: topic.video_topic_id } as VideoTopicResponseDto));
-    }
-    
-
+    // async getTopicsWithSpecificPaTopicId(
+    //     paTopicId: number
+    // ): Promise<VideoTopicResponseDto[]> {
+    //     const topics = await this.videoTopicRepository.find({
+    //         select: ["video_topic_id"],
+    //     });
+    //     return topics.map(topic => ({ video_topic_id: topic.video_topic_id } as VideoTopicResponseDto));
+    // }
 }
