@@ -1,11 +1,13 @@
 import { Video } from "../entities/video.entity";
 
 export class VideoResponseDto {
-    video_topic_id: number;
-    video_topic_title: string;
+    video_id: number;
+    video_title: string;
+    url: string;
 
     constructor(video: Video) {
-        this.video_topic_id = video.video_id;
-        this.video_topic_title = video.video_title;
+        this.video_id = video.video_id;
+        this.video_title = video.video_title;
+        this.url = video.video_url
     }
 }
