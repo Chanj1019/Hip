@@ -56,7 +56,7 @@ export class CoursesController {
     // }
 
     // 관리자 강의 삭제
-    @Delete('delete/:id')
+    @Delete(':id/delete')
     // @UseGuards(OwnershipGuard)
     // @Roles('admin')
     async remove(

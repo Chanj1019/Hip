@@ -13,11 +13,16 @@ export class DocName {
     @Column({ nullable: true })
     pa_topic_id: number;
     
-    @ManyToOne(() => DocName, docName => docName.subTopics, { nullable: true })
+    @ManyToOne(() => DocName, docName => docName.subTopics, { 
+        nullable: true,
+        onDelete: 'CASCADE'  // This will handle the foreign key constraint
+    })
     @JoinColumn({ name: 'pa_topic_id' })
     pa_topic: DocName;
 
-    @OneToMany(() => DocName, docName => docName.pa_topic, { cascade: ['remove'] })
+    @OneToMany(() => DocName, docName => docName.pa_topic, { 
+        cascade: true  // Change to true to cascade all operations
+    })
     subTopics: DocName[];
 
     @ManyToOne(() => Course, course => course.docName, { onDelete: 'CASCADE' })
