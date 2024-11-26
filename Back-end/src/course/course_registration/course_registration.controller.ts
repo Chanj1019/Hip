@@ -53,7 +53,6 @@ export class CourseRegistrationController {
         @Param('id') id: number,
         @Param('courseId') courseId: number
     ): Promise<{ message: string, data: CourseRegistration }> {
-        const generation = '3기';
         const data = await this.courseRegistrationService.findOne(id, courseId);
 
         return {
@@ -68,7 +67,6 @@ export class CourseRegistrationController {
         @Param('id') id: number,
         @Param('courseId') courseId: number
     ): Promise<{ message: string, data: CourseRegistration }> {
-        const generation = '3기';
         const data = await this.courseRegistrationService.findOneApprovedRegistration(id, courseId);
 
         return {
