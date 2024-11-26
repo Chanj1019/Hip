@@ -37,6 +37,7 @@ import { CourseRegistrationModule } from './course/course_registration/course_re
 import { CourseRegistration } from './course/course_registration/entities/course_registration.entity';
 import { AttendanceModule } from './attendance/attendance.module';
 import { Attendance } from './attendance/entities/attendance.entity';
+import { OpenaiModule } from './openai/openai.module';
 
 @Module({
     imports: [
@@ -69,6 +70,7 @@ import { Attendance } from './attendance/entities/attendance.entity';
         AuthModule,
         CourseRegistrationModule,
         AttendanceModule,
+        OpenaiModule,
     ],
 })
 export class AppModule {}
