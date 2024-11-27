@@ -290,6 +290,19 @@ export class VideoService {
             throw new InternalServerErrorException(`파일 삭제에 실패했습니다: ${error.message}`);
         }
     }
+
+    async findVideo(courseId: number, videoTopicId: number, id: number): Promise<Video> {
+        await this.validate(courseId, videoTopicId);
+        const video = await this.videoRepository.findOne({
+            where: { video_id: id }
+        });
+        return video;
+    }
+    
+    async videoUpdate(video: Video): Promise<Video> {
+        return await this.videoRepository.save(video);
+    }
+    
 }
 
 
