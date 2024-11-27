@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, Res, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, Res, Patch, NotFoundException } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { OpenaiService } from '../../openai/openai.service';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { VideoResponseDto } from './dto/video-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
+import { videoSummary } from './dto/videosummary.dto';
+
 
 @Controller('courses/:courseId/:videoTopicId/video')
 export class VideoController {
-    constructor(private readonly videoService: VideoService) {}
+    constructor(private readonly videoService: VideoService,
+               private readonly openaiService: OpenaiService
+    ) {}
 
     // @Post('register')
     // async create(
@@ -127,5 +132,43 @@ export class VideoController {
         const { fileName, fileType } = body;
         const url = await this.videoService.generatePreSignedUrl(fileName, fileType);
         return { url };
+    }
+
+    @Post('stt/:videoId')
+    async processVideo(
+        @Param('courseId') courseId: number,
+        @Param('videoTopicId') videoTopicId: number,
+        @Param('videoId') videoId: number
+    ): Promise<{ summary: string }> {
+        // 비디오 정보를 조회
+        const video = await this.videoService.findVideo(courseId, videoTopicId, videoId);
+        
+        // S3에서 비디오를 가져오고 OpenAI 서비스에 요청
+        const summary = await this.videoService.forSummary(video);
+        
+        return { summary };
+    }
+    
+    @Get('summary/:videoId')
+    async summary(
+        @Param('courseId') courseId: number,
+        @Param('videoTopicId') videoTopicId: number,
+        @Param('videoId') videoId: number
+    ): Promise<videoSummary> {
+        // videoId를 사용하여 비디오 정보를 가져옵니다.
+        const video = await this.videoService.findVideo(courseId, videoTopicId, videoId);
+        
+        if (!video || !video.video_url) {
+            throw new NotFoundException('비디오를 찾을 수 없습니다.');
+        }
+
+        // 데이터베이스에서 요약을 가져옵니다.
+        const summary = video.Summary; // 이미 저장된 요약 가져오기
+        
+        if (!summary) {
+            throw new NotFoundException('저장된 요약이 없습니다.');
+        }
+        
+        return { summary }; // videoSummary DTO 형태로 반환
     }
 }

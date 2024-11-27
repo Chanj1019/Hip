@@ -129,22 +129,22 @@ export class AuthService {
     
 
    // 카카오 로그인
-async signInWithKakao(kakaoAuthResCode: string): Promise<{ jwtToken: string, user: User }> {
-    // Authorization Code로 Kakao API에 Access Token 요청
-    const accessToken = await this.getKakaoAccessToken(kakaoAuthResCode);
+    async signInWithKakao(kakaoAuthResCode: string): Promise<{ jwtToken: string, user: User }> {
+        // Authorization Code로 Kakao API에 Access Token 요청
+        const accessToken = await this.getKakaoAccessToken(kakaoAuthResCode);
 
-    // Access Token으로 Kakao 사용자 정보 요청
-    const kakaoUserInfo = await this.getKakaoUserInfo(accessToken);
+        // Access Token으로 Kakao 사용자 정보 요청
+        const kakaoUserInfo = await this.getKakaoUserInfo(accessToken);
 
-    // 카카오 사용자 정보를 기반으로 회원가입 또는 로그인 처리
-    const user = await this.signUpWithKakao(kakaoUserInfo.id.toString(), kakaoUserInfo);
+        // 카카오 사용자 정보를 기반으로 회원가입 또는 로그인 처리
+        const user = await this.signUpWithKakao(kakaoUserInfo.id.toString(), kakaoUserInfo);
 
-    // [1] JWT 토큰 생성 (Secret + Payload)
-    const jwtToken = await this.generateJwtToken(user);
+        // [1] JWT 토큰 생성 (Secret + Payload)
+        const jwtToken = await this.generateJwtToken(user);
 
-    // [2] JWT를 클라이언트에 반환
-    return { jwtToken, user }; // 클라이언트에서 사용할 수 있도록 반환
-}
+        // [2] JWT를 클라이언트에 반환
+        return { jwtToken, user }; // 클라이언트에서 사용할 수 있도록 반환
+    }
 
 
     // Kakao Authorization Code로 Access Token 요청

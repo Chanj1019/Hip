@@ -1,3 +1,4 @@
+import { IsOptional } from 'class-validator';
 import { VideoTopic } from 'src/course/video_topic/entities/video_topic.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
@@ -15,4 +16,8 @@ export class Video {
     @ManyToOne(() => VideoTopic, (videotopic) => videotopic.videos, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'video_topic_id' })
     videoTopic: VideoTopic;
+
+    @Column({ nullable: true }) // nullable을 true로 설정
+    @IsOptional()
+    Summary?: string; // 선택적 속성
 }
