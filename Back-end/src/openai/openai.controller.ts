@@ -12,7 +12,7 @@ export class OpenaiController {
     }
 
     @Post('process-video')
-    async processVideo(@Body() body: { videoUrl: string }): Promise<{ transcription: string; summary: string }> {
+    async processVideo(@Body() body: { videoUrl: string }): Promise<{summary: string }> {
         const result = await this.openaiService.processVideo(body.videoUrl);
         return result;
     }

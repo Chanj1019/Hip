@@ -37,7 +37,7 @@ export class OpenaiService {
         return this.generateText(prompt);
     }
 
-    async processVideo(videoUrl: string): Promise<{ transcription: string; summary: string }> {
+    async processVideo(videoUrl: string): Promise<{ summary: string }> {
         const videoPath = 'temp_video.mp4';
         const audioPath = 'temp_audio.wav';
     
@@ -68,7 +68,7 @@ export class OpenaiService {
                         fs.unlinkSync(videoPath);
                         fs.unlinkSync(audioPath);
     
-                        resolve({ transcription, summary });
+                        resolve({  summary });
                     } catch (error) {
                         reject(new HttpException(`Processing error: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR));
                     }
