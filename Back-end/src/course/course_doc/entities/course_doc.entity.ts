@@ -12,6 +12,9 @@ export class CourseDoc {
     @Column({ type: 'varchar', length: 100 })
     file_path: string;
 
+    @Column({ type: 'varchar', length: 100 })
+    file_name: string;
+
     @ManyToOne(() => DocName, (docname) => docname.courseDocs, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'doc_name_id' })
     docName: DocName;

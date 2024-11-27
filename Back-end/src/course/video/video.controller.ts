@@ -4,6 +4,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { OpenaiService } from '../../openai/openai.service';
+import { CreateVideoDto } from './dto/create-video.dto';
+import { VideoResponseDto } from './dto/video-response.dto';
+import { ApiResponse } from 'src/common/api-response.dto';
+
 
 @Controller('courses/:courseId/:videoTopicId/video')
 export class VideoController {
@@ -65,22 +69,32 @@ export class VideoController {
     //   const uploadUrl = await this.videosService.getUploadUrl(fileName, fileType);
     //   return { uploadUrl };
     // }
-      
+
+    // Express의 res를 활용한 직접 스트리밍(controller 코드)
+    // @Get(':video_id/stream')
+    // async stream(
+    //     @Param('courseId') courseId: number,
+    //     @Param('videoTopicId') videoTopicId: number,
+    //     @Param('video_id') videoId: number, 
+    //     @Res() res: Response
+    // ): Promise<void> {
+    //     await this.videoService.streamVideo(courseId, videoTopicId, videoId, res);
+    // }
+
     @Get(':video_id/stream')
     async stream(
         @Param('courseId') courseId: number,
         @Param('videoTopicId') videoTopicId: number,
         @Param('video_id') videoId: number, 
-        @Res() res: Response
-    ): Promise<void> {
-        await this.videoService.streamVideo(courseId, videoTopicId, videoId, res);
+    ): Promise<ApiResponse<VideoResponseDto>> {
+        return await this.videoService.streamVideo( courseId, videoTopicId, videoId );
     }
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(
         @Param('courseId') courseId: number,
-        @Param('videoTitle') videoTitle: string,
+        @Body() createVideoDto: CreateVideoDto,
         @Param('videoTopicId') videoTopicId: number,
         @UploadedFile() file: Express.Multer.File
     ): Promise< { message: string }> {
@@ -88,7 +102,7 @@ export class VideoController {
             throw new BadRequestException('파일이 전송되지 않았습니다.');
         }
         
-        return this.videoService.uploadVideo(courseId, videoTitle, videoTopicId, file);
+        return this.videoService.uploadVideo(courseId, createVideoDto, videoTopicId, file);
     }
 
     @Patch('update/:videoId')

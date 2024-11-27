@@ -10,6 +10,10 @@ import { Response } from 'express';
 import { Readable } from 'stream';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { CreateVideoDto } from './dto/create-video.dto';
+import { create } from 'domain';
+import { VideoResponseDto } from './dto/video-response.dto';
+import { ApiResponse } from 'src/common/api-response.dto';
 
 @Injectable()
 export class VideoService {
@@ -128,16 +132,62 @@ export class VideoService {
     //     return video; // 삭제된 비디오 객체를 반환
     // }
 
+    // Express를 활용해 영상 직접 스트리밍하는 service 코드
+    // async streamVideo(
+    //     courseId: number, 
+    //     videoTopicId: number,
+    //     video_id: number,
+    //     res: Response
+    // ): Promise<void> {
+    //     await this.validate(courseId, videoTopicId);
+
+    //     const video = await this.videoRepository.findOne({
+    //         where: { video_id }
+    //     });
+
+    //     if (!video || !video.video_url) {
+    //         throw new NotFoundException('비디오를 찾을 수 없습니다.');
+    //     }
+
+    //     const bucketName = process.env.AWS_S3_BUCKET_NAME;
+    //     if (!bucketName) {
+    //         throw new Error('AWS S3 bucket name is not configured');
+    //     }
+
+    //     try {
+    //         const command = new GetObjectCommand({
+    //             Bucket: bucketName,
+    //             Key: video.video_url,
+    //         });
+
+    //         const data = await this.s3.send(command);
+    //         const stream = data.Body as Readable; // 타입을 Readable로 명시적으로 지정
+
+    //         if (!stream) {
+    //             throw new Error('파일 스트림을 가져올 수 없습니다.');
+    //         }
+    //         res.setHeader('Content-Type', 'video/mp4'); // MIME 타입 설정
+    //         res.setHeader('Accept-Ranges', 'bytes'); // 바이트 범위 수신 허용
+
+    //         // 스트리밍을 위해 파이프하기
+    //         stream.pipe(res);
+    //     } catch (error) {
+    //         console.error('비디오 스트리밍 실패:', error);
+    //         throw new InternalServerErrorException(`비디오 스트리밍에 실패했습니다: ${error.message}`);
+    //     }
+    // }
+    
     async streamVideo(
         courseId: number, 
         videoTopicId: number,
         video_id: number,
-        res: Response
-    ): Promise<void> {
+    ): Promise<ApiResponse<VideoResponseDto>> {
+        // 강의와 비디오 주제 유효성 검증
         await this.validate(courseId, videoTopicId);
 
+        // 비디오 정보 조회
         const video = await this.videoRepository.findOne({
-            where: { video_id }
+            where: { video_id: video_id }
         });
 
         if (!video || !video.video_url) {
@@ -146,35 +196,47 @@ export class VideoService {
 
         const bucketName = process.env.AWS_S3_BUCKET_NAME;
         if (!bucketName) {
-            throw new Error('AWS S3 bucket name is not configured');
+            throw new Error('AWS S3 bucket name이 설정되지 않았습니다.');
         }
 
         try {
+            // S3 GetObject 명령 생성
             const command = new GetObjectCommand({
                 Bucket: bucketName,
                 Key: video.video_url,
             });
 
-            const data = await this.s3.send(command);
-            const stream = data.Body as Readable; // 타입을 Readable로 명시적으로 지정
+            // pre-signed URL 생성 (1시간 유효)
+            const preSignedUrl = await getSignedUrl(this.s3, command, {
+                expiresIn: 3600 // 1시간 후 만료
+            });
 
-            if (!stream) {
-                throw new Error('파일 스트림을 가져올 수 없습니다.');
-            }
-            res.setHeader('Content-Type', 'video/mp4'); // MIME 타입 설정
-            res.setHeader('Accept-Ranges', 'bytes'); // 바이트 범위 수신 허용
+            const videoWithSignedUrl = {
+                ...video,
+                video_url: preSignedUrl
+            };
 
-            // 스트리밍을 위해 파이프하기
-            stream.pipe(res);
+            const videoResponse = new VideoResponseDto(videoWithSignedUrl);
+
+            return new ApiResponse(
+                true,                // success
+                200,                // statusCode
+                '비디오 URL이 성공적으로 생성되었습니다.',  // message
+                videoResponse       // data
+            );
         } catch (error) {
-            console.error('비디오 스트리밍 실패:', error);
-            throw new InternalServerErrorException(`비디오 스트리밍에 실패했습니다: ${error.message}`);
+            console.error('스트리밍 URL 생성 실패:', error);
+            throw new InternalServerErrorException(
+                `스트리밍 URL 생성에 실패했습니다: ${error.message}`
+            );
         }
     }
-    
+
+
+
     async uploadVideo(
         courseId: number,
-        videoTitle: string,
+        createVideoDto: CreateVideoDto,
         videoTopicId: number,
         file: Express.Multer.File,
     ): Promise<{ message: string }> {
@@ -198,7 +260,7 @@ export class VideoService {
             await this.s3.send(command);
             const url = `${fileName}`; // 저장할 객체 키 명시적으로 작성
             
-            await this.saveVideo(url, videoTitle, videoTopicId);
+            await this.saveVideo(url, createVideoDto, videoTopicId);
             return { message: '성공적으로 업로드하셨습니다.' };
 
         } catch (error) {
@@ -209,7 +271,7 @@ export class VideoService {
 
     async saveVideo(
         video_url: string,
-        videoTitle: string,
+        createVideoDto: CreateVideoDto,
         videoTopicId: number,
     ): Promise<void> {
         try {
@@ -222,8 +284,8 @@ export class VideoService {
             // Create video entity with relations to course and video topic
             const video = this.videoRepository.create({
                 video_url: video_url,
-                video_title: videoTitle,
-                videoTopic: videoTopic  
+                video_title: createVideoDto.video_title,
+                videoTopic: videoTopic
             });
             // Save video entity
             await this.videoRepository.save(video);

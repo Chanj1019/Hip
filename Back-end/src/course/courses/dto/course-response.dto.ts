@@ -1,6 +1,7 @@
 import { Course } from '../entities/course.entity';
 
 export class CourseResponseDto {
+    course_id: number;
     course_title: string;
     description: string;
     instructor_name: string;
@@ -8,6 +9,7 @@ export class CourseResponseDto {
     generation: string;
 
     constructor(course: Course) {
+        this.course_id = course?.course_id;
         this.course_title = course.course_title;
         this.description = course.description;
         this.instructor_name = course.instructor_name;

@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request }
 import { CourseRegistrationService } from './course_registration.service';
 import { CreateRequestCourseRegistrationDto } from './dto/create-request-course_registration.dto';
 import { UpdateRequestCourseRegistrationDto } from './dto/update-request-course_registration.dto';
-import { GetAdminResponseCourseRegistrationDto } from './dto/get-admin-course_registration.dto';
+import { CourseRegistationResponseDto } from './dto/courseregistation-response.dto.ts';
 import { CourseRegistration } from './entities/course_registration.entity';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
@@ -37,9 +37,9 @@ export class CourseRegistrationController {
     @Roles('admin')
     async findAllForAdmin(
         @Param('courseId') course_id: number,
-    ): Promise<{ message: string, data: GetAdminResponseCourseRegistrationDto[] }> {
+    ): Promise<{ message: string, data: CourseRegistationResponseDto[] }> {
         const foundRegistrations = await this.courseRegistrationService.findAllCoursesWithRegistrationsForAdmin(course_id);
-        const responseDtos = foundRegistrations.map(responseDto => new GetAdminResponseCourseRegistrationDto(responseDto));
+        const responseDtos = foundRegistrations.map(responseDto => new CourseRegistationResponseDto(responseDto));
 
         return {
             message: "수강 신청 정보가 조회되었습니다.",
@@ -47,15 +47,27 @@ export class CourseRegistrationController {
         };
     }
 
-    // <student,instructor> 개인 수강 신청 상태 조회
     @Get(':id')
     @Roles('student','instructor')
     async findOne(
         @Param('id') id: number,
         @Param('courseId') courseId: number
     ): Promise<{ message: string, data: CourseRegistration }> {
-        const generation = '3기';
         const data = await this.courseRegistrationService.findOne(id, courseId);
+
+        return {
+            message: "수강 신청 정보가 조회되었습니다.",
+            data: data
+        };
+    }
+
+    @Get(':id/approvedcourse')
+    @Roles('student','instructor')
+    async findOneApprovedRegistration(
+        @Param('id') id: number,
+        @Param('courseId') courseId: number
+    ): Promise<{ message: string, data: CourseRegistration }> {
+        const data = await this.courseRegistrationService.findOneApprovedRegistration(id, courseId);
 
         return {
             message: "수강 신청 정보가 조회되었습니다.",
@@ -125,5 +137,5 @@ export class CourseRegistrationController {
     // }
 
 }
-export { GetAdminResponseCourseRegistrationDto };
+export { CourseRegistationResponseDto };
 
