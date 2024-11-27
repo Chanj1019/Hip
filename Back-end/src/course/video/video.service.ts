@@ -14,6 +14,7 @@ import { CreateVideoDto } from './dto/create-video.dto';
 import { create } from 'domain';
 import { VideoResponseDto } from './dto/video-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
+import { OpenaiService } from 'src/openai/openai.service';
 
 @Injectable()
 export class VideoService {
@@ -24,7 +25,8 @@ export class VideoService {
         @InjectRepository(VideoTopic)
         private readonly videoTopicRepository: Repository<VideoTopic>,
         @InjectRepository(Video)
-        private readonly videoRepository: Repository<Video>
+        private readonly videoRepository: Repository<Video>,
+        private readonly openaiService: OpenaiService
     ){
         const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
         const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
@@ -365,6 +367,32 @@ export class VideoService {
         return await this.videoRepository.save(video);
     }
     
+    async forSummary(video: Video): Promise<string> {
+        const bucketName = process.env.AWS_S3_BUCKET_NAME;
+
+        // S3 GetObject 명령 생성
+        const command = new GetObjectCommand({
+            Bucket: bucketName,
+            Key: video.video_url, // S3에 저장된 파일의 키 사용
+        });
+
+        try {
+            // 서명된 URL 생성 (1시간 유효)
+            const preSignedUrl = await getSignedUrl(this.s3, command, { expiresIn: 3600 });
+
+            // OpenAI 서비스에 서명된 URL을 요청
+            const { summary } = await this.openaiService.processVideo(preSignedUrl);
+
+            // 요약을 데이터베이스에 저장
+            video.Summary = summary;
+            await this.videoRepository.save(video); // 비디오 엔티티 업데이트
+
+            return summary;
+        } catch (error) {
+            console.error('비디오 가져오기 실패:', error);
+            throw new InternalServerErrorException(`비디오 가져오기 실패: ${error.message}`);
+        }
+    }
 }
 
 

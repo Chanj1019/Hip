@@ -7,6 +7,7 @@ import { OpenaiService } from '../../openai/openai.service';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { VideoResponseDto } from './dto/video-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
+import { videoSummary } from './dto/videosummary.dto';
 
 
 @Controller('courses/:courseId/:videoTopicId/video')
@@ -139,43 +140,35 @@ export class VideoController {
         @Param('videoTopicId') videoTopicId: number,
         @Param('videoId') videoId: number
     ): Promise<{ summary: string }> {
-        // videoId를 사용하여 비디오 URL을 가져옵니다.
+        // 비디오 정보를 조회
         const video = await this.videoService.findVideo(courseId, videoTopicId, videoId);
         
-        if (!video || !video.video_url) {
-            throw new NotFoundException('비디오를 찾을 수 없습니다.');
-        }
-    
-        // 비디오 URL을 사용하여 OpenAI 서비스에 요청
-        const { summary } = await this.openaiService.processVideo(video.video_url);
-    
-        // 요약을 데이터베이스에 저장
-        video.Summary = summary;
-        await this.videoService.videoUpdate(video); // 비디오 엔티티를 업데이트하는 서비스 메서드 필요
+        // S3에서 비디오를 가져오고 OpenAI 서비스에 요청
+        const summary = await this.videoService.forSummary(video);
         
         return { summary };
     }
     
     @Get('summary/:videoId')
-    async asd(
+    async summary(
         @Param('courseId') courseId: number,
         @Param('videoTopicId') videoTopicId: number,
         @Param('videoId') videoId: number
-    ): Promise<{ summary: string }> {
-        // videoId를 사용하여 비디오 URL을 가져옵니다.
+    ): Promise<videoSummary> {
+        // videoId를 사용하여 비디오 정보를 가져옵니다.
         const video = await this.videoService.findVideo(courseId, videoTopicId, videoId);
         
         if (!video || !video.video_url) {
             throw new NotFoundException('비디오를 찾을 수 없습니다.');
         }
-    
-        // 비디오 URL을 사용하여 OpenAI 서비스에 요청
-        const { summary } = await this.openaiService.processVideo(video.video_url);
-    
-        // 요약을 데이터베이스에 저장
-        video.Summary = summary;
-        await this.videoService.videoUpdate(video); 
+
+        // 데이터베이스에서 요약을 가져옵니다.
+        const summary = video.Summary; // 이미 저장된 요약 가져오기
         
-        return { summary };
+        if (!summary) {
+            throw new NotFoundException('저장된 요약이 없습니다.');
+        }
+        
+        return { summary }; // videoSummary DTO 형태로 반환
     }
 }
