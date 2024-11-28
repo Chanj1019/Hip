@@ -17,7 +17,7 @@ export class Video {
     @JoinColumn({ name: 'video_topic_id' })
     videoTopic: VideoTopic;
 
-    @Column({ nullable: true }) // nullable을 true로 설정
+    @Column({ nullable: true, type: 'text', name: 'summary' }) // nullable을 true로 설정
     @IsOptional()
-    Summary?: string; // 선택적 속성
+    summary?: string; // 선택적 속성
 }
