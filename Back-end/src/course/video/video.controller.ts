@@ -154,21 +154,15 @@ export class VideoController {
         @Param('courseId') courseId: number,
         @Param('videoTopicId') videoTopicId: number,
         @Param('videoId') videoId: number
-    ): Promise<videoSummary> {
+    ): Promise<ApiResponse<videoSummary>> {
         // videoId를 사용하여 비디오 정보를 가져옵니다.
-        const video = await this.videoService.findVideo(courseId, videoTopicId, videoId);
-        
-        if (!video || !video.video_url) {
-            throw new NotFoundException('비디오를 찾을 수 없습니다.');
-        }
-
-        // 데이터베이스에서 요약을 가져옵니다.
-        const summary = video.Summary; // 이미 저장된 요약 가져오기
+        const summary = await this.videoService.findSummary(courseId, videoTopicId, videoId);
         
         if (!summary) {
-            throw new NotFoundException('저장된 요약이 없습니다.');
+            throw new NotFoundException('문제발생');
         }
-        
-        return { summary }; // videoSummary DTO 형태로 반환
+
+
+        return summary; // videoSummary DTO 형태로 반환
     }
 }

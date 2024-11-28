@@ -15,6 +15,7 @@ import { create } from 'domain';
 import { VideoResponseDto } from './dto/video-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
 import { OpenaiService } from 'src/openai/openai.service';
+import { videoSummary } from './dto/videosummary.dto';
 
 @Injectable()
 export class VideoService {
@@ -384,7 +385,7 @@ export class VideoService {
             const { summary } = await this.openaiService.processVideo(preSignedUrl);
 
             // 요약을 데이터베이스에 저장
-            video.Summary = summary;
+            video.summary = summary;
             await this.videoRepository.save(video); // 비디오 엔티티 업데이트
 
             return summary;
@@ -392,6 +393,34 @@ export class VideoService {
             console.error('비디오 가져오기 실패:', error);
             throw new InternalServerErrorException(`비디오 가져오기 실패: ${error.message}`);
         }
+    }
+
+    async findSummary(courseId: number, videoTopicId: number, id: number): Promise<ApiResponse<videoSummary>> {
+        await this.validate(courseId, videoTopicId);
+        const video = await this.videoRepository.findOne({
+            where: { video_id: id }
+        });
+        console.log('조회된 비디오 정보:', {
+            video_id: video?.video_id,
+            video_title: video?.video_title,
+            summary: video?.summary,  // DB에 있는 실제 값 확인
+            summaryType: typeof video?.summary  // 데이터 타입 확인
+        });
+        if (!video) {
+            throw new NotFoundException('비디오를 찾을 수 없습니다');
+        }
+        if (!video.summary) {
+            throw new NotFoundException('요약이 아직 생성되지 않았습니다');
+        }
+
+        const videoSummary: videoSummary = { summary: video.summary };
+
+        return new ApiResponse(
+            true,                // success
+            200,                // statusCode
+            '요약이 반환되었습니다.',  // message
+            videoSummary       // data
+        );
     }
 }
 
