@@ -1,6 +1,6 @@
 # :star2:HIP(Hongik University Intelligent Platform)
 * #### Hongik Metaverse Software Convergence Academy
-* ##### development period : 2024.08.01 ~
+* ##### development period : 2024.08.01 ~ 2024.11.30
 * ##### Front-end GitHub : <https://github.com/jhon829/HIP_Front/>
 * ##### Back-end GitHub : <http://github.com/Chanjin1019/Hip/>
 
