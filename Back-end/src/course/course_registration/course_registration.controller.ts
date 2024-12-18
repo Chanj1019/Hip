@@ -68,7 +68,7 @@ export class CourseRegistrationController {
         @Param('courseId') courseId: number
     ): Promise<{ message: string, data: CourseRegistration }> {
         const data = await this.courseRegistrationService.findOneApprovedRegistration(id, courseId);
-
+        console.log(data);
         return {
             message: "수강 신청 정보가 조회되었습니다.",
             data: data
@@ -80,9 +80,9 @@ export class CourseRegistrationController {
     @Patch(':id/update')
     @Roles('admin')
     async update(
+        @Param('course') courseId: number,
         @Param('id') id: number, 
-        @Body() updateRequestCourseRegistrationDto: UpdateRequestCourseRegistrationDto,
-        @Param('course') courseId: number
+        @Body() updateRequestCourseRegistrationDto: UpdateRequestCourseRegistrationDto
     ) {
         const data = this.courseRegistrationService.update(id, updateRequestCourseRegistrationDto, courseId);
         return {
