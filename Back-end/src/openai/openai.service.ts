@@ -18,7 +18,7 @@ export class OpenaiService {
         };
 
         const data = {
-            model: 'gpt-3.5-turbo', // 사용할 모델
+            model: 'gpt-4o-mini', // 사용할 모델
             messages: [{ role: 'user', content: prompt }],
         };
 
@@ -35,7 +35,7 @@ export class OpenaiService {
     async summarizeText(text: string): Promise<string> {
         const prompt = 
         `
-[강의 텍스트] 아래의 텍스트는 강의 영상에서 추출한 내용이다. 이 텍스트를 읽고 다음 중요 사항을 포함하는 요약문을 작성해라:
+아래의 텍스트는 강의 영상에서 추출한 내용이다. 이 텍스트를 읽고 다음 중요 사항을 포함하는 요약문을 작성해라:
 * 강의의 주제와 핵심 메시지
 * 강의에서 다룬 주요 개념, 이론, 아이디어
 * 실습한 내용이 있다면 실습 내용
