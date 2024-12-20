@@ -24,12 +24,6 @@ export class Project {
     @Column({ type: 'varchar', length: 50, nullable: true })
     team_name: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    profile: string; // 파일의 경로 또는 URL
-
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    requirements: string;
-
     @Column({ type: 'varchar', length: 10, nullable: false })
     generation: string;
 
