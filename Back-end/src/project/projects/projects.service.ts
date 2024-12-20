@@ -46,7 +46,8 @@ export class ProjectsService {
     }
     
     async findAll(): Promise<Project[]> {
-        return this.projectsRepository.find();
+        const data =  this.projectsRepository.find();
+        return data;
     }
     
     async findOne(id: number): Promise<Project> {
