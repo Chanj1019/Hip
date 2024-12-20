@@ -46,16 +46,15 @@ export class ProjectsService {
     }
     
     async findAll(): Promise<Project[]> {
-        return this.projectsRepository.find();
+        const data =  this.projectsRepository.find();
+        return data;
     }
     
     async findOne(id: number): Promise<Project> {
         const project = await this.projectsRepository.findOne({ where: { project_id: id } });
         if (!project) {
-            if (!project) {
-                this.logger.warn(`Project with ID ${id} not found`);
-                throw new NotFoundException(`Project with ID ${id} not found`);
-            }
+            this.logger.warn(`Project with ID ${id} not found`);
+            throw new NotFoundException(`Project with ID ${id} not found`);
         }
         return project;
     }

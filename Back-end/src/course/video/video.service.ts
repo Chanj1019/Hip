@@ -222,7 +222,6 @@ export class VideoService {
             const videoResponse = new VideoResponseDto(videoWithSignedUrl);
 
             return new ApiResponse(
-                true,                // success
                 200,                // statusCode
                 '비디오 URL이 성공적으로 생성되었습니다.',  // message
                 videoResponse       // data

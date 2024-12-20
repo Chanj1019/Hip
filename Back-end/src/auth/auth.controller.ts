@@ -55,8 +55,8 @@ export class AuthController {
             const redirectUrl = `${process.env.FRONTEND_URL}/auth/kakao/callback?success=true&jwtToken=${jwtToken}`;
             res.redirect(redirectUrl);
         } catch (error) {
-            console.error('Error during Kakao login processing:', error);
-            res.status(500).json(new ApiResponse(false, 500, 'Kakao login failed', error));
+            console.error('Error during Kakao login processing:');
+            res.status(500).json(new ApiResponse(500, 'Kakao login failed'));
         }
     }
     
