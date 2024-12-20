@@ -58,10 +58,10 @@ export class ProjectsController {
     async remove(
         @Param('id', ParseIntPipe) id: number
     ): Promise<{ message: string; }> {
-        const data = await this.projectsService.remove(id);
-    return {
-        message: "프로젝트가 삭제되었습니다."
-    };
-}
+        await this.projectsService.remove(id);
+        return {
+            message: "프로젝트가 삭제되었습니다."
+        };
+    }
 
 }
