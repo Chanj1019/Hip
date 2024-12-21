@@ -9,13 +9,13 @@ export class Feedback {
     @Column()
     feedback_content: string;
 
-    // feedback - project_doc
-    @ManyToOne(() => ProjectDoc, (project_doc) => project_doc.feedbacks)
-    projectDoc: ProjectDoc;
-
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
+
+    // feedback - project_doc
+    @ManyToOne(() => ProjectDoc, (project_doc) => project_doc.feedbacks)
+    projectDoc: ProjectDoc;
 }

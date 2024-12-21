@@ -6,6 +6,9 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColum
 export class ProjectDoc {
     @PrimaryGeneratedColumn()
     project_doc_id: number;
+    
+    @Column({ type: 'varchar', length: 50 })
+    project_doc_title: string;
 
     @Column({ type: 'varchar', length: 255 })
     description: string;

@@ -12,8 +12,8 @@ export class Project {
     topic: string;
 
     @Column({ type: 'varchar', nullable: false, length: 50, unique: true })
-    class: string;
-
+    className: string;
+    
     @Column({
         type: 'enum',
         enum: ['in_progress', 'completed'],

@@ -8,7 +8,7 @@ export class UpdateProjectDto {
 
     @IsOptional()
     @IsString()
-    class?: string;
+    className?: string;
 
     @IsOptional()
     @IsEnum(ProjectStatus)

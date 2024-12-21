@@ -3,9 +3,9 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CreateProjectDocDto {
     @IsNotEmpty()
     @IsString()
-    description: string;
-
+    project_doc_title: string;
+    
     @IsNotEmpty()
     @IsString()
-    projectId: number;
+    description: string;
 }
