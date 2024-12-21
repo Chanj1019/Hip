@@ -7,7 +7,10 @@ export class CreateProjectDto {
 
     @IsString()
     @IsNotEmpty()
-    class: string;
+    className: string;
+
+    @IsString()
+    team_name: string;
 
     @IsString()
     @IsNotEmpty()
