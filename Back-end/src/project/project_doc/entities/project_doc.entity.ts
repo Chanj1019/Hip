@@ -6,15 +6,15 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColum
 export class ProjectDoc {
     @PrimaryGeneratedColumn()
     project_doc_id: number;
+    
+    @Column({ type: 'varchar', length: 50 })
+    project_doc_title: string;
 
     @Column({ type: 'varchar', length: 255 })
     description: string;
 
     @Column({ type: 'varchar', length: 255 })
     file_path: string; // 파일 경로
-
-    @Column({ type: 'varchar', length: 50 })
-    project_doc_title: string; // 파일 경로
 
     // project_doc - project
     @ManyToOne(() => Project, (project) => project.project_docs)
