@@ -13,6 +13,9 @@ export class ProjectDoc {
     @Column({ type: 'varchar', length: 255 })
     file_path: string; // 파일 경로
 
+    @Column({ type: 'varchar', length: 50 })
+    project_doc_title: string; // 파일 경로
+
     // project_doc - project
     @ManyToOne(() => Project, (project) => project.project_docs)
     @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
