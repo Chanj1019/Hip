@@ -50,7 +50,7 @@ export class User {
     projects: Project[];
 
     // user - project_registration 연결 추가
-    @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.user)
+    @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.user, { cascade: true })
     project_registrations: ProjectRegistration[];
 
     // user - course_registration  연결 추가

@@ -14,7 +14,7 @@ export class ProjectRegistrationController {
     constructor(private readonly projectRegistrationService: ProjectRegistrationService) {}
 
     @Post('register')
-    // @Roles('student')
+    @Roles('student')
     async create(
         @Body() createProjectRegistrationDto: CreateProjectRegistrationDto, 
         @Request() req, 
@@ -32,7 +32,7 @@ export class ProjectRegistrationController {
     }
 
     @Get()
-    // @Roles('instructor', 'admin')
+    @Roles('instructor', 'admin')
     async findAll(
         @Param('project') projectId: number,
     ): Promise<ApiResponse<ProjectRegistrationResponseDto[]>> {
@@ -52,7 +52,7 @@ export class ProjectRegistrationController {
     // }
 
     @Patch(':id')
-    // @Roles('instructor','admin')
+    @Roles('instructor','admin')
     async update(
         @Param('id') id: number, 
         @Body() updateProjectRegistrationDto: UpdateProjectRegistrationDto, 
@@ -65,7 +65,7 @@ export class ProjectRegistrationController {
 
     // 프로젝트 참가 신청을 삭제
     @Delete(':id')
-    // @Roles('student')
+    @Roles('student')
     async remove(
         @Param('id') id: number, 
         @Param('project') projectId: number

@@ -20,7 +20,7 @@ export class ProjectsService {
         private readonly projectRegistrationRepository: Repository<ProjectRegistration>,
     ) {}
 
-    async isApprovedStudent(loginedUserId: number, projectId: number): Promise<boolean> {
+    async isApproved(loginedUserId: number, projectId: number): Promise<boolean> {
         const registration = await this.projectRegistrationRepository.findOne({
             where: {
                 user: { user_id: loginedUserId }, // 현재 로그인한 사용자 ID
@@ -28,6 +28,7 @@ export class ProjectsService {
                 registration_status: Registration.APPROVED, // 승인된 상태 확인
             },
         });
+        // true나 false를 반환
         return !!registration;
     }    
 
@@ -46,12 +47,18 @@ export class ProjectsService {
     }
     
     async findAll(): Promise<Project[]> {
-        const data =  this.projectsRepository.find();
+        const data = await this.projectsRepository.find({
+            relations: ['users', 'project_docs', 'project_registrations'],
+          });
         return data;
     }
     
     async findOne(id: number): Promise<Project> {
-        const project = await this.projectsRepository.findOne({ where: { project_id: id } });
+        const project = await this.projectsRepository.findOne(
+            { 
+                where: { project_id: id } 
+            }
+        );
         if (!project) {
             this.logger.warn(`Project with ID ${id} not found`);
             throw new NotFoundException(`Project with ID ${id} not found`);
@@ -59,16 +66,17 @@ export class ProjectsService {
         return project;
     }
     
-    async update(id: number, updateProjectDto: UpdateProjectDto, loginedUser:number): Promise<Project> {
+    async update(id: number, updateProjectDto: UpdateProjectDto, loginedUser: number): Promise<Project> {
         const project = await this.findOne(id);
 
         // 해당 프로젝트에 대한 승인된 학생인지
-        const approvedStudent = await this.isApprovedStudent(loginedUser, id);
+        const approvedStudent = await this.isApproved(loginedUser, id);
 
         if (!approvedStudent) {
             throw new ConflictException(`수정 권한이 없습니다.`);
         }
     
+        // 구조 분해 할당
         const { team_name, topic } = updateProjectDto;
 
         // 팀 이름 중복 확인 (현재 프로젝트를 제외하고)

@@ -15,7 +15,7 @@ export class ProjectsController {
     constructor(private readonly projectsService: ProjectsService) {}
  
     @Post('register')
-    // @Roles('admin','instructor')
+    @Roles('admin','instructor')
     async create(
         @Body() createProjectDto: CreateProjectDto
     ): Promise<ApiResponse<ProjectResponseDto>> {
@@ -37,7 +37,7 @@ export class ProjectsController {
     }
 
     @Patch(':id/update')
-    // @Roles('instructor','admin','student')
+    @Roles('instructor','admin','student')
     @UseGuards(ApprovedStudentGuard)
     async update(
         @Param('id',ParseIntPipe) id: number, 
@@ -54,7 +54,7 @@ export class ProjectsController {
     }
 
     @Delete(':id/delete')
-    // @Roles('admin', 'instructor')
+    @Roles('admin', 'instructor')
     async remove(
         @Param('id', ParseIntPipe) id: number
     ): Promise<{ message: string; }> {

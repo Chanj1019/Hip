@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Unique } from 'typeorm';
 import { ProjectRegistration } from './entities/registration.entity';
 import { CreateProjectRegistrationDto } from './dto/create-registration.dto';
 import  { User } from '../../user/user.entity';
@@ -8,6 +8,7 @@ import { Project } from '../../project/projects/entities/project.entity';
 import { ConflictException } from '@nestjs/common';
 import { UpdateProjectRegistrationDto } from './dto/update-registration.dto';
 
+// @Unique(['user', 'project']) // user와 project가 중복되지 않도록 설정
 @Injectable()
 export class ProjectRegistrationService {
     constructor(
@@ -59,7 +60,11 @@ export class ProjectRegistrationService {
     // user 참고하여 user_name과 id를 함께 반환
     async findAll(projectId: number): Promise<{ projectRegistration: ProjectRegistration; userName: string; userId: string, projectTopic: string }[]> {
         await this.validateProjectId(projectId);
-        const info = await this.projectRegistrationRepository.find({ relations: ['user', 'project'] });  // 각 등록에 대한 사용자와 프로젝트 정보
+        const info = await this.projectRegistrationRepository.find(
+            { 
+                relations: ['user', 'project']
+            }
+        );  // 각 등록에 대한 사용자와 프로젝트 정보
         return info.map(registration => ({
             projectRegistration: registration,
             userName: registration.user.user_name,
