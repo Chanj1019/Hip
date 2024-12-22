@@ -21,7 +21,7 @@ export class Project {
     })
     project_status: 'in_progress' | 'completed';
 
-    @Column({ type: 'varchar', length: 50, nullable: true })
+    @Column({ type: 'varchar', length: 50, nullable: true, unique: true })
     team_name: string;
 
     @Column({ type: 'varchar', length: 10, nullable: false })
