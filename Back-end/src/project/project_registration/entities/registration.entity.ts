@@ -30,12 +30,12 @@ export class ProjectRegistration {
     team_role: TeamRole;
 
     // project_registration - user
-    @ManyToOne(() => User, (user) => user.project_registrations)
+    @ManyToOne(() => User, (user) => user.project_registrations, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' }) // 외래 키 지정
     user: User;
 
     // project_registration - project
-    @ManyToOne(() => Project, (project) => project.project_registrations)
+    @ManyToOne(() => Project, (project) => project.project_registrations, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'project_id' }) // 외래 키 지정
     project: Project;
 }
