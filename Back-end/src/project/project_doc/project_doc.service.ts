@@ -49,7 +49,6 @@ export class ProjectDocService {
     }
 
     async create(projectId: number, createProjectDocDto: CreateProjectDocDto, file: Express.Multer.File): Promise<ProjectDoc> {
-
         // S3에 파일 업로드
         const uniqueFileName = `${uuidv4()}_${file.originalname}`;
         let uploadResult;
@@ -90,7 +89,7 @@ export class ProjectDocService {
     async findAll(projectId: number): Promise<ProjectDoc[]> {
         await this.validateProjectId(projectId);
         return await this.projectDocRepository.find({
-        relations: ['project'],
+        relations: ['project', 'feedbacks'],
         });
     }
 
@@ -101,7 +100,7 @@ export class ProjectDocService {
             where: {
                 project_doc_id: id,
             },
-            relations: ['project'], // 연관된 프로젝트도 함께 가져오기
+            relations: ['project', 'feedbacks'], // 연관된 프로젝트도 함께 가져오기
         });
         if (!doc) {
             throw new NotFoundException(`Registration with ID ${id} not found`);

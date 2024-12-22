@@ -17,7 +17,7 @@ export class ProjectDocController {
     constructor(private readonly projectDocsService: ProjectDocService) {}
 
     @Post('register')
-    // @Roles('instructor','student','admin')
+    @Roles('instructor','student','admin')
     @UseInterceptors(FileInterceptor('file'))  // 'file' 필드에서 파일을 업로드 받음
     async create(
         @Param('projectId') projectId: number,
@@ -49,7 +49,7 @@ export class ProjectDocController {
     }
     
     @Put(':id/update')
-    // @Roles('instructor','student','admin')
+    @Roles('instructor','student','admin')
     async update(
         @Param('id') id: number, 
         @Body() updateProjectDocDto: UpdateProjectDocDto,
@@ -61,7 +61,7 @@ export class ProjectDocController {
     }
 
     @Delete(':id/delete')
-    // @Roles('instructor','student','admin')
+    @Roles('instructor','student','admin')
     async remove(
         @Param('id') id: number,
         @Param('projectId') projectId: number
