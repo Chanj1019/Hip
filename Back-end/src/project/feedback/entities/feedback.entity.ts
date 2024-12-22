@@ -16,6 +16,6 @@ export class Feedback {
     updatedAt: Date;
 
     // feedback - project_doc
-    @ManyToOne(() => ProjectDoc, (project_doc) => project_doc.feedbacks)
+    @ManyToOne(() => ProjectDoc, (project_doc) => project_doc.feedbacks, { onDelete: 'CASCADE' })
     projectDoc: ProjectDoc;
 }

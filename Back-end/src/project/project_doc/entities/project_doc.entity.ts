@@ -17,11 +17,11 @@ export class ProjectDoc {
     file_path: string; // 파일 경로
 
     // project_doc - project
-    @ManyToOne(() => Project, (project) => project.project_docs)
+    @ManyToOne(() => Project, (project) => project.project_docs, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
     project: Project;
 
     // project_Doc - feedback
-    @OneToMany(() => Feedback, (feedback) => feedback.projectDoc)
+    @OneToMany(() => Feedback, (feedback) => feedback.projectDoc, { cascade: true })
     feedbacks: Feedback[];
 }
