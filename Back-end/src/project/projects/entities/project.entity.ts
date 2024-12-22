@@ -32,10 +32,10 @@ export class Project {
     users: User[];
 
     // project - project_registration
-    @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.project)
+    @OneToMany(() => ProjectRegistration, (project_registration) => project_registration.project, { cascade: true, onDelete: 'CASCADE' })
     project_registrations: ProjectRegistration;
 
     // project - project_doc
-    @OneToMany(() => ProjectDoc, (project_doc) => project_doc.project)
+    @OneToMany(() => ProjectDoc, (project_doc) => project_doc.project, { cascade: true, onDelete: 'CASCADE' })
     project_docs: ProjectDoc[];
 }
