@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinTabl
 import { User } from '../../../user/user.entity';
 import { ProjectDocTitle } from '../../project_doc_title/entities/project_doc_title.entity';
 import { ProjectRegistration } from 'src/project/project_registration/entities/registration.entity';
+import { ProjectKeyDoc } from 'src/project/project_key_doc/entities/project_key_doc.entity';
 
 @Entity()
 export class Project {
@@ -38,4 +39,8 @@ export class Project {
     // project - project_doc
     @OneToMany(() => ProjectDocTitle, (project_doc_title) => project_doc_title.project, { cascade: true })
     project_docs: ProjectDocTitle[];
+
+    // project - project_key_doc
+    @OneToMany(() => ProjectKeyDoc, (project_key_doc) => project_key_doc.project, { cascade: true })
+    keyDocs: ProjectKeyDoc[];
 }
