@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Feedback } from './entities/feedback.entity';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
-import { ProjectDoc } from '../project_doc/entities/project_doc.entity'; // project_doc 엔티티 경로에 맞게 수정
+import { ProjectDocTitle } from '../project_doc_title/entities/project_doc_title.entity'; // project_doc 엔티티 경로에 맞게 수정
 import { Project } from '../projects/entities/project.entity';
 import { NotFound } from '@aws-sdk/client-s3';
 
@@ -13,8 +13,8 @@ export class FeedbackService {
     constructor(
         @InjectRepository(Feedback)
         private feedbackRepository: Repository<Feedback>,
-        @InjectRepository(ProjectDoc)
-        private projectDocRepository: Repository<ProjectDoc>,
+        @InjectRepository(ProjectDocTitle)
+        private projectDocRepository: Repository<ProjectDocTitle>,
         @InjectRepository(Project)
         private readonly projectsRepository: Repository<Project>
     ) {}

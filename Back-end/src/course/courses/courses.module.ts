@@ -13,7 +13,7 @@ import { CourseDocModule } from '../course_doc/course_doc.module';
 import { DocNameModule } from '../doc_name/doc_name.module';
 import { CourseRegistration } from '../course_registration/entities/course_registration.entity';
 import { CourseRegistrationModule } from '../course_registration/course_registration.module';
-import { ProjectDocModule } from '../../project/project_doc/project_doc.module';
+import { ProjectDocModule } from '../../project/project_doc_title/project_doc_title.module';
 import { FeedbackModule } from '../../project/feedback/feedback.module';
 import { UsersController } from 'src/user/users.controller';
 import { UsersService } from 'src/user/users.service';

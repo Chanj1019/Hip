@@ -3,12 +3,12 @@ import { Project } from '../../projects/entities/project.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity()
-export class ProjectDoc {
+export class ProjectDocTitle {
     @PrimaryGeneratedColumn()
     project_doc_id: number;
     
     @Column({ type: 'varchar', length: 50 })
-    project_doc_title: string;
+    title: string;
 
     @Column({ type: 'varchar', length: 255 })
     description: string;

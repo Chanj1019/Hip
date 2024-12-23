@@ -10,7 +10,7 @@ import { ExhibitionModule } from 'src/exhibition/exhibitions/exhibitions.module'
 import { ExhibitionsDocModule } from 'src/exhibition/exhibitions_doc/exhibitions_doc.module';
 import { CourseDocModule } from 'src/course/course_doc/course_doc.module';
 import { DocNameModule } from 'src/course/doc_name/doc_name.module';
-import { ProjectDocModule } from 'src/project/project_doc/project_doc.module';
+import { ProjectDocModule } from 'src/project/project_doc_title/project_doc_title.module';
 import { FeedbackModule } from 'src/project/feedback/feedback.module';
 import { CoursesModule } from 'src/course/courses/courses.module';
 dotenv.config();

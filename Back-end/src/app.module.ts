@@ -25,8 +25,8 @@ import { ExhibitionIntro } from './exhibition/exhibition_intro/entities/exhibiti
 import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './project/projects/projects.module';
 import { Project } from './project/projects/entities/project.entity';
-import { ProjectDocModule } from './project/project_doc/project_doc.module';
-import { ProjectDoc } from './project/project_doc/entities/project_doc.entity';
+import { ProjectDocModule } from './project/project_doc_title/project_doc_title.module';
+import { ProjectDoc } from './project/project_doc_title/entities/project_doc_title.entity';
 import { ProjectRegistrationModule } from './project/project_registration/registration.module';
 import { ProjectRegistration } from './project/project_registration/entities/registration.entity';
 import { FeedbackModule } from './project/feedback/feedback.module';

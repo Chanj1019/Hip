@@ -6,7 +6,7 @@ import { ExhibitionService } from '../exhibition/exhibitions/exhibitions.service
 import { ExhibitionsDocService } from '../exhibition/exhibitions_doc/exhibitions_doc.service';
 import { CourseDocService } from '../course/course_doc/course_doc.service';
 import { DocNameService } from '../course/doc_name/doc_name.service';
-import { ProjectDocService } from 'src/project/project_doc/project_doc.service';
+import { ProjectDocService } from 'src/project/project_doc_title/project_doc_title.service';
 import { FeedbackService } from 'src/project/feedback/feedback.service';
 
 

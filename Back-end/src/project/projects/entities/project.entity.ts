@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, JoinTable } from 'typeorm';
 import { User } from '../../../user/user.entity';
-import { ProjectDoc } from '../../project_doc/entities/project_doc.entity';
+import { ProjectDocTitle } from '../../project_doc_title/entities/project_doc_title.entity';
 import { ProjectRegistration } from 'src/project/project_registration/entities/registration.entity';
 
 @Entity()
@@ -36,6 +36,6 @@ export class Project {
     project_registrations: ProjectRegistration;
 
     // project - project_doc
-    @OneToMany(() => ProjectDoc, (project_doc) => project_doc.project, { cascade: true })
-    project_docs: ProjectDoc[];
+    @OneToMany(() => ProjectDocTitle, (project_doc_title) => project_doc_title.project, { cascade: true })
+    project_docs: ProjectDocTitle[];
 }
