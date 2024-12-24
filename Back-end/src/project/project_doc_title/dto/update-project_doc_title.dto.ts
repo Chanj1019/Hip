@@ -1,11 +1,13 @@
-import { IsString, IsOptional, IsInt } from 'class-validator';
+import { IsString, IsOptional, IsInt, IsNumber, IsNotEmpty, Min, Max } from 'class-validator';
 
 export class UpdateProjectDocDto {
-    @IsOptional()
+    @IsNotEmpty()
     @IsString()
     title?: string;
-    
+
+    @IsNumber()
     @IsOptional()
-    @IsString()
-    description?: string;
+    @Min(1)
+    @Max(10000)
+    pa_title_id?: number;
 }
