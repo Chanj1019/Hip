@@ -104,7 +104,9 @@ export class ProjectDocService {
     return new ProjectDocResponseDto(completeProjectDoc);
   }
 
-  async findAll(): Promise<ApiResponse<ProjectDocResponseDto[]>> {
+  async findAll(
+
+  ): Promise<ProjectDocResponseDto[]> {
     try {
       const projectDocs = await this.projectDocRepository.find({
         relations: ['feedbacks'],
@@ -112,7 +114,7 @@ export class ProjectDocService {
 
       const data = projectDocs.map((doc) => new ProjectDocResponseDto(doc));
 
-      return new ApiResponse<ProjectDocResponseDto[]>(200, '전체 조회', data);
+      return data;
     } catch (error) {
       throw new InternalServerErrorException('전체 프로젝트 문서 조회에 실패했습니다.');
     }
@@ -121,19 +123,48 @@ export class ProjectDocService {
   async findOne(
     id: number
   ): Promise<ProjectDocResponseDto> {
-    return 
+    const projectDoc = await this.projectDocRepository.findOne({
+      where: { project_doc_id: id },
+      relations: ['feedbacks'],
+    });
+
+    if (!projectDoc) {
+      throw new InternalServerErrorException('해당 문서를 찾을 수 없습니다.');
+    }
+
+    return new ProjectDocResponseDto(projectDoc);
   }
 
   async update(
     id: number, 
     updateProjectDocDto: UpdateProjectDocDto
   ): Promise<ProjectDocResponseDto> {
-    return 
+    const projectDoc = await this.projectDocRepository.findOne({
+      where: { project_doc_id: id },
+      relations: ['feedbacks'],
+    });
+
+    if (!projectDoc) {
+      throw new InternalServerErrorException('수정할 문서를 찾을 수 없습니다.');
+    }
+
+    Object.assign(projectDoc, updateProjectDocDto);
+
+    const updatedDoc = await this.projectDocRepository.save(projectDoc);
+    return new ProjectDocResponseDto(updatedDoc);
   }
 
   async remove(
     id: number
-  ): Promise<ProjectDocResponseDto> {
-    return 
+  ): Promise<void> {
+    const projectDoc = await this.projectDocRepository.findOne({
+      where: { project_doc_id: id },
+      relations: ['feedbacks'],
+    });
+
+    if (!projectDoc) {
+      throw new InternalServerErrorException('삭제할 문서를 찾을 수 없습니다.');
+    }
+    await this.projectDocRepository.remove(projectDoc);
   }
 }
