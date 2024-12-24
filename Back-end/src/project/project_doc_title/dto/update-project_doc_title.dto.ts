@@ -1,6 +1,6 @@
 import { IsString, IsOptional, IsInt, IsNumber, IsNotEmpty, Min, Max } from 'class-validator';
 
-export class UpdateProjectDocDto {
+export class UpdateProjectDocTitleDto {
     @IsNotEmpty()
     @IsString()
     title?: string;
