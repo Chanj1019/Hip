@@ -1,21 +1,29 @@
 import { ProjectDocTitle } from '../entities/project_doc_title.entity';
-import { FeedbackResponseDto } from '../../feedback/dto/feedback-response.dto';
-import { ProjectResponseDto } from 'src/project/projects/dto/project-response.dto';
+import { ProjectDocResponseDto } from 'src/project/project_doc/dto/project_doc-response.dto';
 
 export class ProjectDocTitleResponseDto {
     project_doc_title_id: number;
-    description: string;
-    file_path: string;
     title: string;
-    project_data: ProjectResponseDto;
-    feedback_data: FeedbackResponseDto[];
+    project_doc_data: ProjectDocResponseDto[];
 
     constructor(projectDocTitle: ProjectDocTitle) {
         this.project_doc_title_id = projectDocTitle.project_doc_id;
-        this.description = projectDocTitle.description;
-        this.file_path = projectDocTitle.file_path;
         this.title = projectDocTitle.title;
-        this.project_data = new ProjectResponseDto(projectDocTitle.project);
-        this.feedback_data = projectDocTitle.feedbacks.map(feedback => new FeedbackResponseDto(feedback));
+        this.project_doc_data = projectDocTitle.project_docs.map(projectDoc => new ProjectDocResponseDto(projectDoc));
+    }
+}
+
+export class NestedProjectDocTitleResponseDto {
+    project_doc_title_id: number;
+    title: string;
+    pa_title_id: number;
+    subTitles: NestedProjectDocTitleResponseDto[];
+
+    constructor(projectDocTitle: ProjectDocTitle) {
+        this.project_doc_title_id = projectDocTitle.project_doc_id;
+        this.title = projectDocTitle.title;
+        this.pa_title_id = projectDocTitle.pa_title_id;
+        this.subTitles = projectDocTitle.subTitles?.map(subTitle => 
+            new NestedProjectDocTitleResponseDto(subTitle)) || [];
     }
 }
