@@ -1,3 +1,4 @@
+import { ProjectDoc } from 'src/project/project_doc/entities/project_doc.entity';
 import { Feedback } from '../../feedback/entities/feedback.entity';
 import { Project } from '../../projects/entities/project.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
@@ -10,18 +11,27 @@ export class ProjectDocTitle {
     @Column({ type: 'varchar', length: 50 })
     title: string;
 
-    @Column({ type: 'varchar', length: 255 })
-    description: string;
+    @Column({ nullable: true })
+    pa_title_id: number;
 
-    @Column({ type: 'varchar', length: 255 })
-    file_path: string; // 파일 경로
+    @ManyToOne(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.subTitles, {
+        nullable: true,
+        onDelete: 'CASCADE'
+    })
+    @JoinColumn({ name: 'pa_title_id' })
+    pa_title: ProjectDocTitle;
 
-    // project_doc - project
+    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.pa_title, {
+        cascade: true
+    })
+    subTitles: ProjectDocTitle[];
+    
+    // project_doc_title - project
     @ManyToOne(() => Project, (project) => project.project_docs, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
     project: Project;
 
-    // project_Doc - feedback
-    @OneToMany(() => Feedback, (feedback) => feedback.projectDoc, { cascade: true })
-    feedbacks: Feedback[];
+    // project_doc_title - project_doc
+    @OneToMany(() => ProjectDoc, (projectDoc) => projectDoc.projectDocTitle, { cascade: true })
+    project_docs: ProjectDoc[];
 }
