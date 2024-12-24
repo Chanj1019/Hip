@@ -9,9 +9,13 @@ import { UsersModule } from '../../user/users.module';
 import { ProjectsModule } from '../projects/projects.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ProjectDocTitle, Project, Feedback]),
-    forwardRef(() => UsersModule), forwardRef(() => ProjectsModule),
-    ProjectsModule],
+    imports: [
+        TypeOrmModule
+        .forFeature([ProjectDocTitle, Project, Feedback]),
+        forwardRef(() => UsersModule), 
+        forwardRef(() => ProjectsModule),
+        ProjectsModule
+    ],
     providers: [ProjectDocService],
     controllers: [ProjectDocController],
     exports: [ProjectDocService],
