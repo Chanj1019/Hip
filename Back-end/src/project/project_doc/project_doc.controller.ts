@@ -23,35 +23,35 @@ export class ProjectDocController {
   }
 
   @Get()
-  findAll(
+  async findAll(
 
   ): Promise<ApiResponse<ProjectDocResponseDto[]>> {
-    const data = this.projectDocService.findAll();
+    const data = await this.projectDocService.findAll();
     return new ApiResponse<ProjectDocResponseDto[]>(200, "전체 조회", data);
   }
 
   @Get(':id')
-  findOne(
+  async findOne(
     @Param('id') id: number
   ): Promise<ApiResponse<ProjectDocResponseDto>> {
-    const data = this.projectDocService.findOne(id);
+    const data = await this.projectDocService.findOne(id);
     return new ApiResponse<ProjectDocResponseDto>(200, "조회", data);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: number, 
     @Body() updateProjectDocDto: UpdateProjectDocDto
   ): Promise<ApiResponse<ProjectDocResponseDto>> {
-    const data = this.projectDocService.update(id, updateProjectDocDto);
+    const data = await this.projectDocService.update(id, updateProjectDocDto);
     return new ApiResponse<ProjectDocResponseDto>(200, "수정", data);
   }
 
   @Delete(':id')
-  remove(
+  async remove(
     @Param('id') id: number
   ): Promise<{ message: string }> {
-    const data = this.projectDocService.remove(id);
+    await this.projectDocService.remove(id);
     return { message: '삭제 성공' };
   }
 }
