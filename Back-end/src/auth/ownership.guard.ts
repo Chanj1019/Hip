@@ -2,11 +2,9 @@ import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Unauthor
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CoursesService } from '../course/courses/courses.service'; // 코스 서비스 임포트
 import { ProjectsService } from '../project/projects/projects.service'; // 프로젝트 서비스 임포트
-import { ExhibitionService } from '../exhibition/exhibitions/exhibitions.service';
-import { ExhibitionsDocService } from '../exhibition/exhibitions_doc/exhibitions_doc.service';
 import { CourseDocService } from '../course/course_doc/course_doc.service';
 import { DocNameService } from '../course/doc_name/doc_name.service';
-import { ProjectDocService } from 'src/project/project_doc/project_doc.service';
+import { ProjectDocService } from 'src/project/project_doc_title/project_doc_title.service';
 import { FeedbackService } from 'src/project/feedback/feedback.service';
 
 
@@ -105,7 +103,7 @@ export class OwnershipGuard extends JwtAuthGuard implements CanActivate {
                 throw new ForbiddenException('존재하지 않는 프로젝트 문서 입니다.');
             }
             // 프로젝트와 관련된 사용자 중 요청한 사용자 ID와 일치하는 사용자 찾기
-            const owner = feedback.projectDoc.project.users.find(user => user.user_id === user.user_id);
+            const owner = feedback.projectDoc.projectDocTitle.project.users.find(user => user.user_id === user.user_id);
             if (!owner) {
                 throw new ForbiddenException('자신의 리소스만 수정할 수 있습니다.');
             }

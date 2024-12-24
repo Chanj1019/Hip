@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { ProjectDoc } from '../../../project/project_doc/entities/project_doc.entity';
+import { ProjectDoc } from 'src/project/project_doc/entities/project_doc.entity';
 
 @Entity('feedback')
 export class Feedback {
@@ -16,6 +16,6 @@ export class Feedback {
     updatedAt: Date;
 
     // feedback - project_doc
-    @ManyToOne(() => ProjectDoc, (project_doc) => project_doc.feedbacks)
+    @ManyToOne(() => ProjectDoc, (project_doc) => project_doc.feedbacks, { onDelete: 'CASCADE' })
     projectDoc: ProjectDoc;
 }

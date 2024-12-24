@@ -10,8 +10,6 @@ import { CoursesModule } from './course/courses/courses.module';
 import { DocNameModule } from './course/doc_name/doc_name.module';
 import { DocName } from './course/doc_name/entities/doc_name.entity';
 import { CourseDoc } from './course/course_doc/entities/course_doc.entity';
-import { join } from 'path';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { MulterModule } from '@nestjs/platform-express';
 import { CourseDocModule } from './course/course_doc/course_doc.module';
 import { VideoTopicModule } from './course/video_topic/video_topic.module';
@@ -25,8 +23,6 @@ import { ExhibitionIntro } from './exhibition/exhibition_intro/entities/exhibiti
 import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './project/projects/projects.module';
 import { Project } from './project/projects/entities/project.entity';
-import { ProjectDocModule } from './project/project_doc/project_doc.module';
-import { ProjectDoc } from './project/project_doc/entities/project_doc.entity';
 import { ProjectRegistrationModule } from './project/project_registration/registration.module';
 import { ProjectRegistration } from './project/project_registration/entities/registration.entity';
 import { FeedbackModule } from './project/feedback/feedback.module';
@@ -38,6 +34,10 @@ import { CourseRegistration } from './course/course_registration/entities/course
 import { AttendanceModule } from './attendance/attendance.module';
 import { Attendance } from './attendance/entities/attendance.entity';
 import { OpenaiModule } from './openai/openai.module';
+import { ProjectDoc } from './project/project_doc/entities/project_doc.entity';
+import { ProjectDocModule } from './project/project_doc_title/project_doc_title.module';
+import { ProjectDocTitle } from './project/project_doc_title/entities/project_doc_title.entity';
+import { ProjectKeyDoc } from './project/project_key_doc/entities/project_key_doc.entity';
 
 @Module({
     imports: [
@@ -50,8 +50,13 @@ import { OpenaiModule } from './openai/openai.module';
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_DATABASE,
-                entities: [User,Exhibition,ExhibitionDoc,ExhibitionMember,ExhibitionIntro,
-                    Project,ProjectDoc, ProjectRegistration, Feedback, Course, DocName, CourseDoc, VideoTopic, CourseRegistration, Video, Attendance],
+                entities: [
+                    User, 
+                    Exhibition, ExhibitionDoc, ExhibitionMember, ExhibitionIntro,
+                    Project, ProjectDoc, ProjectRegistration, Feedback, ProjectDocTitle, ProjectKeyDoc,
+                    Course, DocName, CourseDoc, VideoTopic, CourseRegistration, Video, 
+                    Attendance
+                ],
                 synchronize: true,
             }),
         }),

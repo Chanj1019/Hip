@@ -1,11 +1,13 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateProjectDocDto {
-    @IsNotEmpty()
     @IsString()
-    project_doc_title: string;
-    
     @IsNotEmpty()
+    @MaxLength(255)
+    url: string;
+
     @IsString()
-    description: string;
+    @IsNotEmpty()
+    @MaxLength(20)
+    title: string;
 }

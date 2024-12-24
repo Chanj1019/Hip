@@ -1,11 +1,15 @@
-import { IsString, IsOptional, IsInt } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateProjectDocDto } from './create-project_doc.dto';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
-export class UpdateProjectDocDto {
-    @IsOptional()
+export class UpdateProjectDocDto extends PartialType(CreateProjectDocDto) {
     @IsString()
-    project_doc_title?: string;
-    
-    @IsOptional()
+    @IsNotEmpty()
+    @MaxLength(255)
+    url: string;
+
     @IsString()
-    description?: string;
+    @IsNotEmpty()
+    @MaxLength(20)
+    title: string;
 }

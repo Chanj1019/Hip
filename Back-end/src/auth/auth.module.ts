@@ -14,7 +14,7 @@ import { ExhibitionModule } from '../exhibition/exhibitions/exhibitions.module';
 import { ExhibitionsDocModule } from '../exhibition/exhibitions_doc/exhibitions_doc.module';
 import { CourseDocModule } from '../course/course_doc/course_doc.module';
 import { DocNameModule } from '../course/doc_name/doc_name.module';
-import { ProjectDocModule } from '../project/project_doc/project_doc.module';
+import { ProjectDocModule } from '../project/project_doc_title/project_doc_title.module';
 import { FeedbackModule } from '../project/feedback/feedback.module';
 import { KakaoStrategy } from './kakao.strategy';
 import { HttpModule } from '@nestjs/axios';

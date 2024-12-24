@@ -13,8 +13,11 @@ import { FeedbackModule } from '../feedback/feedback.module';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Project, User, ProjectRegistration]),
-        forwardRef(() => UsersModule),forwardRef(() => FeedbackModule), ProjectRegistrationModule,
+        TypeOrmModule
+        .forFeature([Project, User, ProjectRegistration]),
+        forwardRef(() => UsersModule),
+        forwardRef(() => FeedbackModule), 
+        ProjectRegistrationModule,
     ],
     providers: [ProjectsService, UsersService, ProjectRegistrationService],
     controllers: [ProjectsController],
