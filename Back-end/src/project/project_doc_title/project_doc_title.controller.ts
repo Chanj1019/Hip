@@ -18,15 +18,13 @@ export class ProjectDocController {
 
     @Post('register')
     @Roles('instructor','student','admin')
-    @UseInterceptors(FileInterceptor('file'))  // 'file' 필드에서 파일을 업로드 받음
     async create(
         @Param('projectId') projectId: number,
-        @Body() createProjectDocDto: CreateProjectDocTitleDto, 
-        @UploadedFile() file: Express.Multer.File,// 업로드된 파일을 가져옴
+        @Body() createProjectDocDto: CreateProjectDocTitleDto,
     ): Promise<ApiResponse<ProjectDocTitleResponseDto>> {
-        const data = await this.projectDocsService.create(projectId, createProjectDocDto, file);
+        const data = await this.projectDocsService.create(projectId, createProjectDocDto);
         const responseData = new ProjectDocTitleResponseDto(data);
-        return new ApiResponse<ProjectDocTitleResponseDto>(200, '프로젝트 문서가 성공적으로 등록되었습니다.', responseData);
+        return new ApiResponse<ProjectDocTitleResponseDto>(200, '성공적으로 등록되었습니다.', responseData);
     }
 
     @Get()
@@ -35,7 +33,7 @@ export class ProjectDocController {
     ): Promise<ApiResponse<ProjectDocTitleResponseDto[]>> {
         const data = await this.projectDocsService.findAll(projectId);
         const responseData = data.map(doc => new ProjectDocTitleResponseDto(doc));
-        return new ApiResponse<ProjectDocTitleResponseDto[]>(200, '전체 프로젝트 자료 조회를 완료했습니다.', responseData );
+        return new ApiResponse<ProjectDocTitleResponseDto[]>(200, '전체 조회를 완료했습니다.', responseData );
     }
 
     @Get(':id/read')
@@ -45,7 +43,7 @@ export class ProjectDocController {
     ): Promise<ApiResponse<ProjectDocTitleResponseDto>> {
         const data = await this.projectDocsService.findOne(id, projectId);
         const responseData = new ProjectDocTitleResponseDto(data);
-        return new ApiResponse<ProjectDocTitleResponseDto>(200, '프로젝트 문서 조회를 완료했습니다.', responseData); 
+        return new ApiResponse<ProjectDocTitleResponseDto>(200, '성공적으로 조회하였습니다.', responseData); 
     }
     
     @Put(':id/update')
@@ -57,7 +55,7 @@ export class ProjectDocController {
     ): Promise<ApiResponse<ProjectDocTitleResponseDto>> {
         const data = await this.projectDocsService.update(id, updateProjectDocDto, projectId);
         const responseData = new ProjectDocTitleResponseDto(data);
-        return new ApiResponse<ProjectDocTitleResponseDto>(200, '프로젝트 문서가 성공적으로 수정되었습니다.', responseData);
+        return new ApiResponse<ProjectDocTitleResponseDto>(200, '성공적으로 수정되었습니다.', responseData);
     }
 
     @Delete(':id/delete')
