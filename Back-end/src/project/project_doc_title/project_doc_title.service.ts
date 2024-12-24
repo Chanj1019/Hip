@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { CreateProjectDocTitleDto } from './dto/create-project_doc_title.dto';
-import { UpdateProjectDocDto } from './dto/update-project_doc_title.dto';
+import { UpdateProjectDocTitleDto } from './dto/update-project_doc_title.dto';
 import { ProjectDocTitle } from './entities/project_doc_title.entity';
 import { Project } from '../projects/entities/project.entity';
 import { S3Client } from '@aws-sdk/client-s3';
@@ -11,7 +11,7 @@ import * as dotenv from 'dotenv';
 dotenv.config(); // .env 파일 로드
 
 @Injectable()
-export class ProjectDocService {
+export class ProjectDocTitleService {
     private s3: S3Client;
     constructor(
         @InjectRepository(ProjectDocTitle)
@@ -85,8 +85,26 @@ export class ProjectDocService {
         return doc;
     }
   
+    // pa_topic_id이 null인 topic 조회 메서드
+    async findRootDocTitle(
+        Id: number
+    ): Promise<ProjectDocTitle[]> {
+        const course = await this.projectDocRepository.findOne({
+            where: { project_doc_id: Id }
+        });
+        if (!course) {
+            throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
+        }
+        const doctitles = await this.projectDocRepository.find({
+            where : { pa_title_id: IsNull() },
+            relations: ['project_docs']
+        });
+        // pa_topic_id가 null이 아닌 값만 찾기 or 만약 pa_topic_id가 null이 아니라면 (유효성 검사)
+        return doctitles
+    }
+
   
-    async update(id: number, updateProjectDocDto: UpdateProjectDocDto, projectId: number): Promise<ProjectDocTitle> {
+    async update(id: number, updateProjectDocDto: UpdateProjectDocTitleDto, projectId: number): Promise<ProjectDocTitle> {
         const doc = await this.findOne(id, projectId);
 
         Object.assign(doc, updateProjectDocDto);
