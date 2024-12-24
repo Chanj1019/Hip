@@ -25,7 +25,7 @@ export class FeedbackService {
             throw new NotFoundException(`Project with ID ${projectId} not found`);
         }
 
-        const projectDoc = await this.projectDocRepository.findOne({ where: { project_doc_id: projectDocId } });
+        const projectDoc = await this.projectDocRepository.findOne({ where: { project_doc_title_id: projectDocId } });
         if (!projectDoc) {
             throw new NotFoundException(`Project Document with ID ${projectDocId} not found`);
         }

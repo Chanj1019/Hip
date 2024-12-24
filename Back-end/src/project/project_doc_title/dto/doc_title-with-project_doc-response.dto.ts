@@ -2,14 +2,14 @@ import { ProjectDocResponseDto } from "src/project/project_doc/dto/project_doc-r
 import { ProjectDocTitle } from "../entities/project_doc_title.entity";
 
 export class DocTitleWithProjectDocResponseDto {
-    project_doc_id: number;
+    project_doc_title_id: number;
     title: string;
     pa_title_id: number;
     project_docs: ProjectDocResponseDto[];
     sub_titles?: DocTitleWithProjectDocResponseDto[];
     
     constructor(docTitle: ProjectDocTitle) {
-        this.project_doc_id = docTitle.project_doc_id;
+        this.project_doc_title_id = docTitle.project_doc_title_id;
         this.title = docTitle.title;
         this.pa_title_id = docTitle.pa_title_id;
         this.project_docs = docTitle.project_docs 

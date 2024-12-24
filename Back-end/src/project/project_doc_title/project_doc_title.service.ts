@@ -75,7 +75,7 @@ export class ProjectDocTitleService {
 
         const doc = await this.projectDocRepository.findOne({
             where: {
-                project_doc_id: id,
+                project_doc_title_id: id,
             },
             relations: ['project', 'feedbacks'], // 연관된 프로젝트도 함께 가져오기
         });
@@ -90,7 +90,7 @@ export class ProjectDocTitleService {
         Id: number
     ): Promise<ProjectDocTitle[]> {
         const course = await this.projectDocRepository.findOne({
-            where: { project_doc_id: Id }
+            where: { project_doc_title_id: Id }
         });
         if (!course) {
             throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
@@ -123,7 +123,7 @@ export class ProjectDocTitleService {
         }
   
         const doc = await this.projectDocRepository.findOne({
-        where: { project_doc_id: id },
+        where: { project_doc_title_id: id },
         relations: ['project'],
         });
   
