@@ -19,3 +19,11 @@ export enum TeamRole {
     LEADER = 'leader',
     MEMBER = 'member'
 }
+
+export enum KeyDocumentCategory {
+    INTRO = 'Intro',
+    REQUIREMENTS = 'Requirements',
+    ERD = 'ERD',
+    DESIGN = 'Design',
+    ETC = 'Etc'
+}
