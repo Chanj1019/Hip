@@ -6,7 +6,6 @@ import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { ProjectDocTitle } from '../project_doc_title/entities/project_doc_title.entity'; // project_doc 엔티티 경로에 맞게 수정
 import { Project } from '../projects/entities/project.entity';
-import { NotFound } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class FeedbackService {
