@@ -1,7 +1,8 @@
 import { Feedback } from 'src/project/feedback/entities/feedback.entity';
 import { ProjectDocTitle } from 'src/project/project_doc_title/entities/project_doc_title.entity';
-import { Column, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class ProjectDoc {
     @PrimaryGeneratedColumn()
     project_doc_id: number;
