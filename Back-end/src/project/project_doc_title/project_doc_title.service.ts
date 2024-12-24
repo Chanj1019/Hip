@@ -5,8 +5,7 @@ import { CreateProjectDocTitleDto } from './dto/create-project_doc_title.dto';
 import { UpdateProjectDocDto } from './dto/update-project_doc_title.dto';
 import { ProjectDocTitle } from './entities/project_doc_title.entity';
 import { Project } from '../projects/entities/project.entity';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { v4 as uuidv4 } from 'uuid';
+import { S3Client } from '@aws-sdk/client-s3';
 import * as dotenv from 'dotenv';
 
 dotenv.config(); // .env 파일 로드
@@ -48,42 +47,20 @@ export class ProjectDocService {
         }
     }
 
-    async create(projectId: number, createProjectDocDto: CreateProjectDocTitleDto, file: Express.Multer.File): Promise<ProjectDocTitle> {
-        // S3에 파일 업로드
-        const uniqueFileName = `${uuidv4()}_${file.originalname}`;
-        let uploadResult;
-
+    async create(projectId: number, createProjectDocDto: CreateProjectDocTitleDto): Promise<ProjectDocTitle> {
         try {
-            const command = new PutObjectCommand({
-                Bucket: process.env.AWS_S3_BUCKET_NAME,
-                Key: `projects/${uniqueFileName}`,
-                Body: file.buffer,
-                ContentType: file.mimetype,
+            await this.validateProjectId(projectId);
+            const project = await this.projectRepository.findOne({ where: {project_id: projectId }});
+
+            const projectDoc = this.projectDocRepository.create({
+                ...createProjectDocDto,
+                project,
             });
-            uploadResult = await this.s3.send(command); // S3에 파일 업로드
+            return await this.projectDocRepository.save(projectDoc);
         } catch (error) {
             console.error(error); // logger로 변경 가능
-            throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
+            throw new InternalServerErrorException('문서명 저장에 실패했습니다.');
         }
-
-        // S3에서 반환된 URL을 file_path에 저장
-        const filePath = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/projects/${uniqueFileName}`;
-
-        // filePath가 비어있지 않은지 확인
-        if (!filePath) {
-            throw new InternalServerErrorException('파일 경로가 비어 있습니다.');
-        }
-
-        await this.validateProjectId(projectId);
-        const project = await this.projectRepository.findOne({ where: {project_id: projectId }});
-
-        const projectDoc = this.projectDocRepository.create({
-            ...createProjectDocDto,
-            project,
-            file_path: filePath,
-        });
-
-        return await this.projectDocRepository.save(projectDoc);
     }
 
     async findAll(projectId: number): Promise<ProjectDocTitle[]> {
