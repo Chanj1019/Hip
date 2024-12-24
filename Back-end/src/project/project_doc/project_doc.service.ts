@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from '../projects/entities/project.entity';
 import { Repository } from 'typeorm';
 import { ProjectDoc } from './entities/project_doc.entity';
+import { ProjectDocResponseDto } from './dto/project_doc-response.dto';
+import { FeedbackResponseDto } from '../feedback/dto/feedback-response.dto';
+import { ApiResponse } from 'src/common/api-response.dto';
 
 @Injectable()
 export class ProjectDocService {
@@ -43,7 +46,7 @@ export class ProjectDocService {
     projectDocTitleId: number, 
     createProjectDocDto: CreateProjectDocDto, 
     file: Express.Multer.File
-  ): Promise<ProjectDoc> {
+  ): Promise<ProjectDocResponseDto> {
     // S3에 파일 업로드
     const uniqueFileName = `${uuidv4()}_${file.originalname}`;
     let uploadResult: PutObjectCommandOutput;
@@ -79,29 +82,58 @@ export class ProjectDocService {
     if (!projectDocTitle) {
       throw new InternalServerErrorException('유효하지 않은 프로젝트 문서명 ID입니다.');
     }
+
     // 프로젝트 문서 등록
     const projectDoc = this.projectDocRepository.create({
       ...createProjectDocDto,
-      projectDocTitle: projectDocTitle,
       url: filePath,
+      projectDocTitle: projectDocTitle,
     });
 
-    return this.projectDocRepository.save(projectDoc);
+    const savedProjectDoc = await this.projectDocRepository.save(projectDoc);
+
+    const completeProjectDoc = await this.projectDocRepository.findOne({
+      where: { project_doc_id: savedProjectDoc.project_doc_id },
+      relations: ['feedbacks'],
+    });
+
+    if (!completeProjectDoc) {
+      throw new InternalServerErrorException('프로젝트 문서를 저장했지만 그 후 조회할 수 없습니다.');
+    }
+
+    return new ProjectDocResponseDto(completeProjectDoc);
   }
 
-  findAll() {
-    return `This action returns all projectDoc`;
+  async findAll(): Promise<ApiResponse<ProjectDocResponseDto[]>> {
+    try {
+      const projectDocs = await this.projectDocRepository.find({
+        relations: ['feedbacks'],
+      });
+
+      const data = projectDocs.map((doc) => new ProjectDocResponseDto(doc));
+
+      return new ApiResponse<ProjectDocResponseDto[]>(200, '전체 조회', data);
+    } catch (error) {
+      throw new InternalServerErrorException('전체 프로젝트 문서 조회에 실패했습니다.');
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} projectDoc`;
+  async findOne(
+    id: number
+  ): Promise<ProjectDocResponseDto> {
+    return 
   }
 
-  update(id: number, updateProjectDocDto: UpdateProjectDocDto) {
-    return `This action updates a #${id} projectDoc`;
+  async update(
+    id: number, 
+    updateProjectDocDto: UpdateProjectDocDto
+  ): Promise<ProjectDocResponseDto> {
+    return 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} projectDoc`;
+  async remove(
+    id: number
+  ): Promise<ProjectDocResponseDto> {
+    return 
   }
 }
