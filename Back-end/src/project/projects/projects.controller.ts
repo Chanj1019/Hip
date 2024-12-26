@@ -29,6 +29,7 @@ export class ProjectsController {
     }
 
     @Get()
+    @Roles('admin','instructor')
     async findAll(
 
     ): Promise<ApiResponse<ProjectResponseDto[]>> {
