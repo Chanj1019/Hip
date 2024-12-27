@@ -12,7 +12,7 @@ export class Project {
     @Column({ type: 'varchar', nullable: false, length: 100, unique: true })
     topic: string;
 
-    @Column({ type: 'varchar', nullable: false, length: 50, unique: true })
+    @Column({ type: 'varchar', nullable: false, length: 50 })
     className: string;
     
     @Column({
