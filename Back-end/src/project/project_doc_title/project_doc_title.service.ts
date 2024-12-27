@@ -70,7 +70,7 @@ export class ProjectDocTitleService {
         await this.validateProjectId(projectId);
         return await this.projectDocRepository.find({
             where: { project: { project_id: projectId } },
-            relations: ['project', 'feedbacks'],
+            relations: ['project_docs', 'subTitles'],
         });
     }
 
@@ -81,7 +81,7 @@ export class ProjectDocTitleService {
             where: {
                 project_doc_title_id: id,
             },
-            relations: ['project', 'feedbacks'], // 연관된 프로젝트도 함께 가져오기
+            relations: ['project_docs', 'subTitles'], // 연관된 프로젝트도 함께 가져오기
         });
         if (!doc) {
             throw new NotFoundException(`Registration with ID ${id} not found`);
@@ -101,10 +101,10 @@ export class ProjectDocTitleService {
             throw new NotFoundException("해당 프로젝트를 찾을 수 없습니다.");
         }
         const doctitles = await this.projectDocRepository.find({
-            where : { pa_title_id: IsNull() },
+            where : { pa_title_id: IsNull(), project: { project_id: projectId } },
             relations: ['project_docs', 'subTitles'],
         });
-        
+        console.log('Relations fetched:', doctitles);
         return doctitles
     }
 
