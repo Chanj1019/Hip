@@ -9,7 +9,9 @@ export class ProjectDocTitleResponseDto {
     constructor(projectDocTitle: ProjectDocTitle) {
         this.project_doc_title_id = projectDocTitle.project_doc_title_id;
         this.title = projectDocTitle.title;
-        this.project_doc_data = projectDocTitle.project_docs.map(projectDoc => new ProjectDocResponseDto(projectDoc));
+        this.project_doc_data = (projectDocTitle.project_docs || []).map(projectDoc => 
+            new ProjectDocResponseDto(projectDoc)
+        );
     }
 }
 
@@ -23,7 +25,8 @@ export class NestedProjectDocTitleResponseDto {
         this.project_doc_title_id = projectDocTitle.project_doc_title_id;
         this.title = projectDocTitle.title;
         this.pa_title_id = projectDocTitle.pa_title_id;
-        this.subTitles = projectDocTitle.subTitles?.map(subTitle => 
-            new NestedProjectDocTitleResponseDto(subTitle)) || [];
+        this.subTitles = (projectDocTitle.subTitles || []).map(subTitle => 
+            new NestedProjectDocTitleResponseDto(subTitle)
+        );
     }
 }
