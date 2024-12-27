@@ -37,6 +37,9 @@ export class ProjectDocTitleService {
                 secretAccessKey: AWS_SECRET_ACCESS_KEY,
             },
         });
+        if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_REGION) {
+            throw new InternalServerErrorException('AWS 환경 변수가 제대로 설정되지 않았습니다.');
+        }
     }
 
     // 프로젝트 ID가 유효한지 확인
@@ -66,7 +69,8 @@ export class ProjectDocTitleService {
     async findAll(projectId: number): Promise<ProjectDocTitle[]> {
         await this.validateProjectId(projectId);
         return await this.projectDocRepository.find({
-        relations: ['project', 'feedbacks'],
+            where: { project: { project_id: projectId } },
+            relations: ['project_docs', 'subTitles'],
         });
     }
 
@@ -75,9 +79,9 @@ export class ProjectDocTitleService {
 
         const doc = await this.projectDocRepository.findOne({
             where: {
-                project_doc_id: id,
+                project_doc_title_id: id,
             },
-            relations: ['project', 'feedbacks'], // 연관된 프로젝트도 함께 가져오기
+            relations: ['project_docs', 'subTitles'], // 연관된 프로젝트도 함께 가져오기
         });
         if (!doc) {
             throw new NotFoundException(`Registration with ID ${id} not found`);
@@ -85,21 +89,22 @@ export class ProjectDocTitleService {
         return doc;
     }
   
-    // pa_topic_id이 null인 topic 조회 메서드
+    // pa_title_id가 null인 title 조회 메서드
     async findRootDocTitle(
-        Id: number
+        projectId: number
     ): Promise<ProjectDocTitle[]> {
-        const course = await this.projectDocRepository.findOne({
-            where: { project_doc_id: Id }
+        await this.validateProjectId(projectId);
+        const project = await this.projectRepository.findOne({
+            where: { project_id: projectId }
         });
-        if (!course) {
-            throw new NotFoundException("해당 강의를 찾을 수 없습니다.");
+        if (!project) {
+            throw new NotFoundException("해당 프로젝트를 찾을 수 없습니다.");
         }
         const doctitles = await this.projectDocRepository.find({
-            where : { pa_title_id: IsNull() },
-            relations: ['project_docs']
+            where : { pa_title_id: IsNull(), project: { project_id: projectId } },
+            relations: ['project_docs', 'subTitles'],
         });
-        // pa_topic_id가 null이 아닌 값만 찾기 or 만약 pa_topic_id가 null이 아니라면 (유효성 검사)
+        console.log('Relations fetched:', doctitles);
         return doctitles
     }
 
@@ -123,7 +128,7 @@ export class ProjectDocTitleService {
         }
   
         const doc = await this.projectDocRepository.findOne({
-        where: { project_doc_id: id },
+        where: { project_doc_title_id: id },
         relations: ['project'],
         });
   

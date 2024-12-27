@@ -6,7 +6,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColum
 @Entity()
 export class ProjectDocTitle {
     @PrimaryGeneratedColumn()
-    project_doc_id: number;
+    project_doc_title_id: number;
     
     @Column({ type: 'varchar', length: 50 })
     title: string;

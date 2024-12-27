@@ -29,11 +29,21 @@ export class ProjectsController {
     }
 
     @Get()
+    @Roles('admin','instructor')
     async findAll(
 
     ): Promise<ApiResponse<ProjectResponseDto[]>> {
         const data =  await this.projectsService.findAll();
         return new ApiResponse<ProjectResponseDto[]>(200, "프로젝트 전체 조회", data);
+    }
+
+    @Get(':id')
+    @Roles('student','admin','instructor')
+    async findOne(
+        @Param('id', ParseIntPipe) id: number
+    ): Promise<ApiResponse<ProjectResponseDto>> {
+        const data = await this.projectsService.findOne(id);
+        return new ApiResponse<ProjectResponseDto>(200, "프로젝트 조회", data);
     }
 
     @Patch(':id/update')
