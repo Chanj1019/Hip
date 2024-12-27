@@ -10,7 +10,7 @@ import { ApiResponse } from 'src/common/api-response.dto';
 import { ProjectDocTitleService } from './project_doc_title.service';
 import { DocTitleWithProjectDocResponseDto } from './dto/doc_title-with-project_doc-response.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard, ApprovedStudentGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('projects/:projectId/projectDocs')
 export class ProjectDocTitleController {
     constructor(private readonly projectDocTitleService: ProjectDocTitleService) {}
@@ -21,6 +21,8 @@ export class ProjectDocTitleController {
         @Param('projectId', ParseIntPipe) projectId: number,
         @Body() createProjectDocDto: CreateProjectDocTitleDto,
     ): Promise<ApiResponse<ProjectDocTitleResponseDto>> {
+        console.log('projectId:', projectId);
+        console.log('Create DTO:', createProjectDocDto);
         const data = await this.projectDocTitleService.create(projectId, createProjectDocDto);
         const responseData = new ProjectDocTitleResponseDto(data);
         return new ApiResponse<ProjectDocTitleResponseDto>(200, '성공적으로 등록되었습니다.', responseData);
@@ -52,6 +54,8 @@ export class ProjectDocTitleController {
     async findRootDocTitles(
         @Param('projectId', ParseIntPipe) projectId: number,
     ): Promise<{ message: string; data: DocTitleWithProjectDocResponseDto[] }> {
+        console.log('projectId:', projectId);
+        
         const docTitles = await this.projectDocTitleService.findRootDocTitle(projectId);
         return {
             message: "최상위 디렉토리 조회에 성공하셨습니다",
@@ -71,12 +75,13 @@ export class ProjectDocTitleController {
         return new ApiResponse<ProjectDocTitleResponseDto>(200, '성공적으로 수정되었습니다.', responseData);
     }
 
-    @Delete(':id/delete')
+    @Delete(':id')
     @Roles('instructor','student','admin')
     async remove(
         @Param('id') id: number,
         @Param('projectId', ParseIntPipe) projectId: number
     ): Promise<{ message: string }> {
+        console.log('Delete request received with:', { id, projectId }); // 디버깅 로그 추가
         await this.projectDocTitleService.remove(id, projectId);
         return { message: '성공적으로 삭제되었습니다.' };
     }
