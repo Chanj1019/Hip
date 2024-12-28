@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { ApprovedStudentGuard } from '../../auth/project.approved.guard';
-import { ProjectDocTitleResponseDto } from './dto/project_doc_title-response.dto';
+import { NestedProjectDocTitleResponseDto, ProjectDocTitleResponseDto } from './dto/project_doc_title-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
 import { ProjectDocTitleService } from './project_doc_title.service';
 import { DocTitleWithProjectDocResponseDto } from './dto/doc_title-with-project_doc-response.dto';
@@ -43,23 +43,23 @@ export class ProjectDocTitleController {
     async findOne(
         @Param('id') id: number, 
         @Param('projectId', ParseIntPipe) projectId: number
-    ): Promise<ApiResponse<ProjectDocTitleResponseDto>> {
+    ): Promise<ApiResponse<NestedProjectDocTitleResponseDto>> {
         const data = await this.projectDocTitleService.findOne(id, projectId);
-        const responseData = new ProjectDocTitleResponseDto(data);
-        return new ApiResponse<ProjectDocTitleResponseDto>(200, '성공적으로 조회하였습니다.', responseData); 
+        const responseData = new NestedProjectDocTitleResponseDto(data);
+        return new ApiResponse<NestedProjectDocTitleResponseDto>(200, '성공적으로 조회하였습니다.', responseData); 
     }
     
     @Get('root')
     @Roles('instructor','student','admin')
     async findRootDocTitles(
         @Param('projectId', ParseIntPipe) projectId: number,
-    ): Promise<{ message: string; data: DocTitleWithProjectDocResponseDto[] }> {
+    ): Promise<{ message: string; data: NestedProjectDocTitleResponseDto[] }> {
         console.log('projectId:', projectId);
         
         const docTitles = await this.projectDocTitleService.findRootDocTitle(projectId);
         return {
             message: "최상위 디렉토리 조회에 성공하셨습니다",
-            data: docTitles.map(docTitle => new DocTitleWithProjectDocResponseDto(docTitle))
+            data: docTitles.map(docTitle => new NestedProjectDocTitleResponseDto(docTitle))
         };
     }
 
