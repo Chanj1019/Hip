@@ -9,19 +9,19 @@ export class ProjectDocTitle {
     project_doc_title_id: number;
     
     @Column({ type: 'varchar', length: 50 })
-    title: string;
+    project_doc_title: string;
 
     @Column({ nullable: true })
-    pa_title_id: number;
+    project_doc_pa_title_id: number;
 
     @ManyToOne(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.subTitles, {
         nullable: true,
         onDelete: 'CASCADE'
     })
     @JoinColumn({ name: 'pa_title_id' })
-    pa_title: ProjectDocTitle;
+    project_doc_pa_title: ProjectDocTitle;
 
-    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.pa_title, {
+    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.project_doc_pa_title, {
         cascade: true
     })
     subTitles: ProjectDocTitle[];

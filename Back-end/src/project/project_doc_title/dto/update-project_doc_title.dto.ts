@@ -3,11 +3,11 @@ import { IsString, IsOptional, IsInt, IsNumber, IsNotEmpty, Min, Max } from 'cla
 export class UpdateProjectDocTitleDto {
     @IsNotEmpty()
     @IsString()
-    title?: string;
+    project_doc_title?: string;
 
     @IsNumber()
     @IsOptional()
     @Min(1)
     @Max(10000)
-    pa_title_id?: number;
+    project_doc_pa_title_id?: number;
 }

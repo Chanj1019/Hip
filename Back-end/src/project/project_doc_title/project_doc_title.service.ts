@@ -101,7 +101,7 @@ export class ProjectDocTitleService {
             throw new NotFoundException("해당 프로젝트를 찾을 수 없습니다.");
         }
         const doctitles = await this.projectDocRepository.find({
-            where : { pa_title_id: IsNull(), project: { project_id: projectId } },
+            where : { project_doc_pa_title_id: IsNull(), project: { project_id: projectId } },
             relations: ['project_docs', 'subTitles'],
         });
         console.log('Relations fetched:', doctitles);
