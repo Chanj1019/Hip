@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, ParseIntPipe, BadRequestException } from '@nestjs/common';
 import { CreateProjectDocTitleDto } from './dto/create-project_doc_title.dto';
 import { UpdateProjectDocTitleDto } from './dto/update-project_doc_title.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
 import { ApprovedStudentGuard } from '../../auth/project.approved.guard';
-import { ProjectDocTitleResponseDto } from './dto/project_doc_title-response.dto';
+import { NestedProjectDocTitleResponseDto, ProjectDocTitleResponseDto } from './dto/project_doc_title-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
 import { ProjectDocTitleService } from './project_doc_title.service';
 import { DocTitleWithProjectDocResponseDto } from './dto/doc_title-with-project_doc-response.dto';
@@ -38,29 +38,37 @@ export class ProjectDocTitleController {
         return new ApiResponse<ProjectDocTitleResponseDto[]>(200, '전체 조회를 완료했습니다.', responseData );
     }
 
-    @Get(':id/read')
-    @Roles('instructor','student','admin')
-    async findOne(
-        @Param('id') id: number, 
-        @Param('projectId', ParseIntPipe) projectId: number
-    ): Promise<ApiResponse<ProjectDocTitleResponseDto>> {
-        const data = await this.projectDocTitleService.findOne(id, projectId);
-        const responseData = new ProjectDocTitleResponseDto(data);
-        return new ApiResponse<ProjectDocTitleResponseDto>(200, '성공적으로 조회하였습니다.', responseData); 
-    }
-    
+    /*
+    nestjs는 위에서부터 아래로 매칭되는 라우트를 찾기 때문에 @Get(':id')가 먼저 작성된 경우 
+    root라는 문자열을 id로 매핑하려는 이상한 시도를 할 수 있었다. 이번 트러블 슈팅에서 그것이 발생함.
+    그래서 @Get('root')를 @Get('id') 위로 올리니까 문제가 해결됨.
+    */
     @Get('root')
     @Roles('instructor','student','admin')
     async findRootDocTitles(
         @Param('projectId', ParseIntPipe) projectId: number,
-    ): Promise<{ message: string; data: DocTitleWithProjectDocResponseDto[] }> {
+    ): Promise<{ message: string; data: NestedProjectDocTitleResponseDto[] }> {
+        if (isNaN(projectId)) {
+            throw new BadRequestException('Invalid projectId');
+        }
         console.log('projectId:', projectId);
         
         const docTitles = await this.projectDocTitleService.findRootDocTitle(projectId);
         return {
             message: "최상위 디렉토리 조회에 성공하셨습니다",
-            data: docTitles.map(docTitle => new DocTitleWithProjectDocResponseDto(docTitle))
+            data: docTitles.map(docTitle => new NestedProjectDocTitleResponseDto(docTitle))
         };
+    }
+
+    @Get(':id')
+    @Roles('instructor','student','admin')
+    async findOne(
+        @Param('id') id: number, 
+        @Param('projectId', ParseIntPipe) projectId: number
+    ): Promise<ApiResponse<NestedProjectDocTitleResponseDto>> {
+        const data = await this.projectDocTitleService.findOne(id, projectId);
+        const responseData = new NestedProjectDocTitleResponseDto(data);
+        return new ApiResponse<NestedProjectDocTitleResponseDto>(200, '성공적으로 조회하였습니다.', responseData); 
     }
 
     @Put(':id/update')
