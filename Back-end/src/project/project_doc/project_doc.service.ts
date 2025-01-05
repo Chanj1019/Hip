@@ -78,7 +78,8 @@ export class ProjectDocService {
     }
 
     // 프로젝트 문서명 ID 유효성 검사
-    const projectDocTitle = await this.projectDocRepository.findOne({ where: { project_doc_id: projectDocTitleId } });
+    const projectDocTitle = await this.projectDocRepository.findOne(
+      { where: { project_doc_id: projectDocTitleId } });
     if (!projectDocTitle) {
       throw new InternalServerErrorException('유효하지 않은 프로젝트 문서명 ID입니다.');
     }
@@ -86,8 +87,7 @@ export class ProjectDocService {
     // 프로젝트 문서 등록
     const projectDoc = this.projectDocRepository.create({
       ...createProjectDocDto,
-      url: filePath,
-      projectDocTitle: projectDocTitle,
+      url: filePath
     });
 
     const savedProjectDoc = await this.projectDocRepository.save(projectDoc);
@@ -98,7 +98,7 @@ export class ProjectDocService {
     });
 
     if (!completeProjectDoc) {
-      throw new InternalServerErrorException('프로젝트 문서를 저장했지만 그 후 조회할 수 없습니다.');
+      throw new InternalServerErrorException('프로젝트 문서를 저장했지만 그 후 조회할 수 없습니다. 문제를 해결해주세요.');
     }
 
     return new ProjectDocResponseDto(completeProjectDoc);
