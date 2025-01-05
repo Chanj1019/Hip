@@ -18,13 +18,13 @@ export class ProjectDocTitleResponseDto {
 export class NestedProjectDocTitleResponseDto {
     project_doc_title_id: number;
     project_doc_title: string;
-    subTitles: NestedProjectDocTitleResponseDto[];
+    sub_titles: NestedProjectDocTitleResponseDto[];
 
     constructor(projectDocTitle: ProjectDocTitle) {
         this.project_doc_title_id = projectDocTitle.project_doc_title_id;
         this.project_doc_title = projectDocTitle.project_doc_title;
-        this.subTitles = (projectDocTitle.subTitles || []).map(subTitle => 
-            new NestedProjectDocTitleResponseDto(subTitle)
+        this.sub_titles = (projectDocTitle.sub_titles || []).map(sub_titles => 
+            new NestedProjectDocTitleResponseDto(sub_titles)
         );
     }
 }

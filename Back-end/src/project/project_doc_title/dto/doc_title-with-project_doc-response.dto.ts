@@ -15,9 +15,9 @@ export class DocTitleWithProjectDocResponseDto {
             : [];
                 
         // subTitles 관계가 있는 경우에만 변환
-        if (projectDocTitle.subTitles && projectDocTitle.subTitles.length > 0) {
-            this.sub_titles = projectDocTitle.subTitles.map(
-                subTitle => new DocTitleWithProjectDocResponseDto(subTitle)
+        if (projectDocTitle.sub_titles && projectDocTitle.sub_titles.length > 0) {
+            this.sub_titles = projectDocTitle.sub_titles.map(
+                sub_titles => new DocTitleWithProjectDocResponseDto(sub_titles)
             );
         }
     }
