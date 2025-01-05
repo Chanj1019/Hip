@@ -11,24 +11,21 @@ export class ProjectDocTitle {
     @Column({ type: 'varchar', length: 50 })
     project_doc_title: string;
 
-    @Column({ nullable: true })
-    project_doc_pa_title_id: number;
-
     @ManyToOne(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.subTitles, {
         nullable: true,
         onDelete: 'CASCADE'
     })
-    @JoinColumn({ name: 'pa_title_id' })
-    project_doc_pa_title: ProjectDocTitle;
+    @JoinColumn({ name: 'project_doc_pa_title_id' })
+    project_doc_pa_title_id: ProjectDocTitle;
 
-    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.project_doc_pa_title, {
+    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.project_doc_pa_title_id, {
         cascade: true
     })
     subTitles: ProjectDocTitle[];
     
     // project_doc_title - project
     @ManyToOne(() => Project, (project) => project.project_docs, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'projectId' }) // 외래 키의 이름을 명시
+    @JoinColumn({ name: 'project_id' }) // 외래 키의 이름을 명시
     project: Project;
 
     // project_doc_title - project_doc
