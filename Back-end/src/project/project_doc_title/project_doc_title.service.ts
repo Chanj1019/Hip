@@ -100,10 +100,12 @@ export class ProjectDocTitleService {
         if (!project) {
             throw new NotFoundException("해당 프로젝트를 찾을 수 없습니다.");
         }
-        const doctitles = await this.projectDocRepository.find({
-            where : { project_doc_pa_title_id: IsNull(), project: { project_id: projectId } },
-            relations: ['project_docs', 'subTitles'],
-        });
+        const doctitles = await this.projectDocRepository.createQueryBuilder('projectDocTitle')
+            .leftJoinAndSelect('projectDocTitle.subTitles', 'subTitles')
+            .where('projectDocTitle.project_doc_pa_title_id IS NULL')
+            .andWhere('projectDocTitle.project_id = :project_id', { project_id: projectId })
+            .getMany();
+
         console.log('Relations fetched:', doctitles);
         return doctitles
     }
