@@ -52,16 +52,36 @@ export class ProjectDocTitleService {
 
     async create(projectId: number, createProjectDocDto: CreateProjectDocTitleDto): Promise<ProjectDocTitle> {
         try {
+            // 1. 프로젝트 유효성 검사
             await this.validateProjectId(projectId);
-            const project = await this.projectRepository.findOne({ where: {project_id: projectId }});
+            const project = await this.projectRepository.findOne({ where: { project_id: projectId } });
 
+            // 2. 부모 폴더가 있는지 확인 및 조회
+            let parentFolder: ProjectDocTitle | null = null;
+            if (createProjectDocDto.project_doc_pa_title_id) {
+                parentFolder = await this.projectDocRepository.findOne({
+                    where: { project_doc_title_id: createProjectDocDto.project_doc_pa_title_id },
+                });
+
+                if (!parentFolder) {
+                    throw new NotFoundException(`Parent folder with ID ${createProjectDocDto.project_doc_pa_title_id} not found.`);
+                }
+            }
+
+            // 3. 엔티티 생성 시 부모 폴더 엔티티 할당
             const projectDoc = this.projectDocRepository.create({
-                ...createProjectDocDto,
-                project,
+                project_doc_title: createProjectDocDto.project_doc_title,
+                project_doc_pa_title_id: parentFolder, // 객체 할당
+                project, // 프로젝트 엔티티 할당
             });
+
+            // 4. 저장
             return await this.projectDocRepository.save(projectDoc);
         } catch (error) {
-            console.error(error); // logger로 변경 가능
+            console.error(error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
             throw new InternalServerErrorException('문서명 저장에 실패했습니다.');
         }
     }
@@ -70,7 +90,7 @@ export class ProjectDocTitleService {
         await this.validateProjectId(projectId);
         return await this.projectDocRepository.find({
             where: { project: { project_id: projectId } },
-            relations: ['project_docs', 'subTitles'],
+            relations: ['project_docs', 'sub_titles'],
         });
     }
 
@@ -81,7 +101,7 @@ export class ProjectDocTitleService {
             where: {
                 project_doc_title_id: id,
             },
-            relations: ['project_docs', 'subTitles'], // 연관된 프로젝트도 함께 가져오기
+            relations: ['project_docs', 'sub_titles'], // 연관된 프로젝트도 함께 가져오기
         });
         if (!doc) {
             throw new NotFoundException(`Registration with ID ${id} not found`);
@@ -101,7 +121,7 @@ export class ProjectDocTitleService {
             throw new NotFoundException("해당 프로젝트를 찾을 수 없습니다.");
         }
         const doctitles = await this.projectDocRepository.createQueryBuilder('projectDocTitle')
-            .leftJoinAndSelect('projectDocTitle.subTitles', 'subTitles')
+            .leftJoinAndSelect('projectDocTitle.sub_titles', 'sub_titles')
             .where('projectDocTitle.project_doc_pa_title_id IS NULL')
             .andWhere('projectDocTitle.project_id = :project_id', { project_id: projectId })
             .getMany();
