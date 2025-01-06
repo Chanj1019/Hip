@@ -9,5 +9,5 @@ export class CreateProjectDocTitleDto {
     @IsOptional()
     @Min(1)
     @Max(10000)
-    project_doc_pa_title_id?: number;
+    project_doc_title_pa_id?: number;
 }

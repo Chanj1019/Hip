@@ -15,10 +15,10 @@ export class ProjectDocTitle {
         nullable: true,
         onDelete: 'CASCADE'
     })
-    @JoinColumn({ name: 'project_doc_pa_title_id' })
-    project_doc_pa_title_id: ProjectDocTitle;
+    @JoinColumn({ name: 'project_doc_title_pa_id' })
+    project_doc_title_pa_id: ProjectDocTitle;
 
-    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.project_doc_pa_title_id, {
+    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.project_doc_title_pa_id, {
         cascade: true
     })
     sub_titles: ProjectDocTitle[];

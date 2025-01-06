@@ -4,12 +4,16 @@ import { ProjectDocTitle } from "../entities/project_doc_title.entity";
 export class DocTitleWithProjectDocResponseDto {
     project_doc_title_id: number;
     project_doc_title: string;
+    project_doc_title_pa_id: number;
     project_docs: ProjectDocResponseDto[];
     sub_titles?: DocTitleWithProjectDocResponseDto[];
     
     constructor(projectDocTitle: ProjectDocTitle) {
         this.project_doc_title_id = projectDocTitle.project_doc_title_id;
         this.project_doc_title = projectDocTitle.project_doc_title;
+        this.project_doc_title_pa_id = projectDocTitle.project_doc_title_pa_id
+            ? projectDocTitle.project_doc_title_pa_id.project_doc_title_id
+            : null;
         this.project_docs = projectDocTitle.project_docs 
             ? projectDocTitle.project_docs.map(projectDoc => new ProjectDocResponseDto(projectDoc))
             : [];
