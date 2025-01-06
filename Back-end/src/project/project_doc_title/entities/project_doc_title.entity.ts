@@ -11,17 +11,17 @@ export class ProjectDocTitle {
     @Column({ type: 'varchar', length: 50 })
     project_doc_title: string;
 
-    @ManyToOne(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.subTitles, {
+    @ManyToOne(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.sub_titles, {
         nullable: true,
         onDelete: 'CASCADE'
     })
-    @JoinColumn({ name: 'project_doc_pa_title_id' })
-    project_doc_pa_title_id: ProjectDocTitle;
+    @JoinColumn({ name: 'project_doc_title_pa_id' })
+    project_doc_title_pa_id: ProjectDocTitle;
 
-    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.project_doc_pa_title_id, {
+    @OneToMany(() => ProjectDocTitle, (projectDocTitle) => projectDocTitle.project_doc_title_pa_id, {
         cascade: true
     })
-    subTitles: ProjectDocTitle[];
+    sub_titles: ProjectDocTitle[];
     
     // project_doc_title - project
     @ManyToOne(() => Project, (project) => project.project_docs, { onDelete: 'CASCADE' })
