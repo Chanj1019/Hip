@@ -50,7 +50,9 @@ export class ProjectDocTitleService {
         }
     }
 
-    async create(projectId: number, createProjectDocDto: CreateProjectDocTitleDto): Promise<ProjectDocTitle> {
+    async create(
+        projectId: number, createProjectDocDto: CreateProjectDocTitleDto
+    ): Promise<ProjectDocTitle> {
         try {
             // 1. 프로젝트 유효성 검사
             await this.validateProjectId(projectId);
@@ -58,20 +60,20 @@ export class ProjectDocTitleService {
 
             // 2. 부모 폴더가 있는지 확인 및 조회
             let parentFolder: ProjectDocTitle | null = null;
-            if (createProjectDocDto.project_doc_pa_title_id) {
+            if (createProjectDocDto.project_doc_title_pa_id) {
                 parentFolder = await this.projectDocRepository.findOne({
-                    where: { project_doc_title_id: createProjectDocDto.project_doc_pa_title_id },
+                    where: { project_doc_title_id: createProjectDocDto.project_doc_title_pa_id },
                 });
 
                 if (!parentFolder) {
-                    throw new NotFoundException(`Parent folder with ID ${createProjectDocDto.project_doc_pa_title_id} not found.`);
+                    throw new NotFoundException(`Parent folder with ID ${createProjectDocDto.project_doc_title_pa_id} not found.`);
                 }
             }
 
             // 3. 엔티티 생성 시 부모 폴더 엔티티 할당
             const projectDoc = this.projectDocRepository.create({
                 project_doc_title: createProjectDocDto.project_doc_title,
-                project_doc_pa_title_id: parentFolder, // 객체 할당
+                project_doc_title_pa_id: parentFolder, // 객체 할당
                 project, // 프로젝트 엔티티 할당
             });
 
@@ -88,28 +90,41 @@ export class ProjectDocTitleService {
 
     async findAll(projectId: number): Promise<ProjectDocTitle[]> {
         await this.validateProjectId(projectId);
-        return await this.projectDocRepository.find({
-            where: { project: { project_id: projectId } },
-            relations: ['project_docs', 'sub_titles'],
-        });
+        // QueryBuilder 방식으로 전체 조회 (project_id = :projectId)
+        const doctitles = await this.projectDocRepository
+        .createQueryBuilder('projectDocTitle')
+        .leftJoinAndSelect('projectDocTitle.project_docs', 'projectDocs')
+        .leftJoinAndSelect('projectDocTitle.sub_titles', 'subTitles')
+        .leftJoinAndSelect('projectDocTitle.project_doc_title_pa_id', 'parent') // title_pa_id(부모)까지 조회
+        .where('projectDocTitle.project_id = :projectId', { projectId })
+        .getMany();
+
+        return doctitles;
     }
 
     async findOne(id: number, projectId: number): Promise<ProjectDocTitle> {
         await this.validateProjectId(projectId);
-
-        const doc = await this.projectDocRepository.findOne({
-            where: {
-                project_doc_title_id: id,
-            },
-            relations: ['project_docs', 'sub_titles'], // 연관된 프로젝트도 함께 가져오기
-        });
+      
+        const doc = await this.projectDocRepository
+          .createQueryBuilder('projectDocTitle')
+          // 필요한 관계들
+          .leftJoinAndSelect('projectDocTitle.project_docs', 'projectDocs')
+          .leftJoinAndSelect('projectDocTitle.sub_titles', 'subTitles')
+          .leftJoinAndSelect('subTitles.project_doc_title_pa_id', 'subTitleParent') // 하위 sub_titles의 parent 관계
+          .leftJoinAndSelect('projectDocTitle.project_doc_title_pa_id', 'parent') // 자신(parent)도 가져오기
+          .where('projectDocTitle.project_doc_title_id = :id', { id })
+          .andWhere('projectDocTitle.project_id = :projectId', { projectId })
+          .getOne();
+      
         if (!doc) {
-            throw new NotFoundException(`Registration with ID ${id} not found`);
+          throw new NotFoundException(`Registration with ID ${id} not found`);
         }
+      
+        console.log('Fetched ProjectDocTitle:', doc);
         return doc;
-    }
+      }
   
-    // pa_title_id가 null인 title 조회 메서드
+    // title_pa_id가 null인 title 조회 메서드
     async findRootDocTitle(
         projectId: number
     ): Promise<ProjectDocTitle[]> {
@@ -120,9 +135,10 @@ export class ProjectDocTitleService {
         if (!project) {
             throw new NotFoundException("해당 프로젝트를 찾을 수 없습니다.");
         }
-        const doctitles = await this.projectDocRepository.createQueryBuilder('projectDocTitle')
+        const doctitles = await this.projectDocRepository
+            .createQueryBuilder('projectDocTitle')
             .leftJoinAndSelect('projectDocTitle.sub_titles', 'sub_titles')
-            .where('projectDocTitle.project_doc_pa_title_id IS NULL')
+            .where('projectDocTitle.project_doc_title_pa_id IS NULL')
             .andWhere('projectDocTitle.project_id = :project_id', { project_id: projectId })
             .getMany();
 
